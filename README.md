@@ -4,15 +4,16 @@
 <br />
 <div align="center">
 
-  <h1 align="center">NAME OF CHOSEN GAME</h1>
+  <h1 align="center">Super Mario World 2: Yoshi's Island</h1>
 
   <p align="center">
-    Short description of the game.
+    Super Mario World 2: Yoshi's Island[a] is a 1995 platform game developed and published by Nintendo.
+    The player controls Yoshi, a friendly dinosaur, on a quest to reunite baby Mario with his brother Luigi, who has been kidnapped by Kamek.
     <br />
     <strong>Original game : </strong>
-    <a href="https://www.google.be/"><strong>General info »</strong></a>
+    <a href="https://en.wikipedia.org/wiki/Yoshi%27s_Island"><strong>General info »</strong></a>
     ·
-    <a href="https://www.google.be/"><strong>Youtube video »<strong></a>
+    <a href="https://www.youtube.com/watch?v=ai71nITzN1I"><strong>Youtube video »<strong></a>
     <br />
     <br />
   </p>
@@ -49,9 +50,11 @@
 TODO: add screenshot 
 
 Here's why:
-TODO: describe why you chose this game 
-* reason 1
-* reason .. 
+
+* It's movement system is fun and seems challenging to implement
+* I really like the egg mechanic
+* I really like the game's art style
+* I havent seen anyone else make it for the previous years
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -61,16 +64,23 @@ TODO: describe why you chose this game
 This section gives a clear and detailed overview of which parts of the original game I planned to make.
 
 ### The minimum I will most certainly develop:
-* .. 
-* .. 
+* Yoshi's move set and Mario's bubble
+* The 1-1 (Make Eggs, Throw Eggs) level including:
+* Enemies
+* Platforms
+* Secrets
+* Winged Clouds
+
 
 ### What I will probably make as well:
-* .. 
-* .. 
+* Atleast 1 Bonus challenge from the Goal Ring
+* Menu level selection
 
 ### What I plan to create if I have enough time left:
-* .. 
-* .. 
+* Tutorial Level
+* Remaining Bonus challenge's from Goal Ring
+* 1-2 (Watch out Bellow!)
+* Foreground and background animations.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -144,9 +154,9 @@ Explain where you applied inheritance (mandatory).
 <!-- CONTACT -->
 ## Contact
 
-Your Name - email@student.howest.be
+Gonçalo Guilherme - email@student.howest.be
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/your_username/repo_name](https://github.com/HowestDAE/dae16-Goncalo-Alexandre-Viveiros-Guilherme)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
