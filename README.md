@@ -13,7 +13,7 @@
     <strong>Original game : </strong>
     <a href="https://en.wikipedia.org/wiki/Yoshi%27s_Island"><strong>General info »</strong></a>
     ·
-    <a href="https://www.youtube.com/watch?v=ai71nITzN1I"><strong>Youtube video »<strong></a>
+    <a href="https://www.youtube.com/watch?v=1_iY5KaMjdE"><strong>Youtube video »<strong></a>
     <br />
     <br />
   </p>
