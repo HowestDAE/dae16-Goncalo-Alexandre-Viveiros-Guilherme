@@ -47,7 +47,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-TODO: add screenshot 
+![22b84a9a-c2b0-4e4e-a894-6ebd8c63f875-yoshis-island](https://github.com/HowestDAE/dae16-Goncalo-Alexandre-Viveiros-Guilherme/assets/161451486/a0d049dd-e8cb-4728-9652-4f2713fdd39f)
+
 
 Here's why:
 
