@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseGame.h"
+#include <vector>
 
 class Yoshi;
 class Texture;
@@ -26,10 +27,14 @@ public:
 
 private:
 	int m_LevelXPos{0};
-	int m_LevelYPos{-400};
+	int m_LevelYPos{-500};
 	Texture* m_Level01_BG1;
 	Yoshi* m_YoshiPlyr;
 
+	std::vector<Point2f> m_Vertices{
+	Point2f{ 0 , 100 } ,
+	Point2f{ 300 , 100} ,
+	};
 	// FUNCTIONS
 	void Initialize();
 	void Cleanup( );

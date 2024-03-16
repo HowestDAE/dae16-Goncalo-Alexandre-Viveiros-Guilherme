@@ -2,6 +2,8 @@
 #include "Game.h"
 #include "Texture.h"
 #include "Yoshi.h"
+#include "utils.h"
+
 
 Game::Game( const Window& window ) 
 	:BaseGame{ window }
@@ -17,7 +19,7 @@ Game::~Game( )
 void Game::Initialize( )
 {
 	m_Level01_BG1 = new Texture ("1-1 Make Eggs Throw Eggs no coins.png");
-	m_YoshiPlyr = new Yoshi(Point2f(0,0));
+	m_YoshiPlyr = new Yoshi(Point2f(130,130));
 
 }
 
@@ -28,8 +30,9 @@ void Game::Cleanup( )
 
 void Game::Update( float elapsedSec )
 {
+	m_YoshiPlyr->Update(m_Vertices);
 	m_YoshiPlyr->Animation(elapsedSec);
-	m_YoshiPlyr->Update();
+
 
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
@@ -49,7 +52,7 @@ void Game::Draw( ) const
 
 	glPushMatrix();
 	{
-		glScalef(2, 2, 0);
+		glScalef(1.5, 1.5, 0);
 		glTranslatef(m_LevelXPos,m_LevelYPos, 0);
 		m_Level01_BG1->Draw();
 	}
@@ -57,6 +60,7 @@ void Game::Draw( ) const
 
 	m_YoshiPlyr->Draw();
 
+	utils::DrawPolygon(m_Vertices);
 	
 }
 
@@ -87,16 +91,18 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 	switch (e.keysym.sym)
 	{
 	case SDLK_LEFT:
-		m_LevelXPos += 5;
+		m_YoshiPlyr->m_VelocityX += -5;
 		break;
 	case SDLK_RIGHT:
-		m_LevelXPos -= 5;
+		m_YoshiPlyr->m_VelocityX  += 5;
 		break;
 	case SDLK_UP:
 		m_LevelYPos -= 5;
 	break;
 	case SDLK_DOWN:
 		m_LevelYPos += 5;
+		break;
+	
 	}
 
 	
