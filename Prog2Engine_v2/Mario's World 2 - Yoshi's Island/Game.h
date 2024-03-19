@@ -30,11 +30,7 @@ private:
 	int m_LevelYPos{-500};
 	Texture* m_Level01_BG1;
 	Yoshi* m_YoshiPlyr;
-
-	std::vector<Point2f> m_Vertices{
-	Point2f{ 0 , 100 } ,
-	Point2f{ 300 , 100} ,
-	};
+	std::vector< std::vector<Point2f>> m_LvlVertices{};
 	// FUNCTIONS
 	void Initialize();
 	void Cleanup( );

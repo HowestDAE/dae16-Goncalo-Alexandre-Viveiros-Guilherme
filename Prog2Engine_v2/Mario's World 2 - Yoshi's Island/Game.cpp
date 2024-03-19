@@ -3,6 +3,7 @@
 #include "Texture.h"
 #include "Yoshi.h"
 #include "utils.h"
+#include "SVGParser.h"
 
 
 Game::Game( const Window& window ) 
@@ -19,7 +20,9 @@ Game::~Game( )
 void Game::Initialize( )
 {
 	m_Level01_BG1 = new Texture ("1-1 Make Eggs Throw Eggs no coins.png");
-	m_YoshiPlyr = new Yoshi(Point2f(130,130));
+	m_YoshiPlyr = new Yoshi(Point2f(130,40));
+	SVGParser::GetVerticesFromSvgFile("ex.svg",m_LvlVertices);
+
 
 }
 
@@ -30,7 +33,7 @@ void Game::Cleanup( )
 
 void Game::Update( float elapsedSec )
 {
-	m_YoshiPlyr->Update(m_Vertices);
+	m_YoshiPlyr->Update(m_LvlVertices);
 	m_YoshiPlyr->Animation(elapsedSec);
 
 
@@ -53,14 +56,24 @@ void Game::Draw( ) const
 	glPushMatrix();
 	{
 		glScalef(1.5, 1.5, 0);
-		glTranslatef(m_LevelXPos,m_LevelYPos, 0);
+		glTranslatef(m_LevelXPos, m_LevelYPos, 0);
 		m_Level01_BG1->Draw();
 	}
 	glPopMatrix();
 
 	m_YoshiPlyr->Draw();
 
-	utils::DrawPolygon(m_Vertices);
+	for (int idx = 0; idx < m_LvlVertices.size(); idx++)
+	{
+		glPushMatrix();
+		{
+			glTranslatef(m_LevelXPos, m_LevelYPos, 0);
+			utils::DrawPolygon(m_LvlVertices[idx], 1.0f);
+		}
+		glPopMatrix();
+		
+	}
+	
 	
 }
 
@@ -102,7 +115,9 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 	case SDLK_DOWN:
 		m_LevelYPos += 5;
 		break;
-	
+	case SDLK_1:
+		m_YoshiPlyr->m_Position.y = 200;
+		break;
 	}
 
 	

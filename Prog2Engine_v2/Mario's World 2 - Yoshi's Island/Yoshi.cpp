@@ -8,7 +8,7 @@ Yoshi::Yoshi(Point2f startpos) :
 	m_MarioTimer{ 10 },
 	m_YoshiTxt{ new Texture {"Yoshi_SpriteSheet.png"} },
 	m_Position{ startpos },
-	m_VelocityY{ -4.8 },
+	m_VelocityY{ -0.0 },
 	m_VelocityX{ 0 }
 {
 
@@ -38,6 +38,8 @@ void Yoshi::Draw()
 		//	m_YoshiTxt->Draw(Rectf(m_Position.x, m_Position.y, float(m_StdTxtWidth * 2), float(m_StdTxtHeight * 2)),
 		//		Rectf(xTxtPos, yTxtPos, m_StdTxtWidth, m_StdTxtHeight));
 		//}
+			utils::SetColor(Color4f{ 1,0,0,1 });
+			utils::DrawLine(Point2f{ m_Position.x,m_Position.y + m_StdTxtHeight }, Point2f{ m_Position.x, m_Position.y - 3 });
 		
 	}
 	glPopMatrix();
@@ -106,23 +108,26 @@ void Yoshi::Animation(float elapsedSec)
 	
 }
 
-void Yoshi::Update(const std::vector<Point2f>& platforms)
+void Yoshi::Update(const std::vector< std::vector<Point2f>> &platforms)
 {
 	//collision and gravity
 	m_Position.y += m_VelocityY;
 
 	utils::HitInfo hit_info;
-
 	
-	if (utils::Raycast(platforms, Point2f{ m_Position.x,m_Position.y + m_StdTxtHeight}, Point2f{ m_Position.x, m_Position.y - 3}, hit_info))
+
+	for (int idx{0}; idx < platforms.size(); idx++)
 	{
-		m_VelocityY = 0;
+		if (utils::Raycast(platforms[idx], Point2f{m_Position.x,m_Position.y + m_StdTxtHeight}, Point2f{m_Position.x, m_Position.y - 3}, hit_info))
+		{
+			m_VelocityY = 0;
+		}
+		else
+		{
+			//m_VelocityY = -0.8f;
+		}
 	}
 
-	else
-	{
-		m_VelocityY = -4.8f;
-	}
 
 	//Adds Yoshi's speed to his position and simulates friction
 	m_Position.x += m_VelocityX;
