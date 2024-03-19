@@ -118,13 +118,22 @@ void Yoshi::Update(const std::vector< std::vector<Point2f>> &platforms)
 
 	for (int idx{0}; idx < platforms.size(); idx++)
 	{
-		if (utils::Raycast(platforms[idx], Point2f{m_Position.x,m_Position.y + m_StdTxtHeight}, Point2f{m_Position.x, m_Position.y - 3}, hit_info))
+		if (utils::Raycast(platforms[idx], Point2f{m_Position.x,m_Position.y + m_StdTxtHeight * 2}, 
+			Point2f{m_Position.x, m_Position.y - 3}, hit_info))
 		{
 			m_VelocityY = 0;
+			m_Position.y = hit_info.intersectPoint.y;
+		}
+
+		if (utils::Raycast(platforms[idx], Point2f{ m_Position.x + m_StdTxtWidth * 2,m_Position.y + m_StdTxtHeight * 2 },
+			Point2f{ m_Position.x + m_StdTxtWidth * 2, m_Position.y - 3 }, hit_info))
+		{
+			m_VelocityY = 0;
+			m_Position.y = hit_info.intersectPoint.y;
 		}
 		else
 		{
-			//m_VelocityY = -0.8f;
+			m_VelocityY = -0.8f;
 		}
 	}
 

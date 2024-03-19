@@ -67,7 +67,6 @@ void Game::Draw( ) const
 	{
 		glPushMatrix();
 		{
-			glTranslatef(m_LevelXPos, m_LevelYPos, 0);
 			utils::DrawPolygon(m_LvlVertices[idx], 1.0f);
 		}
 		glPopMatrix();
@@ -104,10 +103,10 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 	switch (e.keysym.sym)
 	{
 	case SDLK_LEFT:
-		m_YoshiPlyr->m_VelocityX += -5;
+		m_YoshiPlyr->m_VelocityX = -2.5;
 		break;
 	case SDLK_RIGHT:
-		m_YoshiPlyr->m_VelocityX  += 5;
+		m_YoshiPlyr->m_VelocityX  = 2.5;
 		break;
 	case SDLK_UP:
 		m_LevelYPos -= 5;

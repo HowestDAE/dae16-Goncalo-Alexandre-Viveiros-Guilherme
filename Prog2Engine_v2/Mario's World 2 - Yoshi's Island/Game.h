@@ -27,7 +27,7 @@ public:
 
 private:
 	int m_LevelXPos{0};
-	int m_LevelYPos{-500};
+	int m_LevelYPos{-430};
 	Texture* m_Level01_BG1;
 	Yoshi* m_YoshiPlyr;
 	std::vector< std::vector<Point2f>> m_LvlVertices{};
