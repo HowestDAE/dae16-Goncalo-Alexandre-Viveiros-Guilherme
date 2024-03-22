@@ -24,8 +24,7 @@ void Game::Initialize( )
 	m_Level01 = new Level ("1-1 Make Eggs Throw Eggs no coins.png","ChocolateMountainsWIP.png");
 	m_YoshiPlyr = new Yoshi(Point2f(130,400));
 	SVGParser::GetVerticesFromSvgFile("ex.svg",m_LvlVertices);
-
-
+	m_GameCam = new Camera(Point2f(0, 0), m_YoshiPlyr->GetYoshiPos());
 }
 
 void Game::Cleanup( )
@@ -59,12 +58,12 @@ void Game::Draw( ) const
 
 	glPushMatrix();
 	{
-		//m_Level01->DrawBackground();
-		glTranslatef(xCam, yCam, 0);
+		m_Level01->DrawBackground();
+		glTranslatef(m_GameCam->Pan(m_YoshiPlyr->GetYoshiPos()).x, m_GameCam->Pan(m_YoshiPlyr->GetYoshiPos()).y, 0);
 		glPushMatrix();
 			glScalef(1.5, 1.5, 0);
 			glTranslatef(0,-430 , 0);
-			//m_Level01->DrawLvl();
+			m_Level01->DrawLvl();
 		glPopMatrix();
 		m_YoshiPlyr->Draw();
 	}
@@ -74,59 +73,24 @@ void Game::Draw( ) const
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
-	//std::cout << "KEYDOWN event: " << e.keysym.sym << std::endl;
-	/*
-	if (SDL_KEYDOWN == SDLK_DOWN)
-	{
-		m_LevelYPos += 5;
-	}
-	if (SDL_KEYDOWN == SDLK_UP)
-	{
-		m_LevelYPos -= 5;
-	}
+	m_YoshiPlyr->Controls(e);
 
-	if (SDLK_LEFT == true)
-	{
-		m_LevelYPos += 5;
-	}
+	//switch (e.keysym.sym)
+	//{
 
-	if (SDLK_RIGHT == true)
-	{
-		m_LevelXPos -= 5;
-	}
-	*/
-
-	switch (e.keysym.sym)
-	{
-	case SDLK_LEFT:
-		m_YoshiPlyr->m_VelocityX = -2.5;
-		break;
-	case SDLK_RIGHT:
-		m_YoshiPlyr->m_VelocityX  = 2.5;
-		break;
-	case SDLK_UP:
-		
-	break;
-	case SDLK_DOWN:
-		
-		break;
-	case SDLK_1:
-		m_YoshiPlyr->m_Position.y = 200;
-		break;
-
-	case SDLK_w:
-		yCam -= 10;
-		break;
-	case SDLK_a:
-		xCam += 10;
-		break;
-	case SDLK_s:
-		yCam += 10;
-		break;
-	case SDLK_d:
-		xCam -= 10;
-		break;
-	}
+	//case SDLK_w:
+	//	yCam -= 10;
+	//	break;
+	//case SDLK_a:
+	//	xCam += 10;
+	//	break;
+	//case SDLK_s:
+	//	yCam += 10;
+	//	break;
+	//case SDLK_d:
+	//	xCam -= 10;
+	//	break;
+	//}
 
 	
 }

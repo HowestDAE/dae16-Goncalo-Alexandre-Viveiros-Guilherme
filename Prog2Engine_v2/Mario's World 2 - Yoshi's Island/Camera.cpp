@@ -3,23 +3,31 @@
 #include "Texture.h"
 
 
-Camera::Camera(Texture* lvlTxt):
-	m_LvlTxt{lvlTxt}
+Camera::Camera(Point2f CamPos, Point2f YoshiStartPos):
+	m_YoshiPosition(YoshiStartPos),m_CamPosition(CamPos), lastYoshiXPos{m_YoshiPosition.x}, lastYoshiYPos{m_YoshiPosition.y}
 {
 
 }
 
 Camera::~Camera()
 {
-	delete m_LvlTxt;
+	
 }
 
-Point2f Camera::Pan(Point2f CamPos, Point2f YoshiPos)
+Point2f Camera::Pan(Point2f YoshiPos)
 {
-	if (YoshiPos.x > 500)
+
+	if (YoshiPos.x > lastYoshiXPos + 4)
 	{
-		
+		m_CamPosition.x -= 5;
+		lastYoshiXPos = YoshiPos.x;
 	}
 
-	return CamPos;
+	if (YoshiPos.x < lastYoshiXPos - 4)
+	{
+		m_CamPosition.x += 5;
+		lastYoshiXPos = YoshiPos.x;
+	}
+
+	return m_CamPosition;
 }

@@ -4,12 +4,16 @@ class Texture;
 class Camera
 {
 public:
-	Camera(Texture* lvlTxt);
+	Camera(Point2f CamPos, Point2f YoshiStartPos);
 	~Camera();
 
-	Point2f Pan(Point2f CamPos,Point2f YoshiPos);
+	Point2f Pan(Point2f YoshiPos) ;
 
 private:
-	Texture* m_LvlTxt;
+	Point2f m_YoshiPosition;
+	Point2f m_CamPosition;
+
+	float lastYoshiXPos;
+	float lastYoshiYPos;
 };
 

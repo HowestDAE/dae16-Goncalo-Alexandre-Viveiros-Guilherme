@@ -3,6 +3,7 @@
 #include <vector>
 
 class Yoshi;
+class Camera;
 class Texture;
 class Level;
 class Game : public BaseGame
@@ -28,16 +29,12 @@ public:
 
 private:
 
-	float xCam{ 0 };
-	float yCam{ 0 };
-
-	Point2f lastCamPos{ 0,0 };
-	Point2f currentCamPos{ xCam,yCam };
-
 	int m_LevelStartX{0};
 	int m_LevelStartY{-430};
 	Level* m_Level01;
 	Yoshi* m_YoshiPlyr;
+
+	Camera* m_GameCam;
 	std::vector< std::vector<Point2f>> m_LvlVertices{};
 	// FUNCTIONS
 	void Initialize();

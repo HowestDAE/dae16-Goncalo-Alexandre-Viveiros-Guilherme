@@ -22,27 +22,12 @@ Yoshi::~Yoshi()
 void Yoshi::Draw() const
 {
 	
-	glPushMatrix();
-	{
-		//if (m_IsFacingRight == false)
-		//{
-			m_YoshiTxt->Draw(Rectf(m_Position.x, m_Position.y, float(m_StdTxtWidth * 2), float(m_StdTxtHeight * 2)),
-				Rectf(xTxtPos, yTxtPos, m_StdTxtWidth, m_StdTxtHeight));
-		//}
+	m_YoshiTxt->Draw(Rectf(m_Position.x, m_Position.y, float(m_StdTxtWidth * 2), float(m_StdTxtHeight * 2)),
+		Rectf(xTxtPos, yTxtPos, m_StdTxtWidth, m_StdTxtHeight));
+	
+	utils::SetColor(Color4f{ 1,0,0,1 });
+	utils::DrawLine(Point2f{ m_Position.x,m_Position.y + m_StdTxtHeight }, Point2f{ m_Position.x, m_Position.y - 3 });
 
-		//else
-		//{
-		//	glTranslatef(xTxtPos, 0, 0);
-		//	glRotatef(-180, 0, 1, 0);
-		//	glTranslatef(-xTxtPos, 0, 0);
-		//	m_YoshiTxt->Draw(Rectf(m_Position.x, m_Position.y, float(m_StdTxtWidth * 2), float(m_StdTxtHeight * 2)),
-		//		Rectf(xTxtPos, yTxtPos, m_StdTxtWidth, m_StdTxtHeight));
-		//}
-			utils::SetColor(Color4f{ 1,0,0,1 });
-			utils::DrawLine(Point2f{ m_Position.x,m_Position.y + m_StdTxtHeight }, Point2f{ m_Position.x, m_Position.y - 3 });
-		
-	}
-	glPopMatrix();
 
 }
 
@@ -92,6 +77,7 @@ void Yoshi::Animation(float elapsedSec)
 
 	}
 
+	//Animation for Walking state
 	if (currentState == AnimState::Walking)
 	{
 		yTxtPos = 32;
@@ -115,9 +101,10 @@ void Yoshi::Update(const std::vector< std::vector<Point2f>> &platforms)
 
 	utils::HitInfo hit_info;
 	
-
+	//Collisions
 	for (int idx{0}; idx < platforms.size(); idx++)
 	{
+		//floor collision
 		if (utils::Raycast(platforms[idx], Point2f{m_Position.x,m_Position.y + m_StdTxtHeight * 2}, 
 			Point2f{m_Position.x, m_Position.y - 3}, hit_info))
 		{
@@ -133,9 +120,20 @@ void Yoshi::Update(const std::vector< std::vector<Point2f>> &platforms)
 		}
 		else
 		{
-			m_VelocityY = -0.8f;
+			m_VelocityY = -9.8f;
+		}
+
+		//Wall Collision
+
+		if (utils::Raycast(platforms[idx], Point2f{ m_Position.x,m_Position.y + m_StdTxtHeight},
+			Point2f{ m_Position.x + m_StdTxtWidth * 2,m_Position.y + m_StdTxtHeight }, hit_info))
+		{
+			m_VelocityX = 0;
+			m_Position.x = hit_info.intersectPoint.x;
 		}
 	}
+
+
 
 
 	//Adds Yoshi's speed to his position and simulates friction
@@ -161,4 +159,31 @@ void Yoshi::Update(const std::vector< std::vector<Point2f>> &platforms)
 		m_IsFacingRight = true;
 	}
 
+}
+
+void Yoshi::Controls(const SDL_KeyboardEvent& e)
+{
+	switch (e.keysym.sym)
+	{
+	case SDLK_LEFT:
+		m_VelocityX = -5;
+		break;
+	case SDLK_RIGHT:
+		m_VelocityX = 5;
+		break;
+	case SDLK_UP:
+		m_VelocityY = 11;
+		break;
+	case SDLK_DOWN:
+
+		break;
+	case SDLK_1:
+		m_Position.y = 200;
+		break;
+	}
+}
+
+Point2f Yoshi::GetYoshiPos() const
+{
+	return m_Position;
 }
