@@ -14,7 +14,12 @@ Camera::~Camera()
 	delete m_LvlTxt;
 }
 
-void Camera::Pan(int lvlStartWidth, int lvlStartHeight, int YoshiPos)
+Point2f Camera::Pan(Point2f CamPos, Point2f YoshiPos)
 {
-	
+	if (YoshiPos.x > 500)
+	{
+		
+	}
+
+	return CamPos;
 }

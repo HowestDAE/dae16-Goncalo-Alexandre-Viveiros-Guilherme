@@ -19,7 +19,7 @@ Yoshi::~Yoshi()
 	delete m_YoshiTxt;
 }
 
-void Yoshi::Draw() 
+void Yoshi::Draw() const
 {
 	
 	glPushMatrix();

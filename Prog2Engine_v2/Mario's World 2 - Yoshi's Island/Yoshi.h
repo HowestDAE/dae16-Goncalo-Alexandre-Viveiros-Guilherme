@@ -9,7 +9,7 @@ public:
 	Yoshi(Point2f startpos);
 	~Yoshi();
 
-	void Draw() ;
+	void Draw() const;
 	void Animation(float elapsedSec);
 	void Update(const std::vector< std::vector<Point2f>>& platforms);
 

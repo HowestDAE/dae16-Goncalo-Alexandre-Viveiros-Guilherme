@@ -4,6 +4,7 @@
 
 class Yoshi;
 class Texture;
+class Level;
 class Game : public BaseGame
 {
 public:
@@ -26,9 +27,16 @@ public:
 	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
 
 private:
-	int m_LevelXPos{0};
-	int m_LevelYPos{-430};
-	Texture* m_Level01_BG1;
+
+	float xCam{ 0 };
+	float yCam{ 0 };
+
+	Point2f lastCamPos{ 0,0 };
+	Point2f currentCamPos{ xCam,yCam };
+
+	int m_LevelStartX{0};
+	int m_LevelStartY{-430};
+	Level* m_Level01;
 	Yoshi* m_YoshiPlyr;
 	std::vector< std::vector<Point2f>> m_LvlVertices{};
 	// FUNCTIONS

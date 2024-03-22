@@ -7,7 +7,7 @@ public:
 	Camera(Texture* lvlTxt);
 	~Camera();
 
-	void Pan(int lvlStartWidth,int lvlStartHeight,int YoshiPos);
+	Point2f Pan(Point2f CamPos,Point2f YoshiPos);
 
 private:
 	Texture* m_LvlTxt;
