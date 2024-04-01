@@ -7,7 +7,7 @@ public:
 	Camera(Point2f CamPos, Point2f YoshiStartPos);
 	~Camera();
 
-	Point2f Pan(Point2f YoshiPos) ;
+	Point2f Pan(Point2f YoshiPos);
 
 private:
 	Point2f m_YoshiPosition;

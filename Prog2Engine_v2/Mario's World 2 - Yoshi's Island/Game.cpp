@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Game.h"
+#include <iostream>
 #include "Texture.h"
 #include "Yoshi.h"
 #include "utils.h"
@@ -23,7 +24,7 @@ void Game::Initialize( )
 {
 	m_Level01 = new Level ("1-1 Make Eggs Throw Eggs no coins.png","ChocolateMountainsWIP.png");
 	m_YoshiPlyr = new Yoshi(Point2f(130,400));
-	SVGParser::GetVerticesFromSvgFile("ex.svg",m_LvlVertices);
+	SVGParser::GetVerticesFromSvgFile("ex3.svg",m_LvlVertices);
 	m_GameCam = new Camera(Point2f(0, 0), m_YoshiPlyr->GetYoshiPos());
 }
 
@@ -35,7 +36,7 @@ void Game::Cleanup( )
 
 void Game::Update( float elapsedSec )
 {
-	m_YoshiPlyr->Update(m_LvlVertices);
+	m_YoshiPlyr->Update(m_LvlVertices,elapsedSec);
 	m_YoshiPlyr->Animation(elapsedSec);
 
 
@@ -56,19 +57,32 @@ void Game::Draw( ) const
 {
 	ClearBackground( );
 
+	//Draws All elements of the game and uses matrixes to modify them
 	glPushMatrix();
 	{
-		m_Level01->DrawBackground();
-		glTranslatef(m_GameCam->Pan(m_YoshiPlyr->GetYoshiPos()).x, m_GameCam->Pan(m_YoshiPlyr->GetYoshiPos()).y, 0);
+		glTranslatef(m_GameCam->Pan(m_YoshiPlyr->GetYoshiPos()).x, m_GameCam->Pan(m_YoshiPlyr->GetYoshiPos()).y -90, 0);
+
 		glPushMatrix();
-			glScalef(1.5, 1.5, 0);
+
+		glPushMatrix();
+
+		glTranslatef(-m_GameCam->Pan(m_YoshiPlyr->GetYoshiPos()).x/2, -m_GameCam->Pan(m_YoshiPlyr->GetYoshiPos()).y +90 /2, 0); //parallax scrolling
+		m_Level01->DrawBackground();
+
+		glPopMatrix();
+
+			glScalef(1.959676875, 1.9868859, 0);
 			glTranslatef(0,-430 , 0);
 			m_Level01->DrawLvl();
+
 		glPopMatrix();
+
 		m_YoshiPlyr->Draw();
 	}
 	glPopMatrix();
+
 	
+
 }
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
