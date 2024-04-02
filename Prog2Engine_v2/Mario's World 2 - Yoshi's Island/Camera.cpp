@@ -19,13 +19,13 @@ Point2f Camera::Pan(Point2f YoshiPos)
 
 	if (YoshiPos.x > lastYoshiXPos + 4)
 	{
-		m_CamPosition.x -= 4.5;
+		m_CamPosition.x -= 5;
 		lastYoshiXPos = YoshiPos.x;
 	}
 
 	if (YoshiPos.x < lastYoshiXPos - 4)
 	{
-		m_CamPosition.x += 4.5;
+		m_CamPosition.x += 55;
 		lastYoshiXPos = YoshiPos.x;
 	}
 

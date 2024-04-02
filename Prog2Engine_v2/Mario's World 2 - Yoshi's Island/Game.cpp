@@ -39,8 +39,6 @@ void Game::Update( float elapsedSec )
 	m_YoshiPlyr->Update(m_LvlVertices,elapsedSec);
 	m_YoshiPlyr->Animation(elapsedSec);
 
-
-	
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	//if ( pStates[SDL_SCANCODE_RIGHT] )
