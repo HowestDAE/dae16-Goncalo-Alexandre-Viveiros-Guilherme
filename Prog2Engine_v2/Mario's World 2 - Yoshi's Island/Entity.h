@@ -13,10 +13,10 @@ public:
 private:
 	Texture* m_EntityTxt;
 	bool m_IsFacingRight{ true };
-	Point2f m_Position;
 	bool m_IsGrounded{ false };
 
 protected:
+	Point2f m_Position;
 	const float m_TxtHeight;
 	const float m_TxtWidth;
 	float m_VelocityY{ 0 };

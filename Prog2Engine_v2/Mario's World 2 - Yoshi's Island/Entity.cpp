@@ -37,6 +37,26 @@ void Entity::Draw() const
 
 
 	}
+
+	/*
+	//debugs floor collision
+	utils::SetColor(Color4f{ 1,0,0,1 });
+	utils::DrawLine(Point2f{ m_Position.x + m_StdTxtWidth - 3,m_Position.y + m_StdTxtHeight * 2 },
+		Point2f{ m_Position.x + m_StdTxtWidth - 3, m_Position.y - 3 });
+
+	utils::DrawLine(Point2f{ m_Position.x + m_StdTxtWidth * 2 - 3,m_Position.y + m_StdTxtHeight * 2 },
+		Point2f{ m_Position.x + m_StdTxtWidth * 2 - 3, m_Position.y - 3 });
+
+	//debugs wall code
+	utils::SetColor(Color4f{ 0,1,0,1 });
+
+	//utils::DrawLine(Point2f{ m_Position.x + m_StdTxtWidth + 20,m_Position.y + m_StdTxtHeight },
+		//Point2f{m_Position.x + m_StdTxtWidth - 5, m_Position.y + m_StdTxtHeight});
+
+	utils::DrawLine(Point2f{ m_Position.x + m_StdTxtWidth + 10,m_Position.y + m_StdTxtHeight },
+		Point2f{ m_Position.x + m_StdTxtWidth + 30,m_Position.y + m_StdTxtHeight });
+*/
+
 }
 
 void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float elapsedSec)

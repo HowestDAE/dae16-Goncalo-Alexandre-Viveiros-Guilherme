@@ -6,8 +6,7 @@
 Yoshi::Yoshi(Point2f startpos):
 Entity("Yoshi_SpriteSheet.png",32,30,startpos),
 	m_IsMarioOn{ true },
-	m_MarioTimer{ 10 },
-	m_Position{ startpos }
+	m_MarioTimer{ 10 }
 {
 	
 }
@@ -17,50 +16,6 @@ Yoshi::~Yoshi()
 
 }
 
-
-//void Yoshi::Draw() const
-//{
-//	/*if (m_IsFacingRight == false)
-//	{
-//		m_YoshiTxt->Draw(Rectf(m_Position.x, m_Position.y, float(m_CurrentTxtWidth * 2), float(m_StdTxtHeight * 2)),
-//			Rectf(xTxtPos, yTxtPos, m_CurrentTxtWidth, m_StdTxtHeight));
-//	}
-//
-//	if (m_IsFacingRight == true)
-//	{
-//		glPushMatrix();
-//		{
-//			glScalef(-1, 1, 1);
-//			glTranslatef(-m_StdTxtWidth * 3 + 9, 0, 0);
-//			m_YoshiTxt->Draw(Rectf(-m_Position.x, m_Position.y, float(m_CurrentTxtWidth * 2), float(m_StdTxtHeight * 2)),
-//				Rectf(xTxtPos, yTxtPos, m_CurrentTxtWidth, m_StdTxtHeight));
-//		}
-//		glPopMatrix();
-//
-//
-//	}*/
-//
-//	/*
-//	//debugs floor collision
-//	utils::SetColor(Color4f{ 1,0,0,1 });
-//	utils::DrawLine(Point2f{ m_Position.x + m_StdTxtWidth - 3,m_Position.y + m_StdTxtHeight * 2 },
-//		Point2f{ m_Position.x + m_StdTxtWidth - 3, m_Position.y - 3 });
-//
-//	utils::DrawLine(Point2f{ m_Position.x + m_StdTxtWidth * 2 - 3,m_Position.y + m_StdTxtHeight * 2 },
-//		Point2f{ m_Position.x + m_StdTxtWidth * 2 - 3, m_Position.y - 3 });
-//
-//	//debugs wall code
-//	utils::SetColor(Color4f{ 0,1,0,1 });
-//
-//	//utils::DrawLine(Point2f{ m_Position.x + m_StdTxtWidth + 20,m_Position.y + m_StdTxtHeight },
-//		//Point2f{m_Position.x + m_StdTxtWidth - 5, m_Position.y + m_StdTxtHeight});
-//
-//	utils::DrawLine(Point2f{ m_Position.x + m_StdTxtWidth + 10,m_Position.y + m_StdTxtHeight },
-//		Point2f{ m_Position.x + m_StdTxtWidth + 30,m_Position.y + m_StdTxtHeight });
-//*/
-//
-//
-//}
 
 void Yoshi::Animation(float elapsedSec)
 {
@@ -154,97 +109,7 @@ void Yoshi::Animation(float elapsedSec)
 	}
 }
 
-//void Yoshi::Update(const std::vector< std::vector<Point2f>> &platforms, float elapsedSec)
-//{
-//	//collision and gravity
-//	m_Position.y += m_VelocityY * elapsedSec;
-//
-//	utils::HitInfo hit_info;
-//	
-//	//Collisions
-//	for (int idx{0}; idx < platforms.size(); idx++)
-//	{
-//		//floor collision
-//
-//		//checks collision from the left side of yoshis feet
-//		if (utils::Raycast(platforms[idx], Point2f{ m_Position.x + m_StdTxtWidth - 3,m_Position.y + m_StdTxtHeight * 2 },
-//			Point2f{ m_Position.x + m_StdTxtWidth - 3, m_Position.y - 3 }, hit_info))
-//		{
-//			m_VelocityY = 0;
-//			m_Position.y = hit_info.intersectPoint.y;
-//			m_IsYoshiGrounded = true;
-//		}
-//
-//		//checks collision from the right side of yoshis feet
-//		if (utils::Raycast(platforms[idx], Point2f{ m_Position.x + m_StdTxtWidth * 2 - 3,m_Position.y + m_StdTxtHeight * 2 },
-//			Point2f{ m_Position.x + m_StdTxtWidth * 2 - 3, m_Position.y - 3 }, hit_info))
-//		{
-//			m_VelocityY = 0;
-//			m_Position.y = hit_info.intersectPoint.y;
-//			m_IsYoshiGrounded = true;
-//		}
-//		else
-//		{
-//			
-//				m_VelocityY = -380;
-//			
-//			
-//		}
-//
-//		//Wall Collision
-//
-//		//left side collision
-//		if (utils::Raycast(platforms[idx], Point2f{ m_Position.x + m_StdTxtWidth + 20,m_Position.y + m_StdTxtHeight },
-//			Point2f{ m_Position.x + m_StdTxtWidth - 5, m_Position.y + m_StdTxtHeight }, hit_info))
-//		{
-//			m_VelocityX = -0.3;
-//			m_Position.x = hit_info.intersectPoint.x - m_StdTxtWidth + 7; //Teleports yoshi to the point of intersection with a small offset
-//			currentState = AnimState::Pushing;
-//		}
-//
-//		//right side collision
-//		if (utils::Raycast(platforms[idx], Point2f{ m_Position.x + m_StdTxtWidth + 10,m_Position.y + m_StdTxtHeight },
-//			Point2f{ m_Position.x + m_StdTxtWidth + 30,m_Position.y + m_StdTxtHeight }, hit_info))
-//		{
-//			m_VelocityX = 0.3;
-//			m_Position.x = hit_info.intersectPoint.x - m_StdTxtWidth * 2 - 3;
-//			currentState = AnimState::Pushing;
-//		}
-//
-//	}
-//
-//	//Adds Yoshi's horizontal speed to his position
-//	m_Position.x += m_VelocityX * elapsedSec ;
-//
-//	//simulates friction whilst yoshi is grounded
-//	if (m_IsYoshiGrounded == true)
-//	{
-//		m_VelocityX -= (m_VelocityX * 3.3) * elapsedSec;
-//	}
-//	
-//
-//
-//	//Stops movement once it falls below a certain range
-//	if (m_VelocityX < 20 && m_VelocityX > 0 || m_VelocityX > -20 && m_VelocityX < 0)
-//	{
-//		m_VelocityX = 0;
-//	}
-//
-//
-//	//Check if Yoshi is facing right
-//	if (m_VelocityX < 0)
-//	{
-//		m_IsFacingRight = false;
-//	}
-//
-//	else if (m_VelocityX > 0)
-//	{
-//		m_IsFacingRight = true;
-//	}
-//
-//
-//
-//}
+
 
 void Yoshi::Controls(const SDL_KeyboardEvent& e)
 {
