@@ -1,12 +1,17 @@
 #include "pch.h"
 #include "Yoshi.h"
+
+#include <iostream>
+
 #include "Texture.h"
 #include "utils.h"
 
-Yoshi::Yoshi(Point2f startpos):
-Entity("Yoshi_SpriteSheet.png",32,30,startpos),
+Yoshi::Yoshi(Point2f startPos):
+Entity("Yoshi_SpriteSheet.png",32,36,startPos),
 	m_IsMarioOn{ true },
-	m_MarioTimer{ 10 }
+	m_MarioTimer{ 10 },
+	lastYPos{ m_Position.y },
+	lastXPos{ m_Position.x }
 {
 	
 }
@@ -98,11 +103,11 @@ void Yoshi::Animation(float elapsedSec)
 
 		if (m_FrameTime >= 0.01)
 		{
-			xTxtPos += m_TxtWidth * 2;
+			xTxtPos += m_TxtWidth;
 			m_FrameTime = 0;
 		}
 
-		if (xTxtPos > 64)
+		if (xTxtPos > 36)
 		{
 			xTxtPos = 0;
 		}
@@ -130,8 +135,7 @@ void Yoshi::Controls(const SDL_KeyboardEvent& e)
 		break;
 	case SDLK_UP:
 
-		m_IsYoshiGrounded = false;
-		m_VelocityY = 300;
+		m_VelocityY = 700;
 
 		break;
 	case SDLK_DOWN:
@@ -146,4 +150,30 @@ void Yoshi::Controls(const SDL_KeyboardEvent& e)
 Point2f Yoshi::GetYoshiPos() const
 {
 	return m_Position;
+}
+
+void Yoshi::Debug()
+{
+
+	if (lastXPos != m_Position.x)
+	{
+		std::cout << "Yoshi's X position: " << m_Position.x << std::endl;
+	}
+
+	if (lastYPos != m_Position.y)
+	{
+		std::cout << "Yoshi's Y position: " << m_Position.y << std::endl;
+	}
+	
+}
+
+
+bool Yoshi::GetIsGrounded() const
+{
+	return m_IsGrounded;
+}
+
+bool Yoshi::GetIsFacingRight() const
+{
+	return m_IsFacingRight;
 }

@@ -22,23 +22,24 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	m_Level01 = new Level ("1-1 Make Eggs Throw Eggs no coins.png","ChocolateMountainsWIP.png");
+	m_Level01 = new Level ("1-1 Make Eggs Throw Eggs no coins.png","ChocolateMountainsWIP.png","Gradient_BG.png");
 	m_YoshiPlyr = new Yoshi(Point2f(130,400));
 	SVGParser::GetVerticesFromSvgFile("ex3.svg",m_LvlVertices);
 	m_GameCam = new Camera(Point2f(0, 0), m_YoshiPlyr->GetYoshiPos());
 }
 
-void Game::Cleanup( )
+void Game::Cleanup()
 {
 	delete m_Level01;
 	delete m_YoshiPlyr;
+	delete m_GameCam;
 }
 
 void Game::Update( float elapsedSec )
 {
 	m_YoshiPlyr->Update(m_LvlVertices,elapsedSec);
 	m_YoshiPlyr->Animation(elapsedSec);
-
+	m_GameCam->Pan(m_YoshiPlyr->GetYoshiPos(), m_YoshiPlyr->GetIsGrounded(),m_YoshiPlyr->GetIsFacingRight());
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
 	//if ( pStates[SDL_SCANCODE_RIGHT] )
@@ -58,13 +59,13 @@ void Game::Draw( ) const
 	//Draws All elements of the game and uses matrixes to modify them
 	glPushMatrix();
 	{
-		glTranslatef(m_GameCam->Pan(m_YoshiPlyr->GetYoshiPos()).x, m_GameCam->Pan(m_YoshiPlyr->GetYoshiPos()).y -90, 0);
+		glTranslatef(m_GameCam->GetCamPos().x, m_GameCam->GetCamPos().y, 0);
 
 		glPushMatrix();
 
 		glPushMatrix();
 
-		glTranslatef(-m_GameCam->Pan(m_YoshiPlyr->GetYoshiPos()).x/2, -m_GameCam->Pan(m_YoshiPlyr->GetYoshiPos()).y +90 /2, 0); //parallax scrolling
+		glTranslatef(-m_GameCam->GetCamPos().x/2,-m_GameCam->GetCamPos().y/2, 0);          //parallax scrolling
 		m_Level01->DrawBackground();
 
 		glPopMatrix();

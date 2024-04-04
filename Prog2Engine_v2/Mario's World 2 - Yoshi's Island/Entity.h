@@ -10,10 +10,11 @@ public:
 	void Draw() const;
 	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
 
+
 private:
 	Texture* m_EntityTxt;
-	bool m_IsFacingRight{ true };
-	bool m_IsGrounded{ false };
+
+
 
 protected:
 	Point2f m_Position;
@@ -23,5 +24,7 @@ protected:
 	float m_VelocityX{ 0 };
 	float xTxtPos{ 0 };
 	float yTxtPos{ 0 };
+	bool m_IsGrounded{ false };
+	bool m_IsFacingRight{ true };
 };
 

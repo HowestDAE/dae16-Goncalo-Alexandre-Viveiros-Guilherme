@@ -7,21 +7,24 @@ class Texture;
 class Yoshi : public Entity
 {
 public:
-	Yoshi(Point2f startpos);
+	Yoshi(Point2f startPos);
 	~Yoshi();
 
 	void Animation(float elapsedSec);
 	void Controls(const SDL_KeyboardEvent& e);
 	Point2f GetYoshiPos() const;
+	void Debug();
+	bool GetIsGrounded() const;
+	bool GetIsFacingRight() const;
 	
 private:
 	bool m_IsMarioOn;
-	bool m_IsFacingRight{true};
 	bool m_IsYoshiGrounded{ true };
 	int m_MarioTimer ;
-	const float m_StdTxtHeight{ 32 };
-	const float m_StdTxtWidth{ 30 };
 	float m_FrameTime{0};
+	float lastYPos;
+	float lastXPos;
+	
 
 	
 

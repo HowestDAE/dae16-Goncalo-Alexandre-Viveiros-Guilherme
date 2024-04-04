@@ -1,10 +1,13 @@
 #include "pch.h"
 #include "Camera.h"
+
+#include <iostream>
+
 #include "Texture.h"
 
 
 Camera::Camera(Point2f CamPos, Point2f YoshiStartPos):
-	m_YoshiPosition(YoshiStartPos),m_CamPosition(CamPos), lastYoshiXPos{m_YoshiPosition.x}, lastYoshiYPos{m_YoshiPosition.y}
+	m_CamPosition(CamPos)
 {
 
 }
@@ -14,21 +17,48 @@ Camera::~Camera()
 	
 }
 
-Point2f Camera::Pan(Point2f YoshiPos)
+void Camera::Pan(Point2f YoshiPos, bool isGrounded,bool isFacingRight)
 {
-
-	if (YoshiPos.x > lastYoshiXPos + 4)
+	if (isFacingRight == true)
 	{
-		m_CamPosition.x -= 5;
-		lastYoshiXPos = YoshiPos.x;
+		if (m_CamPosition.x >= -YoshiPos.x + 200)
+		{
+			m_CamPosition.x -= 5;
+		}
 	}
 
-	if (YoshiPos.x < lastYoshiXPos - 4)
+	else
 	{
-		m_CamPosition.x += 5;
-		lastYoshiXPos = YoshiPos.x;
+		if (m_CamPosition.x <= -YoshiPos.x + 500)
+		{
+			m_CamPosition.x += 5;
+		}
+
+	}
+	//If yoshi is standing on a platform moves camera upwards
+	if (isGrounded == true)   
+	{
+		//lastYoshiYPos = YoshiPos.y;
+		if (m_CamPosition.y > -YoshiPos.y + 150)
+		{
+			m_CamPosition.y -= 5;
+		}
+
+	}
+	//If yoshi is falling pans camera towards him
+	else
+	{
+		//lastYoshiYPos = YoshiPos.y;
+		if (m_CamPosition.y < -YoshiPos.y + 150)
+		{
+			m_CamPosition.y += 5;
+		}
 	}
 
+}
+
+Point2f Camera::GetCamPos()
+{
 	return m_CamPosition;
 }
 
