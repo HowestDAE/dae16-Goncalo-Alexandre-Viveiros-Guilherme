@@ -2,7 +2,8 @@
 #include <vector>
 #include "Entity.h"
 
-
+class Egg;
+class Enemy;
 class Texture;
 class Yoshi : public Entity
 {
@@ -10,31 +11,41 @@ public:
 	Yoshi(Point2f startPos);
 	~Yoshi();
 
-	void Animation(float elapsedSec);
-	void Controls(const SDL_KeyboardEvent& e);
-	Point2f GetYoshiPos() const;
+	void Draw()const;
+	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
+	void Animate(float elapsedSec);
+	void KeysDown(const SDL_KeyboardEvent& e);
+	void KeysUp(const SDL_KeyboardEvent& e);
 	void Debug();
-	bool GetIsGrounded() const;
-	bool GetIsFacingRight() const;
-	
+	bool GetIsMarioOn() const;
+	void HitCheck(std::vector<Enemy*>&);
+
 private:
+	bool m_IsTonguing;
+	bool m_IsYoshiJumping{false};
 	bool m_IsMarioOn;
-	bool m_IsYoshiGrounded{ true };
+	bool m_IsLookingUp{ false };
 	int m_MarioTimer ;
 	float m_FrameTime{0};
-	float lastYPos;
-	float lastXPos;
-	
-
-	
+	float m_FlightTime{ 0 };
+	Rectf m_TongueHitBox {-1000,0,0,0};
+	bool m_IsMouthFull{false};
+	std::vector <Egg*> m_Eggs;
 
 	enum class AnimState {
 		Idle,
 		Walking,
 		Sprinting,
+		Jumping,
+		Hovering,
 		Pushing,
+		Tongue,
+		FullIdle,
+		FullWalking,
+		FullSprinting
 	};
 
 	AnimState currentState{};
+	AnimState lastState{};
 };
 

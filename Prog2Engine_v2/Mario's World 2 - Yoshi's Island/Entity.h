@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "utils.h"
 
 class Texture;
 class Entity
@@ -9,22 +10,32 @@ public:
 	~Entity();
 	void Draw() const;
 	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
-
+	Rectf GetHitBox() const;
+	Point2f GetPosition() const;
+	bool GetIsFacingRight() const;
+	bool GetIsGrounded() const;
 
 private:
 	Texture* m_EntityTxt;
 
-
-
 protected:
 	Point2f m_Position;
-	const float m_TxtHeight;
-	const float m_TxtWidth;
+	float m_TxtHeight;
+	float m_TxtWidth;
 	float m_VelocityY{ 0 };
 	float m_VelocityX{ 0 };
-	float xTxtPos{ 0 };
-	float yTxtPos{ 0 };
+	float m_XTxtPos{ 0 };
+	float m_YTxtPos{ 0 };
 	bool m_IsGrounded{ false };
 	bool m_IsFacingRight{ true };
+	Rectf m_Hitbox{ 0, 0, 0, 0 };
+
+	float m_AngleDeg{0};
+	float m_AngX {0};
+	float m_AngY {0};
+	float m_AngZ {0};
+	float m_ScaleX{1};
+	float m_ScaleY{1};
+	float m_ScaleZ{1};
 };
 

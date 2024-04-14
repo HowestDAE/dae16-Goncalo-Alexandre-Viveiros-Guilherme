@@ -2,10 +2,13 @@
 #include "BaseGame.h"
 #include <vector>
 
+#include "ShyGuy.h"
+
 class Yoshi;
 class Camera;
 class Texture;
 class Level;
+class Mario;
 class Game : public BaseGame
 {
 public:
@@ -33,9 +36,11 @@ private:
 	int m_LevelStartY{-430};
 	Level* m_Level01;
 	Yoshi* m_YoshiPlyr;
-
+	Mario* m_Mario;
 	Camera* m_GameCam;
+	ShyGuy* m_ShyGuy1;
 	std::vector< std::vector<Point2f>> m_LvlVertices{};
+	std::vector<Enemy*> m_Enemies;
 	// FUNCTIONS
 	void Initialize();
 	void Cleanup( );

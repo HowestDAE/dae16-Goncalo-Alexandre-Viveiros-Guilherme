@@ -18,27 +18,27 @@ Entity::~Entity()
 
 void Entity::Draw() const
 {
-	if (m_IsFacingRight == false)
-	{
-		m_EntityTxt->Draw(Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2)),
-			Rectf(xTxtPos, yTxtPos, m_TxtWidth, m_TxtHeight));
-	}
 
-	if (m_IsFacingRight == true)
+	glPushMatrix();
 	{
-		glPushMatrix();
-		{
-			glScalef(-1, 1, 1);
-			glTranslatef(-m_TxtWidth * 3 + 9, 0, 0);
-			m_EntityTxt->Draw(Rectf(-m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2)),
-				Rectf(xTxtPos, yTxtPos, m_TxtWidth, m_TxtHeight));
+
+		glTranslatef(m_Position.x + m_TxtWidth , m_Position.y, 0);
+		glRotatef(m_AngleDeg, m_AngX, m_AngY, m_AngZ); 
+		if (m_IsFacingRight == false) {
+			glScalef(m_ScaleX, m_ScaleY, m_ScaleZ);
 		}
-		glPopMatrix();
 
+		else if (m_IsFacingRight == true) {
+			glScalef(-m_ScaleX, m_ScaleY, m_ScaleZ);
+		}
 
+		// Draw the Yoshi player
+		m_EntityTxt->Draw(Rectf(-m_TxtWidth, 0, float(m_TxtWidth * 2), float(m_TxtHeight * 2)),
+			Rectf(m_XTxtPos, m_YTxtPos, m_TxtWidth, m_TxtHeight));
 	}
+	glPopMatrix();
 
-	
+	/*
 	//debugs floor collision
 	utils::SetColor(Color4f{ 1,0,0,1 });
 	utils::DrawLine(Point2f{ m_Position.x + m_TxtWidth - 3,m_Position.y + m_TxtHeight * 2 },
@@ -55,7 +55,7 @@ void Entity::Draw() const
 
 	utils::DrawLine(Point2f{ m_Position.x + m_TxtWidth + 10,m_Position.y + m_TxtHeight },
 		Point2f{ m_Position.x + m_TxtWidth * 2,m_Position.y + m_TxtHeight });
-
+		*/
 
 }
 
@@ -88,6 +88,8 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float el
 			m_Position.y = hit_info.intersectPoint.y;
 			m_IsGrounded = true;
 		}
+
+		//Gravity
 		else
 		{
 			m_IsGrounded = false;
@@ -95,6 +97,11 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float el
 			if (m_VelocityY != -380)
 			{
 				m_VelocityY -= 38;
+
+				if (m_VelocityY < -380)
+				{
+					m_VelocityY = -342;
+				}
 			}
 			
 
@@ -156,4 +163,32 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float el
 		m_IsFacingRight = true;
 	}
 
+
+
+	//Update Hitbox
+
+	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
+}
+
+Rectf Entity::GetHitBox() const
+{
+	return m_Hitbox;
+}
+
+Point2f Entity::GetPosition() const
+{
+	return m_Position;
+}
+
+
+bool Entity::GetIsFacingRight() const
+{
+	return m_IsFacingRight;
+}
+
+
+
+bool Entity::GetIsGrounded() const
+{
+	return m_IsGrounded;
 }

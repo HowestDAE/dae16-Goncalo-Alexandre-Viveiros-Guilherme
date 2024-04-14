@@ -19,22 +19,39 @@ Camera::~Camera()
 
 void Camera::Pan(Point2f YoshiPos, bool isGrounded,bool isFacingRight)
 {
-	if (isFacingRight == true)
+
+	if (m_CamPosition.x <= 0 || m_CamPosition.x <= -7000)
 	{
-		if (m_CamPosition.x >= -YoshiPos.x + 200)
+		if (isFacingRight == true)
 		{
-			m_CamPosition.x -= 5;
+			if (m_CamPosition.x >= -YoshiPos.x + 200)
+			{
+				m_CamPosition.x -= 5;
+			}
+		}
+
+		else
+		{
+			if (m_CamPosition.x <= -YoshiPos.x + 500)
+			{
+				m_CamPosition.x += 5;
+			}
+
+		}
+
+		if (m_CamPosition.x > 0)
+		{
+			m_CamPosition.x = 0;
+		}
+
+		if (m_CamPosition.x < -7000)
+		{
+			m_CamPosition.x = -7000;
 		}
 	}
 
-	else
-	{
-		if (m_CamPosition.x <= -YoshiPos.x + 500)
-		{
-			m_CamPosition.x += 5;
-		}
 
-	}
+	
 	//If yoshi is standing on a platform moves camera upwards
 	if (isGrounded == true)   
 	{
