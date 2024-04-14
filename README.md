@@ -111,8 +111,12 @@ Use this space to show useful examples of how a game can be played.
 Additional screenshots and demos work well in this space. 
 
 ### Controls
-* keys, .. 
-* .. 
+* Left Arrow to go left
+* Right Arrow to go right
+* Down Arrow when mouth is full to make an egg
+* Z jump
+* X Tongue to eat
+* C Deletes Egg 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -122,10 +126,11 @@ Additional screenshots and demos work well in this space.
 ## Class structure 
 
 ### Object composition 
-If you applied object composition (optional); explain where and how.
+Applied object composition to Egg and Yoshi Class. Yoshi has Eggs.
 
 ### Inheritance 
-Explain where you applied inheritance (mandatory).
+Applied Inheritance to the Entity class which has 4 different children. 
+Enemy,Yoshi,Mario,Eggs. Enemy also has a child which is the Shy Guy.
 
 ### ..
 
@@ -136,14 +141,14 @@ Explain where you applied inheritance (mandatory).
 ## Checklist
 
 - [x] Accept / set up github project
-- [ ] week 01 topics applied
-    - [ ] const keyword applied proactively (variables, functions,..)
-    - [ ] static keyword applied proactively (class variables, static functions,..)
-    - [ ] object composition (optional)
-- [ ] week 02 topics applied
-- [ ] week 03 topics applied
+- [x] week 01 topics applied
+    - [x] const keyword applied proactively (variables, functions,..)
+    - [] static keyword applied proactively (class variables, static functions,..)
+    - [x] object composition (optional)
+- [x] week 02 topics applied
+- [x] week 03 topics applied
 - [ ] week 04 topics applied
-- [ ] week 05 topics applied
+- [x] week 05 topics applied
 - [ ] week 06 topics applied
 - [ ] week 07 topics applied
 - [ ] week 08 topics applied
