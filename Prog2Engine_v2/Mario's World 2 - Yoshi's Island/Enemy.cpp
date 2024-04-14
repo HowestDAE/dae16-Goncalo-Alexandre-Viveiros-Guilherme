@@ -7,6 +7,7 @@ Entity(TexturePath, txtHeight, txtWidth, position),
 m_IsEdible(isEdible),
 m_IsSquashable(isSquashable)
 {
+
 }
 
 Enemy::~Enemy()

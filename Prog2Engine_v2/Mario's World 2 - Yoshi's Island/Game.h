@@ -2,8 +2,9 @@
 #include "BaseGame.h"
 #include <vector>
 
-#include "ShyGuy.h"
 
+class Enemy;
+class ShyGuy;
 class Yoshi;
 class Camera;
 class Texture;

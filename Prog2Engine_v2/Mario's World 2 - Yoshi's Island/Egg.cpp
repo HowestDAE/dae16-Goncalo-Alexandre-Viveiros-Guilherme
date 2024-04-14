@@ -11,35 +11,33 @@ Egg::~Egg()
 
 void Egg::Update(Point2f YoshiPos,int NumOfEggs, const std::vector< std::vector<Point2f>>& platforms, float elapsedSec)
 {
-	
-	if (NumOfEggs < 2)
+
+	if (m_Position.x > YoshiPos.x + m_TxtWidth * 6)
 	{
-
-		if (m_Position.x > YoshiPos.x + m_TxtWidth * 6)
-		{
-			m_VelocityX -= 1 * (m_Position.x - (YoshiPos.x +m_TxtWidth * 6));
-		}
-
-		if (m_Position.x < YoshiPos.x - m_TxtWidth * 3)
-		{
-			m_VelocityX += 1 *( YoshiPos.x - (m_Position.x - m_TxtWidth * 3));
-		}
-		
-
-		if (m_Position.y != YoshiPos.y)
-		{
-			if (m_Position.y > YoshiPos.y)
-			{
-				m_VelocityY -= 1 * (m_Position.y - YoshiPos.y);
-			}
-
-			if (m_Position.y < YoshiPos.y - 64)
-			{
-				m_VelocityY += 200;
-			}
-		}
-		
+		m_VelocityX -= 1 * (m_Position.x - (YoshiPos.x +m_TxtWidth * 6));
 	}
+
+	if (m_Position.x < YoshiPos.x - m_TxtWidth * 3)
+	{
+		m_VelocityX += 1 *( YoshiPos.x - (m_Position.x - m_TxtWidth * 3));
+	}
+	
+
+	if (m_Position.y != YoshiPos.y)
+	{
+		if (m_Position.y > YoshiPos.y)
+		{
+			m_VelocityY -= 1 * (m_Position.y - YoshiPos.y);
+		}
+
+		if (m_Position.y < YoshiPos.y - 64)
+		{
+			m_VelocityY += 200;
+		}
+	}
+		
+	
+
 
 	Entity::Update(platforms, elapsedSec);
 

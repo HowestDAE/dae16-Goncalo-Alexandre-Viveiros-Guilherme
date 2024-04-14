@@ -32,7 +32,7 @@ void Entity::Draw() const
 			glScalef(-m_ScaleX, m_ScaleY, m_ScaleZ);
 		}
 
-		// Draw the Yoshi player
+		// Draw the Entity player
 		m_EntityTxt->Draw(Rectf(-m_TxtWidth, 0, float(m_TxtWidth * 2), float(m_TxtHeight * 2)),
 			Rectf(m_XTxtPos, m_YTxtPos, m_TxtWidth, m_TxtHeight));
 	}
@@ -73,7 +73,7 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float el
 
 		//checks collision from the left side of Entitys feet
 		if (utils::Raycast(platforms[idx], Point2f{ m_Position.x + m_TxtWidth - 3,m_Position.y + m_TxtHeight * 2 },
-			Point2f{ m_Position.x + m_TxtWidth - 3, m_Position.y -2}, hit_info))
+			Point2f{ m_Position.x + m_TxtWidth - 3, m_Position.y - 5}, hit_info))
 		{
 			m_VelocityY = 0;
 			m_Position.y = hit_info.intersectPoint.y;
@@ -82,7 +82,7 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float el
 
 		//checks collision from the right side of Entitys feet
 		if (utils::Raycast(platforms[idx], Point2f{ m_Position.x + m_TxtWidth * 2 - 3,m_Position.y + m_TxtHeight * 2 },
-			Point2f{ m_Position.x + m_TxtWidth * 2 - 3, m_Position.y -2}, hit_info))
+			Point2f{ m_Position.x + m_TxtWidth * 2 - 3, m_Position.y -5}, hit_info))
 		{
 			m_VelocityY = 0;
 			m_Position.y = hit_info.intersectPoint.y;

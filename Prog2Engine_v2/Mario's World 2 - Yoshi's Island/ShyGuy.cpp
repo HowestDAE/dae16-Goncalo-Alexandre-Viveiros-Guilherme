@@ -12,7 +12,7 @@ ShyGuy::~ShyGuy()
 void ShyGuy::Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
 {
 
-		Entity::Update(platforms, elapsedSec);
+	Entity::Update(platforms, elapsedSec);
 	
 	
 

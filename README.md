@@ -117,6 +117,7 @@ Additional screenshots and demos work well in this space.
 * Z jump
 * X Tongue to eat
 * C Deletes Egg 
+* R Creates a shy guy from 100, 100
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

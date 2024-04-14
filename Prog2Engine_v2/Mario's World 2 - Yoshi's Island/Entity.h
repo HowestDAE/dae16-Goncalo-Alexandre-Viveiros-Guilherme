@@ -15,10 +15,8 @@ public:
 	bool GetIsFacingRight() const;
 	bool GetIsGrounded() const;
 
-private:
-	Texture* m_EntityTxt;
-
 protected:
+	Texture* m_EntityTxt;
 	Point2f m_Position;
 	float m_TxtHeight;
 	float m_TxtWidth;

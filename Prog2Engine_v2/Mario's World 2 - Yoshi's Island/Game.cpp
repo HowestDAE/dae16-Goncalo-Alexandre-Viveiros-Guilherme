@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "Level.h"
 #include "Mario.h"
+#include "ShyGuy.h"
 
 
 Game::Game( const Window& window ) 
@@ -29,7 +30,7 @@ void Game::Initialize( )
 	SVGParser::GetVerticesFromSvgFile("ex3.svg",m_LvlVertices);
 	m_GameCam = new Camera(Point2f(0, 0), m_YoshiPlyr->GetPosition());
 	m_ShyGuy1 = new ShyGuy(Point2f(550, 400));
-	m_Enemies = { m_ShyGuy1 };
+	m_Enemies = { m_ShyGuy1};
 }
 
 void Game::Cleanup()
@@ -42,6 +43,7 @@ void Game::Cleanup()
 
 void Game::Update( float elapsedSec )
 {
+
 	m_YoshiPlyr->Update(m_LvlVertices,elapsedSec);
 	m_YoshiPlyr->Animate(elapsedSec);
 	m_YoshiPlyr->HitCheck(m_Enemies);
@@ -49,14 +51,25 @@ void Game::Update( float elapsedSec )
 	m_Mario->Update(m_LvlVertices,elapsedSec);
 	m_Mario->Animate(elapsedSec);
 
-		if (m_Enemies[0] != nullptr)
-		{
-			m_ShyGuy1->Update(m_LvlVertices, elapsedSec);
-			m_ShyGuy1->Animate();
-		}
-	
 	
 
+		
+	for(int idx{0};idx < m_Enemies.size(); idx++)
+	{
+		if (m_Enemies[idx] != nullptr)
+		{
+		if (auto ShyGuys = dynamic_cast<ShyGuy*>(m_Enemies[idx]))
+		{
+			ShyGuys->Update(m_LvlVertices, elapsedSec);
+			ShyGuys->Animate();
+		}
+		}
+
+	}
+	
+		
+
+		
 	
 	// Check keyboard state
 	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
@@ -122,12 +135,20 @@ void Game::Draw( ) const
 
 		m_Mario->Draw();
 		m_YoshiPlyr->Draw();
-		m_YoshiPlyr->Debug();
 
-		if (m_Enemies[0] != nullptr)
+		
+		for (int idx{ 0 }; idx < m_Enemies.size(); idx++)
 		{
-			m_ShyGuy1->Draw();
+			if (m_Enemies[idx] != nullptr)
+			{
+			if (auto ShyGuys = dynamic_cast<ShyGuy*>(m_Enemies[idx]))
+			{
+				ShyGuys->Draw();
+			}
+			}
 		}
+
+	
 
 
 
@@ -138,7 +159,12 @@ void Game::Draw( ) const
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
 	m_YoshiPlyr->KeysDown(e);
-
+	switch (e.keysym.sym)
+	{
+	case SDLK_r:
+		m_Enemies.push_back(new ShyGuy(Point2f(m_YoshiPlyr->GetPosition().x + 100, m_YoshiPlyr->GetPosition().y + 100)));
+		break;
+	}
 }
 
 void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )

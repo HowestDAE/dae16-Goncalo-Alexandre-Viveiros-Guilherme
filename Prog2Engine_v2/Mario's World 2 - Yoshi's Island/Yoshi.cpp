@@ -28,6 +28,24 @@ void Yoshi::Draw() const
 
 	Entity::Draw();
 
+	if (m_IsTonguing == true)
+	{
+		
+		m_EntityTxt->Draw(m_TongueHitBox,Rectf(41, 962, 8, 3));
+
+		if (m_IsFacingRight == true)
+		{
+			m_EntityTxt->Draw(Rectf{ m_TongueHitBox.left + m_TongueHitBox.width,m_TongueHitBox.bottom,8,7 }, Rectf{ 32 ,964,8,7 });
+			
+
+		}
+		else
+		{
+			m_EntityTxt->Draw(Rectf{ m_TongueHitBox.left ,m_TongueHitBox.bottom,8,7 }, Rectf{ 32 ,964,8,7 });
+		}
+	}
+
+
 }
 
 void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
@@ -49,7 +67,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 		if (m_IsYoshiJumping == true)
 		{
 			m_Position.y += 20;
-			m_VelocityY = 700;
+			m_VelocityY = 900;
 		}
 	
 	}
@@ -89,7 +107,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 		}
 	}
 
-	else
+	else if (m_IsTonguing == false)
 	{
 		m_TongueHitBox = Rectf(-1000, 0, 0, 0);
 	}
@@ -500,6 +518,7 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 	case SDLK_c:
 
 		break;
+
 	}
 }
 
@@ -507,7 +526,6 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 void Yoshi::Debug()
 {
 
-	utils::DrawRect(m_TongueHitBox);
 	
 }
 
@@ -533,6 +551,7 @@ void Yoshi::HitCheck(std::vector<Enemy*>& Enemies)
 						{
 							Enemies[idx]->EnemyDeath();
 							Enemies[idx] = nullptr;
+							m_VelocityY *= -1;
 						}
 						else
 						{
@@ -551,12 +570,6 @@ void Yoshi::HitCheck(std::vector<Enemy*>& Enemies)
 						Enemies[idx]->EnemyDeath();
 						Enemies[idx] = nullptr;
 						m_IsMouthFull = true;
-						m_TongueHitBox = Rectf(-1000, 0, 0, 0);
-					}
-
-					else
-					{
-						m_TongueHitBox = Rectf(-1000, 0, 0, 0);
 					}
 				}
 			}
