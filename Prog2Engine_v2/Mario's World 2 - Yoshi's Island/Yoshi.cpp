@@ -50,8 +50,117 @@ void Yoshi::Draw() const
 
 void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
 {
-	Entity::Update(platforms, elapsedSec);
+	//Update Hitbox
 
+	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
+
+	//collision and gravity
+	m_Position.y += m_VelocityY * elapsedSec;
+
+	utils::HitInfo hit_info;
+
+	//Collisions
+
+	for (int idx{ 0 }; idx < platforms.size(); idx++)
+	{
+		//floor collision
+
+	//checks collision from the left side of Entity
+		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left,m_Hitbox.bottom + m_TxtHeight * 2 },
+			Point2f{ m_Hitbox.left,m_Hitbox.bottom - 1 }, hit_info))
+		{
+			m_VelocityY = 0;
+			m_Position.y = hit_info.intersectPoint.y;
+			m_IsGrounded = true;
+		}
+
+		//checks collision from the right side of Entity
+		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom + m_TxtHeight * 2 },
+			Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom - 1 }, hit_info))
+		{
+			m_VelocityY = 0;
+			m_Position.y = hit_info.intersectPoint.y;
+			m_IsGrounded = true;
+		}
+
+		//Gravity
+		else
+		{
+			m_IsGrounded = false;
+
+			if (m_VelocityY != -3800)
+			{
+				m_VelocityY -= 3800 * elapsedSec;
+
+				if (m_VelocityY < -3800)
+				{
+					m_VelocityY = -3420;
+				}
+			}
+
+
+
+		}
+
+		//Wall Collision
+
+	//left side collision
+		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
+			Point2f{ m_Hitbox.left - 2,m_Hitbox.bottom + m_TxtHeight }, hit_info))
+		{
+			m_Position.x = hit_info.intersectPoint.x + 1; //Teleports entity to the point of intersection with a small offset
+		}
+
+		//right side collision
+		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
+			Point2f{ m_Hitbox.left + m_TxtWidth * 2 + 2,m_Hitbox.bottom + m_TxtHeight }, hit_info))
+		{
+			m_Position.x = hit_info.intersectPoint.x - m_TxtWidth * 2 + 1;
+		}
+
+
+
+
+	}
+
+	//Adds Entity's horizontal speed to his position
+	m_Position.x += m_VelocityX * elapsedSec;
+
+
+
+	//simulates ground friction 
+	if (m_IsGrounded == true)
+	{
+		m_VelocityX -= (m_VelocityX * 3.3) * elapsedSec;
+	}
+
+	//simulates air friction
+	else
+	{
+		m_VelocityX -= (m_VelocityX)*elapsedSec;
+	}
+
+	//Stops movement once it falls below a certain range
+	if (m_VelocityX < 20 && m_VelocityX > 0 || m_VelocityX > -20 && m_VelocityX < 0)
+	{
+		m_VelocityX = 0;
+	}
+
+
+	//Check if Entity is facing right
+	if (m_VelocityX < 0)
+	{
+		m_IsFacingRight = false;
+	}
+
+	else if (m_VelocityX > 0)
+	{
+		m_IsFacingRight = true;
+	}
+
+
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////
 	for (int idx = 0; idx < m_Eggs.size(); idx++)
 	{
 		m_Eggs[idx]->Update(m_Position,m_Eggs.size(),platforms,elapsedSec);
@@ -83,7 +192,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 				if (m_FlightTime < 1)
 				{
 					currentState = AnimState::Hovering;
-					m_VelocityY = 30;
+					m_VelocityY = 30 ;
 				}
 
 			}
@@ -112,6 +221,39 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 		m_TongueHitBox = Rectf(-1000, 0, 0, 0);
 	}
 
+	if (m_IsMarioOn == false)
+	{
+		m_Countdown += elapsedSec;
+
+		if (m_MarioTimer != 0)
+		{
+			if (m_Countdown >= 1)
+			{
+				m_MarioTimer -= 1;
+				m_Countdown = 0;
+			}
+		}
+		
+	}
+
+	if (m_IsMarioOn == true)
+	{
+		m_Countdown += elapsedSec;
+
+		if (m_MarioTimer != 10)
+		{
+			if (m_Countdown >= 1)
+			{
+				m_MarioTimer -= 1;
+				m_Countdown = 0;
+			}
+		}
+		
+	}
+
+	//Update Hitbox
+
+	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
 }
 
 
@@ -526,7 +668,7 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 void Yoshi::Debug()
 {
 
-	
+	std::cout << m_MarioTimer << "\n";
 }
 
 bool Yoshi::GetIsMarioOn() const
@@ -579,4 +721,3 @@ void Yoshi::HitCheck(std::vector<Enemy*>& Enemies)
 	
 	
 }
-

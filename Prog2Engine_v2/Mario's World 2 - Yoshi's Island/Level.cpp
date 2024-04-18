@@ -12,6 +12,8 @@ Level::~Level()
 {
 	delete m_BgTexture;
 	delete m_LvlTexture;
+	//delete m_BgTexture2;
+	delete m_BgTexture3;
 }
 
 void Level::DrawLvl() const  

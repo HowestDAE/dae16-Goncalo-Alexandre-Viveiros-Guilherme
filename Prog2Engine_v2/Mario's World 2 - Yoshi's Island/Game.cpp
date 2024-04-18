@@ -43,6 +43,7 @@ void Game::Cleanup()
 
 void Game::Update( float elapsedSec )
 {
+	//std::cout << 1 / elapsedSec << "\n";
 
 	m_YoshiPlyr->Update(m_LvlVertices,elapsedSec);
 	m_YoshiPlyr->Animate(elapsedSec);
@@ -50,7 +51,7 @@ void Game::Update( float elapsedSec )
 	m_GameCam->Pan(m_YoshiPlyr->GetPosition(), m_YoshiPlyr->GetIsGrounded(),m_YoshiPlyr->GetIsFacingRight());
 	m_Mario->Update(m_LvlVertices,elapsedSec);
 	m_Mario->Animate(elapsedSec);
-
+	m_YoshiPlyr->Debug();
 	
 
 		

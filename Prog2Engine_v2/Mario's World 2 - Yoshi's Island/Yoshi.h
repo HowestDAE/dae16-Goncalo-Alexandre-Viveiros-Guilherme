@@ -19,6 +19,7 @@ public:
 	void Debug();
 	bool GetIsMarioOn() const;
 	void HitCheck(std::vector<Enemy*>&);
+	
 
 private:
 	bool m_IsTonguing;
@@ -28,6 +29,7 @@ private:
 	int m_MarioTimer ;
 	float m_FrameTime{0};
 	float m_FlightTime{ 0 };
+	float m_Countdown{ 0 };
 	Rectf m_TongueHitBox {-1000,0,0,0};
 	bool m_IsMouthFull{false};
 	std::vector <Egg*> m_Eggs;

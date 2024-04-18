@@ -38,51 +38,45 @@ void Entity::Draw() const
 	}
 	glPopMatrix();
 
-	/*
+	
 	//debugs floor collision
 	utils::SetColor(Color4f{ 1,0,0,1 });
-	utils::DrawLine(Point2f{ m_Position.x + m_TxtWidth - 3,m_Position.y + m_TxtHeight * 2 },
-		Point2f{ m_Position.x + m_TxtWidth - 3, m_Position.y });
-
-	utils::DrawLine(Point2f{ m_Position.x + m_TxtWidth * 2 - 3,m_Position.y + m_TxtHeight * 2 },
-		Point2f{ m_Position.x + m_TxtWidth * 2 - 3, m_Position.y });
-
-	//debugs wall code
-	utils::SetColor(Color4f{ 0,1,0,1 });
-
-	utils::DrawLine(Point2f{ m_Position.x + m_TxtWidth + 20,m_Position.y + m_TxtHeight },
-		Point2f{m_Position.x + m_TxtWidth / 1.5f, m_Position.y + m_TxtHeight});
-
-	utils::DrawLine(Point2f{ m_Position.x + m_TxtWidth + 10,m_Position.y + m_TxtHeight },
-		Point2f{ m_Position.x + m_TxtWidth * 2,m_Position.y + m_TxtHeight });
-		*/
-
+	//left side
+	utils::DrawLine(Point2f{ m_Hitbox.left,m_Hitbox.bottom + m_TxtHeight },
+		Point2f{ m_Hitbox.left,m_Hitbox.bottom - 1 });
+	utils::DrawLine(Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom + m_TxtHeight },
+		Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom - 1 });
 }
 
 void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float elapsedSec)
 {
+	//Update Hitbox
+
+	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
+
 	//collision and gravity
 	m_Position.y += m_VelocityY * elapsedSec;
 
 	utils::HitInfo hit_info;
 
 	//Collisions
+
 	for (int idx{ 0 }; idx < platforms.size(); idx++)
 	{
 		//floor collision
 
-		//checks collision from the left side of Entitys feet
-		if (utils::Raycast(platforms[idx], Point2f{ m_Position.x + m_TxtWidth - 3,m_Position.y + m_TxtHeight * 2 },
-			Point2f{ m_Position.x + m_TxtWidth - 3, m_Position.y - 5}, hit_info))
+	//checks collision from the left side of Entity
+		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left,m_Hitbox.bottom + m_TxtHeight*2 },
+			Point2f{ m_Hitbox.left,m_Hitbox.bottom - 1 }, hit_info))
 		{
 			m_VelocityY = 0;
 			m_Position.y = hit_info.intersectPoint.y;
 			m_IsGrounded = true;
 		}
 
-		//checks collision from the right side of Entitys feet
-		if (utils::Raycast(platforms[idx], Point2f{ m_Position.x + m_TxtWidth * 2 - 3,m_Position.y + m_TxtHeight * 2 },
-			Point2f{ m_Position.x + m_TxtWidth * 2 - 3, m_Position.y -5}, hit_info))
+		//checks collision from the right side of Entity
+		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom + m_TxtHeight*2 },
+			Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom - 1}, hit_info))
 		{
 			m_VelocityY = 0;
 			m_Position.y = hit_info.intersectPoint.y;
@@ -94,13 +88,13 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float el
 		{
 			m_IsGrounded = false;
 
-			if (m_VelocityY != -380)
+			if (m_VelocityY != -3800)
 			{
-				m_VelocityY -= 38;
+				m_VelocityY -= 3800 * elapsedSec;
 
-				if (m_VelocityY < -380)
+				if (m_VelocityY < -3800)
 				{
-					m_VelocityY = -342;
+					m_VelocityY = -3420;
 				}
 			}
 			
@@ -110,21 +104,22 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float el
 
 		//Wall Collision
 
-		//left side collision
-		if (utils::Raycast(platforms[idx], Point2f{ m_Position.x + m_TxtWidth + 20,m_Position.y + m_TxtHeight },
-			Point2f{ m_Position.x + m_TxtWidth / 1.5f, m_Position.y + m_TxtHeight }, hit_info))
+	//left side collision
+		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
+			Point2f{ m_Hitbox.left - 2,m_Hitbox.bottom + m_TxtHeight }, hit_info))
 		{
-			m_VelocityX = -0.3;
-			m_Position.x = hit_info.intersectPoint.x - m_TxtWidth + (m_TxtWidth/2.1); //Teleports entity to the point of intersection with a small offset
+			m_Position.x = hit_info.intersectPoint.x + 1; //Teleports entity to the point of intersection with a small offset
 		}
 
 		//right side collision
-		if (utils::Raycast(platforms[idx], Point2f{ m_Position.x + m_TxtWidth + 10,m_Position.y + m_TxtHeight },
-			Point2f{ m_Position.x + m_TxtWidth * 2,m_Position.y + m_TxtHeight }, hit_info))
+		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
+			Point2f{ m_Hitbox.left + m_TxtWidth * 2 + 2,m_Hitbox.bottom + m_TxtHeight }, hit_info))
 		{
-			m_VelocityX = 0.3;
-			m_Position.x = hit_info.intersectPoint.x - m_TxtWidth * 2 - (m_TxtWidth / 9);
+			m_Position.x = hit_info.intersectPoint.x - m_TxtWidth * 2+ 2;
 		}
+
+
+
 
 	}
 
@@ -164,10 +159,10 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float el
 	}
 
 
-
 	//Update Hitbox
 
 	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
+
 }
 
 Rectf Entity::GetHitBox() const
