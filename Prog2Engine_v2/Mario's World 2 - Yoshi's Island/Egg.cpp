@@ -11,6 +11,7 @@ Egg::~Egg()
 
 void Egg::Update(Point2f YoshiPos,int NumOfEggs, const std::vector< std::vector<Point2f>>& platforms, float elapsedSec)
 {
+	m_FrameTime += elapsedSec;
 
 	if (m_Position.x > YoshiPos.x + m_TxtWidth * 6)
 	{
@@ -21,23 +22,18 @@ void Egg::Update(Point2f YoshiPos,int NumOfEggs, const std::vector< std::vector<
 	{
 		m_VelocityX += 1 *( YoshiPos.x - (m_Position.x - m_TxtWidth * 3));
 	}
-	
 
-	if (m_Position.y != YoshiPos.y)
+
+	if (m_FrameTime > 0.2)
 	{
-		if (m_Position.y > YoshiPos.y)
-		{
-			m_VelocityY -= 1 * (m_Position.y - YoshiPos.y);
-		}
-
-		if (m_Position.y < YoshiPos.y - 64)
-		{
-			m_VelocityY += 200;
-		}
+		m_FrameTime = 0;
 	}
-		
-	
 
+
+	if (int(m_Position.y) < int(YoshiPos.y))
+	{
+		m_VelocityY += 500.f;
+	}
 
 	Entity::Update(platforms, elapsedSec);
 
@@ -64,4 +60,15 @@ void Egg::Animate(float elapsedSec)
 	{
 		m_XTxtPos = 17;
 	}
+}
+
+bool Egg::HoldEgg(Point2f YoshiPos, bool YoshiDirection)
+{
+	m_Position.x = YoshiPos.x;
+	m_Position.y = YoshiPos.y;
+}
+
+void Egg::ThrowEgg(bool isHoldingEgg)
+{
+
 }

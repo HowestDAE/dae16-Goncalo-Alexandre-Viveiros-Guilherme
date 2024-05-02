@@ -39,6 +39,13 @@ void Game::Cleanup()
 	delete m_YoshiPlyr;
 	delete m_GameCam;
 	delete m_Mario;
+	for (int idx{ 0 }; idx < m_Enemies.size(); idx++)
+	{
+		if (m_Enemies[idx] != nullptr)
+		{
+			delete m_Enemies[idx];
+		}
+	}
 }
 
 void Game::Update( float elapsedSec )

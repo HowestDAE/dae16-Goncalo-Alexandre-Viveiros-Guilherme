@@ -30,9 +30,11 @@ private:
 	float m_FrameTime{0};
 	float m_FlightTime{ 0 };
 	float m_Countdown{ 0 };
-	Rectf m_TongueHitBox {-1000,0,0,0};
+	Circlef m_Tongue;
 	bool m_IsMouthFull{false};
 	std::vector <Egg*> m_Eggs;
+	Point2f m_FeetPos;
+	bool m_IsJumpDone{ false };
 
 	enum class AnimState {
 		Idle,

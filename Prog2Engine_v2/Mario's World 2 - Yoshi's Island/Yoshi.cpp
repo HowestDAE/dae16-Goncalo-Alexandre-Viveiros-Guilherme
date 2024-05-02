@@ -9,14 +9,18 @@
 Yoshi::Yoshi(Point2f startPos):
 Entity("Yoshi_SpriteSheet.png",32,30,startPos),
 	m_IsMarioOn{ true },
-	m_MarioTimer{ 10 }
+	m_MarioTimer{ 10 },
+	m_Tongue{startPos,8}
 {
 	
 }
 
 Yoshi::~Yoshi()
 {
-
+	for (int idx = 0; idx < m_Eggs.size(); idx++)
+	{
+		delete m_Eggs[idx];
+	}
 }
 
 void Yoshi::Draw() const
@@ -28,34 +32,68 @@ void Yoshi::Draw() const
 
 	Entity::Draw();
 
+#pragma region Debug
+	//utils::SetColor(Color4f{ 1,0,0,1 });
+	//////left side
+	//utils::DrawLine(Point2f{ m_FeetPos.x - 13,m_FeetPos.y +32 },
+	//	Point2f{ m_FeetPos.x - 13,m_FeetPos.y });			 
+	//utils::DrawLine(Point2f{ m_FeetPos.x + 13,m_FeetPos.y +32 },
+	//	Point2f{ m_FeetPos.x + 13,m_FeetPos.y });
+
+	//utils::SetColor(Color4f{ 0,1,0,1 });
+	//if (m_IsFacingRight == true)
+	//{
+	//	utils::DrawLine(Point2f{ m_FeetPos.x,m_Position.y + 32 },
+	//		Point2f{ m_FeetPos.x + 15,m_Position.y + 32 });
+	///*	utils::DrawLine(Point2f{ m_FeetPos.x,m_Position.y + 32 },
+	//		Point2f{ m_FeetPos.x - 15,m_Position.y + 32 });*/
+	//	
+	//}
+	//else
+	//{
+	//	utils::DrawLine(Point2f{ m_FeetPos.x,m_Position.y + 32},
+	//		Point2f{ m_FeetPos.x + 15,m_Position.y + 32 });
+	//	utils::DrawLine(Point2f{ m_FeetPos.x,m_Position.y + 32 },
+	//		Point2f{ m_FeetPos.x - 15,m_Position.y + 32 });
+	//}
+#pragma endregion
+
+
 	if (m_IsTonguing == true)
 	{
-		
-		m_EntityTxt->Draw(m_TongueHitBox,Rectf(41, 962, 8, 3));
-
 		if (m_IsFacingRight == true)
 		{
-			m_EntityTxt->Draw(Rectf{ m_TongueHitBox.left + m_TongueHitBox.width,m_TongueHitBox.bottom,8,7 }, Rectf{ 32 ,964,8,7 });
-			
-
+			m_EntityTxt->Draw(Rectf(m_Position.x + m_TxtWidth * 2, m_Position.y + m_TxtHeight, 250 * m_FrameTime, 5), Rectf(41, 962, 8, 3));
+			m_EntityTxt->Draw(Rectf{ m_Tongue.center.x,m_Tongue.center.y,8,7 }, Rectf{ 32 ,964,8,7 });
 		}
 		else
 		{
-			m_EntityTxt->Draw(Rectf{ m_TongueHitBox.left ,m_TongueHitBox.bottom,8,7 }, Rectf{ 32 ,964,8,7 });
+			m_EntityTxt->Draw(Rectf(m_Tongue.center.x, m_Position.y + m_TxtHeight, 250*m_FrameTime, 5), Rectf(41, 962, 8, 3));
+			m_EntityTxt->Draw(Rectf{ m_Tongue.center.x,m_Tongue.center.y,8,7 }, Rectf{ 32 ,964,8,7 });
 		}
 	}
-
+	
 
 }
 
 void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
 {
+	//updates Yoshis Feet position
+	if (m_IsFacingRight == true)
+	{
+		m_FeetPos = Point2f{ m_Position.x + 19, m_Position.y - 3};
+	}
+	else
+	{
+		m_FeetPos = Point2f{ m_Position.x + 39,m_Position.y-3};
+	}
+	
 	//Update Hitbox
-
 	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
 
-	//collision and gravity
-	m_Position.y += m_VelocityY * elapsedSec;
+
+
+#pragma region Collision
 
 	utils::HitInfo hit_info;
 
@@ -65,18 +103,28 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 	{
 		//floor collision
 
-	//checks collision from the left side of Entity
-		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left,m_Hitbox.bottom + m_TxtHeight * 2 },
-			Point2f{ m_Hitbox.left,m_Hitbox.bottom - 1 }, hit_info))
+	//checks collision from the left side of Yoshis feet
+
+		if (utils::Raycast(platforms[idx], Point2f{m_FeetPos.x - 13,m_FeetPos.y + 32},
+			Point2f{ m_FeetPos.x - 13,m_FeetPos.y}, hit_info))
 		{
 			m_VelocityY = 0;
 			m_Position.y = hit_info.intersectPoint.y;
 			m_IsGrounded = true;
 		}
 
-		//checks collision from the right side of Entity
-		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom + m_TxtHeight * 2 },
-			Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom - 1 }, hit_info))
+    //checks collision from the right side of Yoshis feet
+		if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 13,m_FeetPos.y + 32},
+			Point2f{ m_FeetPos.x + 13,m_FeetPos.y }, hit_info))
+		{
+			m_VelocityY = 0;
+			m_Position.y = hit_info.intersectPoint.y;
+			m_IsGrounded = true;
+		}
+
+		//checks collision from the middle of Yoshis feet
+		if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x ,m_FeetPos.y + 32 },
+			Point2f{ m_FeetPos.x ,m_FeetPos.y }, hit_info))
 		{
 			m_VelocityY = 0;
 			m_Position.y = hit_info.intersectPoint.y;
@@ -88,13 +136,13 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 		{
 			m_IsGrounded = false;
 
-			if (m_VelocityY != -3800)
+			if (m_VelocityY != -480.f)
 			{
-				m_VelocityY -= 3800 * elapsedSec;
+				m_VelocityY -= 48.f ;
 
-				if (m_VelocityY < -3800)
+				if (m_VelocityY < -480.f)
 				{
-					m_VelocityY = -3420;
+					m_VelocityY -= -50.f;
 				}
 			}
 
@@ -104,29 +152,53 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 
 		//Wall Collision
 
-	//left side collision
-		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
-			Point2f{ m_Hitbox.left - 2,m_Hitbox.bottom + m_TxtHeight }, hit_info))
+		if (m_IsFacingRight == true)
 		{
-			m_Position.x = hit_info.intersectPoint.x + 1; //Teleports entity to the point of intersection with a small offset
+			//left side
+			if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 6,m_Position.y + 32 },
+				Point2f{ m_FeetPos.x - 15,m_Position.y + 32 }, hit_info))
+			{
+				m_Position.x = hit_info.intersectPoint.x; //Teleports entity to the point of intersection with a small offset
+			}
+
+			//right side
+			if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 6,m_Position.y + 32 },
+				Point2f{ m_FeetPos.x + 15,m_Position.y + 32 }, hit_info))
+			{
+				m_Position.x = hit_info.intersectPoint.x - 40; //Teleports entity to the point of intersection with a small offset
+			}
+
 		}
 
-		//right side collision
-		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
-			Point2f{ m_Hitbox.left + m_TxtWidth * 2 + 2,m_Hitbox.bottom + m_TxtHeight }, hit_info))
+		else
 		{
-			m_Position.x = hit_info.intersectPoint.x - m_TxtWidth * 2 + 1;
+			//right side
+			if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x -6,m_Position.y + 32 },
+				Point2f{ m_FeetPos.x + 15,m_Position.y + 32 }, hit_info))
+			{
+				m_Position.x = hit_info.intersectPoint.x - 60; //Teleports entity to the point of intersection with a small offset
+			}
+
+			//left side
+			if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x - 6,m_Position.y + 32 },
+				Point2f{ m_FeetPos.x - 15,m_Position.y + 32 }, hit_info))
+			{
+				m_Position.x = hit_info.intersectPoint.x - 19; //Teleports entity to the point of intersection with a small offset
+			}
+
+
 		}
-
-
 
 
 	}
+
+#pragma endregion
 
 	//Adds Entity's horizontal speed to his position
 	m_Position.x += m_VelocityX * elapsedSec;
 
 
+#pragma region Friction and orientation
 
 	//simulates ground friction 
 	if (m_IsGrounded == true)
@@ -137,7 +209,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 	//simulates air friction
 	else
 	{
-		m_VelocityX -= (m_VelocityX)*elapsedSec;
+		m_VelocityX -= (m_VelocityX/ 5) * elapsedSec;
 	}
 
 	//Stops movement once it falls below a certain range
@@ -158,7 +230,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 		m_IsFacingRight = true;
 	}
 
-
+#pragma endregion
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	for (int idx = 0; idx < m_Eggs.size(); idx++)
@@ -166,61 +238,104 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 		m_Eggs[idx]->Update(m_Position,m_Eggs.size(),platforms,elapsedSec);
 	}
 
-	float topHeight;
-	float startHeight{m_Position.y};
+#pragma region Jump
 
-	if (m_IsGrounded == true)
+	if (m_IsYoshiJumping == true)
 	{
-		m_FlightTime = 0;
-		
-		if (m_IsYoshiJumping == true)
+		if (m_VelocityY < 200)
 		{
-			m_Position.y += 20;
-			m_VelocityY = 900;
+			m_IsJumpDone = true;
 		}
-	
-	}
 
-	else 
-	{
-		if (m_IsYoshiJumping == true)
+		if (m_IsGrounded == true)
 		{
-			if (m_VelocityY < 0)
-			{
-				topHeight = m_Position.y;
-				m_FlightTime += elapsedSec;
-				if (m_FlightTime < 1)
-				{
-					currentState = AnimState::Hovering;
-					m_VelocityY = 30 ;
-				}
+			m_FlightTime = 0;
 
-			}
+			m_Position.y += 20;
+
+			m_VelocityY += 1400.f;
 
 			
 		}
 
+		else
+		{
+			if (m_IsJumpDone == true)
+			{
+				if (m_VelocityY < 0)
+				{
+					m_FlightTime += elapsedSec;
+
+					if (m_FlightTime < 0.8)
+					{
+						currentState = AnimState::Hovering;
+						m_VelocityY = 30.f;
+
+						if (m_FlightTime > 0.75)
+						{
+							m_VelocityY = 200.f;
+						}
+					}
+				}
+				
+			}
+		}
+		
 	}
 
+	else
+	{
+		if (m_VelocityY < 0)
+		{
 
+			if (m_IsYoshiJumping == true)
+			{
+				m_FlightTime += elapsedSec;
+
+				if (m_FlightTime < 0.8)
+				{
+					currentState = AnimState::Hovering;
+					m_VelocityY = 30.f;
+
+					if (m_FlightTime > 0.75)
+					{
+						m_VelocityY = 200.f;
+					}
+				}
+
+
+
+			}
+		}
+
+	}
+
+#pragma endregion
+
+#pragma region Tongue
 	if (m_IsTonguing == true)
 	{
+		m_Tongue.center.y = m_Position.y + m_TxtHeight;
+
 		if (m_IsFacingRight == true)
 		{
-			m_TongueHitBox = Rectf(m_Position.x + m_TxtWidth * 2, m_Position.y + m_TxtHeight, 100, 5);
+			m_Tongue.center.x = (m_Position.x + m_TxtWidth*2) + 250 * m_FrameTime;
 		}
 
 		else
 		{
-			m_TongueHitBox = Rectf(m_Position.x - 100, m_Position.y + m_TxtHeight, 100, 5);
+			m_Tongue.center.x = m_Position.x - 250 * m_FrameTime;
 		}
 	}
 
 	else if (m_IsTonguing == false)
 	{
-		m_TongueHitBox = Rectf(-1000, 0, 0, 0);
+		m_Tongue.center.x = m_Position.x;
+		m_Tongue.center.y = m_Position.y + m_TxtHeight;
 	}
+#pragma endregion
 
+#pragma region MarioOn
 	if (m_IsMarioOn == false)
 	{
 		m_Countdown += elapsedSec;
@@ -250,7 +365,21 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 		}
 		
 	}
+#pragma endregion
 
+
+	//updates Yoshis Feet position
+	if (m_IsFacingRight == true)
+	{
+		m_FeetPos = Point2f{ m_Position.x + 19, m_Position.y - 3 };
+	}
+	else
+	{
+		m_FeetPos = Point2f{ m_Position.x + 39,m_Position.y - 3 };
+	}
+
+	//collision and gravity
+	m_Position.y += m_VelocityY * elapsedSec;
 	//Update Hitbox
 
 	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
@@ -319,7 +448,7 @@ void Yoshi::Animate(float elapsedSec)
 
 		m_TxtWidth = 27;
 		m_TxtHeight = 32;
-		m_YTxtPos = 483;
+		m_YTxtPos = 482;
 		m_FrameTime += elapsedSec;
 
 
@@ -585,14 +714,14 @@ void Yoshi::KeysDown(const SDL_KeyboardEvent& e)
 	case SDLK_LEFT:
 		if (m_VelocityX > -310)
 		{
-			m_VelocityX -= 33;
+			m_VelocityX -= 67;
 		}
 
 		break;
 	case SDLK_RIGHT:
 		if (m_VelocityX < 310)
 		{
-			m_VelocityX += 33;
+			m_VelocityX += 67;
 		}
 		break;
 	case SDLK_z:
@@ -707,11 +836,12 @@ void Yoshi::HitCheck(std::vector<Enemy*>& Enemies)
 			{
 				if (Enemies[idx]->GetIsEdible() == true)
 				{
-					if (utils::IsOverlapping(m_TongueHitBox, Enemies[idx]->GetHitBox()) == true)
+					if (utils::IsOverlapping(Enemies[idx]->GetHitBox(),m_Tongue) == true)
 					{
 						Enemies[idx]->EnemyDeath();
 						Enemies[idx] = nullptr;
 						m_IsMouthFull = true;
+						m_IsTonguing = false;
 					}
 				}
 			}

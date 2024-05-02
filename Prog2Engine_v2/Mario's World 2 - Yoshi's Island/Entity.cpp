@@ -14,6 +14,8 @@ Entity::Entity(const std::string& TexturePath,float txtHeight, float txtWidth,Po
 
 Entity::~Entity()
 {
+	delete m_EntityTxt;
+	m_EntityTxt = nullptr;
 }
 
 void Entity::Draw() const
@@ -40,12 +42,12 @@ void Entity::Draw() const
 
 	
 	//debugs floor collision
-	utils::SetColor(Color4f{ 1,0,0,1 });
-	//left side
-	utils::DrawLine(Point2f{ m_Hitbox.left,m_Hitbox.bottom + m_TxtHeight },
-		Point2f{ m_Hitbox.left,m_Hitbox.bottom - 1 });
-	utils::DrawLine(Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom + m_TxtHeight },
-		Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom - 1 });
+	//utils::SetColor(Color4f{ 1,0,0,1 });
+	////left side
+	//utils::DrawLine(Point2f{ m_Hitbox.left,m_Hitbox.bottom + m_TxtHeight },
+	//	Point2f{ m_Hitbox.left,m_Hitbox.bottom - 1 });
+	//utils::DrawLine(Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom + m_TxtHeight },
+	//	Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom - 1 });
 }
 
 void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float elapsedSec)
@@ -53,9 +55,6 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float el
 	//Update Hitbox
 
 	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
-
-	//collision and gravity
-	m_Position.y += m_VelocityY * elapsedSec;
 
 	utils::HitInfo hit_info;
 
@@ -88,16 +87,15 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float el
 		{
 			m_IsGrounded = false;
 
-			if (m_VelocityY != -3800)
+			if (m_VelocityY != -480.f)
 			{
-				m_VelocityY -= 3800 * elapsedSec;
+				m_VelocityY -= 48.f;
 
-				if (m_VelocityY < -3800)
+				if (m_VelocityY < -480.f)
 				{
-					m_VelocityY = -3420;
+					m_VelocityY -= -50.f;
 				}
 			}
-			
 
 
 		}
@@ -134,11 +132,6 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float el
 		m_VelocityX -= (m_VelocityX * 3.3) * elapsedSec;
 	}
 
-	//simulates air friction
-	else
-	{
-		m_VelocityX -= (m_VelocityX) * elapsedSec;
-	}
 
 	//Stops movement once it falls below a certain range
 	if (m_VelocityX < 20 && m_VelocityX > 0 || m_VelocityX > -20 && m_VelocityX < 0)
@@ -157,6 +150,10 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float el
 	{
 		m_IsFacingRight = true;
 	}
+
+
+	//collision and gravity
+	m_Position.y += m_VelocityY * elapsedSec;
 
 
 	//Update Hitbox
