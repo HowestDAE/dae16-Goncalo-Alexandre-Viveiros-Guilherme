@@ -76,7 +76,7 @@ void Yoshi::Draw() const
 
 }
 
-void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
+void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const float elapsedSec)
 {
 	//updates Yoshis Feet position
 	if (m_IsFacingRight == true)
@@ -409,7 +409,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 }
 
 
-void Yoshi::Animate(float elapsedSec)
+void Yoshi::Animate(const float elapsedSec)
 {
 
 	////////////////////////////////////
@@ -437,7 +437,7 @@ void Yoshi::Animate(float elapsedSec)
 		m_CurrentState = AnimState::Tongue;
 	}
 
-	if (m_IsMouthFull)
+	if (m_IsMouthFull == true)
 	{
 		if (m_VelocityX == 0)
 		{
@@ -454,6 +454,26 @@ void Yoshi::Animate(float elapsedSec)
 		{
 			m_CurrentState = AnimState::FullSprinting;
 		}
+	}
+
+	if (m_IsHoldingEgg == true)
+	{
+		if (m_VelocityX == 0)
+		{
+			m_CurrentState = AnimState::AimIdle;
+
+		}
+
+		if (m_VelocityX > 0 && m_VelocityX < 260 || m_VelocityX < 0 && m_VelocityX > -260)
+		{
+			m_CurrentState = AnimState::AimWalking;
+		}
+
+	}
+
+	if (m_IsLayingEgg == true)
+	{
+		m_CurrentState = AnimState::LayingEgg;
 	}
 
 	////////////////////////////////////
@@ -722,9 +742,50 @@ void Yoshi::Animate(float elapsedSec)
 		m_LastState = AnimState::Sprinting;
 	}
 
+	if (m_CurrentState == AnimState::LayingEgg)
+	{
+		if (m_LastState != m_CurrentState)
+		{
+			m_XTxtPos = 2;
+		}
+
+		m_TxtWidth = 29;
+		m_TxtHeight = 35;
+		m_YTxtPos = 1061;
+		m_FrameTime += elapsedSec;
+
+		if (m_FrameTime > 0.1)
+		{
+			m_XTxtPos += m_TxtWidth;
+			m_FrameTime = 0;
+		}
+
+		if (m_XTxtPos > 29 * 7 + 2)
+		{
+			m_CurrentState = AnimState::Idle;
+
+			m_IsLayingEgg = false;
+		}
+
+		m_LastState = m_CurrentState;
+	}
+
+
 	for (int idx = 0; idx < m_Eggs.size(); idx++)
 	{
-		m_Eggs[idx]->Animate(elapsedSec);
+		if (m_IsHoldingEgg == true)
+		{
+			if (m_Eggs[idx] != m_Eggs.back())
+			{
+				m_Eggs[idx]->Animate(elapsedSec);
+			}
+		}
+
+		else
+		{
+			m_Eggs[idx]->Animate(elapsedSec);
+		}
+		
 	}
 }
 
@@ -758,6 +819,8 @@ void Yoshi::KeysDown()
 			m_Eggs.push_back(new Egg(m_Position));
 
 			m_IsMouthFull = false;
+
+			m_IsLayingEgg = true;
 		}
 
 		m_IsCrouching = true;
@@ -834,7 +897,7 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 }
 
 
-void Yoshi::Debug()
+void Yoshi::Debug() const
 {
 
 	std::cout << m_MarioTimer << "\n";

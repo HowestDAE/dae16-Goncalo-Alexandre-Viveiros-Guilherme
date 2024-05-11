@@ -2,7 +2,7 @@
 #include "Enemy.h"
 
 
-Enemy::Enemy(bool isEdible, bool isSquashable, const std::string& TexturePath, float txtHeight, float txtWidth, Point2f position):
+Enemy::Enemy(const bool isEdible, const bool isSquashable, const std::string& TexturePath, const float txtHeight, const float txtWidth, const Point2f position):
 Entity(TexturePath, txtHeight, txtWidth, position),
 m_IsEdible(isEdible),
 m_IsSquashable(isSquashable)
@@ -14,7 +14,7 @@ Enemy::~Enemy()
 {
 }
 
-bool Enemy::GetIsEdible()
+bool Enemy::GetIsEdible() const
 {
 	return m_IsEdible;
 }

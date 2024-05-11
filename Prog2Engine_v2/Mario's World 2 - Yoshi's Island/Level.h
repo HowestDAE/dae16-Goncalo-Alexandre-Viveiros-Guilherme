@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 class Texture;
 class Level
@@ -8,6 +9,7 @@ public:
 	~Level();
 	void DrawLvl() const;
 	void DrawBackground() const;
+	std::vector<std::vector<Point2f>> GetLevelVertices();
 private:
 	float m_BgFrameStart{8};
 	float m_BgFrameWidht{512};
@@ -16,5 +18,6 @@ private:
 	Texture* m_BgTexture;
 	Texture* m_BgTexture2;
 	Texture* m_BgTexture3;
+	std::vector< std::vector<Point2f>> m_LvlVertices{};
 };
 

@@ -4,7 +4,6 @@
 #include "Texture.h"
 #include "Yoshi.h"
 #include "utils.h"
-#include "SVGParser.h"
 #include "Camera.h"
 #include "Level.h"
 #include "Mario.h"
@@ -27,13 +26,12 @@ void Game::Initialize( )
 	m_Level01 = new Level ("1-1 Make Eggs Throw Eggs no coins.png","ChocolateMountainsWIP.png","Gradient_BG.png");
 	m_YoshiPlyr = new Yoshi(Point2f(130,400));
 	m_Mario = new Mario(m_YoshiPlyr);
-	SVGParser::GetVerticesFromSvgFile("ex3.svg",m_LvlVertices);
 	m_GameCam = new Camera(Point2f(0, 0), m_YoshiPlyr->GetPosition());
 	m_ShyGuy1 = new ShyGuy(Point2f(550, 400));
 	m_Enemies = { m_ShyGuy1};
 }
 
-void Game::Cleanup()
+void Game::Cleanup() const
 {
 	delete m_Level01;
 	delete m_YoshiPlyr;
@@ -48,15 +46,15 @@ void Game::Cleanup()
 	}
 }
 
-void Game::Update( float elapsedSec )
+void Game::Update(const float elapsedSec )
 {
 	//std::cout << 1 / elapsedSec << "\n";
 
-	m_YoshiPlyr->Update(m_LvlVertices,elapsedSec);
+	m_YoshiPlyr->Update(m_Level01->GetLevelVertices(),elapsedSec);
 	m_YoshiPlyr->Animate(elapsedSec);
 	m_YoshiPlyr->HitCheck(m_Enemies);
 	m_GameCam->Pan(m_YoshiPlyr->GetPosition(), m_YoshiPlyr->GetIsGrounded(),m_YoshiPlyr->GetIsFacingRight());
-	m_Mario->Update(m_LvlVertices,elapsedSec);
+	m_Mario->Update(m_Level01->GetLevelVertices(),elapsedSec);
 	m_Mario->Animate(elapsedSec);
 	m_YoshiPlyr->Debug();
 	m_YoshiPlyr->KeysDown();
@@ -68,7 +66,7 @@ void Game::Update( float elapsedSec )
 		{
 		if (auto ShyGuys = dynamic_cast<ShyGuy*>(m_Enemies[idx]))
 		{
-			ShyGuys->Update(m_LvlVertices, elapsedSec);
+			ShyGuys->Update(m_Level01->GetLevelVertices(), elapsedSec);
 			ShyGuys->Animate();
 		}
 		}

@@ -2,7 +2,7 @@
 #include "Egg.h"
 #include "Texture.h"
 
-Egg::Egg(Point2f Pos):Entity("Eggs.png",16,14,Pos)
+Egg::Egg(const Point2f Pos):Entity("Eggs.png",16,14,Pos)
 {
 	m_PointerTxt = new Texture{ "Pointer for eggs.png" };
 }
@@ -17,24 +17,24 @@ void Egg::Draw() const
 
 	if (m_IsBeingHeld == true)
 	{
-		m_PointerTxt->Draw(Rectf(Points[0].x, Points[0].y, 16*2, 16*2),Rectf(0, 0, 16, 16));
+		m_PointerTxt->Draw(Rectf(Points[0].x, Points[0].y, 16*2, 16*2),m_PointerRect);
 	}
 }
 
-void Egg::Update(Point2f YoshiPos,bool YoshiDirection,int currentEgg, const std::vector< std::vector<Point2f>>& platforms, float elapsedSec)
+void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int currentEgg, const std::vector< std::vector<Point2f>>& platforms, const float elapsedSec)
 {
 	m_IsBeingHeld = false;
 
-	m_FrameTime += elapsedSec;
+	m_Timer += elapsedSec;
 	
-	if (m_FrameTime > 0.3)
+	if (m_Timer > 0.3)
 	{
-		m_LastYoshiPosX = YoshiPos.x;
-		m_LastYoshiPosY = YoshiPos.y;
+		m_LastYoshiPosX = yoshiPos.x;
+		m_LastYoshiPosY = yoshiPos.y;
 	
-		m_FrameTime = 0.26;
+		m_Timer = 0.26;
 	}
-	if (YoshiDirection == true)
+	if (yoshiDirection == true)
 	{
 		m_Position.x = (m_LastYoshiPosX - m_TxtWidth * 2) - (m_TxtWidth * 2.5) * currentEgg ;
 		m_Position.y = m_LastYoshiPosY;
@@ -50,7 +50,7 @@ void Egg::Update(Point2f YoshiPos,bool YoshiDirection,int currentEgg, const std:
 	
 }
 
-void Egg::Animate(float elapsedSec)
+void Egg::Animate(const float elapsedSec)
 {
 	m_YTxtPos = 32;
 	m_FrameTime += elapsedSec;
@@ -59,6 +59,13 @@ void Egg::Animate(float elapsedSec)
 	{
 		m_XTxtPos += m_TxtWidth + 1;
 		m_FrameTime = 0;
+
+		m_PointerRect.left += 16 + 5;
+	}
+
+	if (m_PointerRect.left > 16 + 5)
+	{
+		m_PointerRect.left = 0;
 	}
 
 	if (m_XTxtPos < 17)
@@ -72,10 +79,11 @@ void Egg::Animate(float elapsedSec)
 		m_XTxtPos = 17;
 	}
 
+	
 
 }
 
-bool Egg::HoldEgg(Point2f yoshiPos, bool yoshiDirection,bool isCalculatingAngle,bool isThrown)
+bool Egg::HoldEgg(const Point2f yoshiPos, const bool yoshiDirection,bool isCalculatingAngle,bool isThrown)
 {
 
 	m_IsBeingHeld = true;

@@ -40,10 +40,9 @@ private:
 	Mario* m_Mario;
 	Camera* m_GameCam;
 	ShyGuy* m_ShyGuy1;
-	std::vector< std::vector<Point2f>> m_LvlVertices{};
 	std::vector<Enemy*> m_Enemies;
 	// FUNCTIONS
 	void Initialize();
-	void Cleanup( );
+	void Cleanup( ) const;
 	void ClearBackground( ) const;
 };

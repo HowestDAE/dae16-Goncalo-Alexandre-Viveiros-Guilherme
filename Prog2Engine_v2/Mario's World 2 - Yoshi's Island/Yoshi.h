@@ -16,7 +16,7 @@ public:
 	void Animate(float elapsedSec);
 	void KeysDown();
 	void KeysUp(const SDL_KeyboardEvent& e);
-	void Debug();
+	void Debug() const;
 	bool GetIsMarioOn() const;
 	void HitCheck(std::vector<Enemy*>&);
 	
@@ -39,6 +39,7 @@ private:
 	bool m_IsCalculatingAngle{ true };
 	bool m_IsThrown{ false };
 	bool m_IsCrouching{ false };
+	bool m_IsLayingEgg{ false };
 
 	enum class AnimState {
 		Idle,
@@ -50,7 +51,11 @@ private:
 		Tongue,
 		FullIdle,
 		FullWalking,
-		FullSprinting
+		FullSprinting,
+		LayingEgg,
+		AimIdle,
+		AimWalking,
+		AimFluttering
 	};
 
 	AnimState m_CurrentState{};

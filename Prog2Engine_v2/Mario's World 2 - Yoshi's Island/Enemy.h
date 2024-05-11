@@ -6,7 +6,7 @@ class Enemy: public Entity
 public:
 	Enemy(bool isEdible,bool isSquashable, const std::string& TexturePath, float txtHeight, float txtWidth, Point2f position);
 	virtual ~Enemy();
-	bool GetIsEdible();
+	bool GetIsEdible() const;
 	bool GetIsSquashable();
 	void EnemyDeath();
 private:

@@ -3,7 +3,7 @@
 #include "Texture.h"
 #include "utils.h"
 
-Entity::Entity(const std::string& TexturePath,float txtHeight, float txtWidth,Point2f position):
+Entity::Entity(const std::string& TexturePath, const float txtHeight, const float txtWidth, const Point2f position):
  m_EntityTxt{ new Texture {TexturePath} },
  m_TxtHeight{txtHeight},
  m_TxtWidth{txtWidth},
@@ -50,7 +50,7 @@ void Entity::Draw() const
 	//	Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom - 1 });
 }
 
-void Entity::Update(const std::vector< std::vector<Point2f>>& platforms,float elapsedSec)
+void Entity::Update(const std::vector< std::vector<Point2f>>& platforms, const float elapsedSec)
 {
 	//Update Hitbox
 

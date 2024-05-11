@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ShyGuy.h"
 
-ShyGuy::ShyGuy(Point2f startPos):Enemy(true,true,"EnemiesVaried2.png",19,16,startPos),m_StartPos(startPos)
+ShyGuy::ShyGuy(const Point2f startPos):Enemy(true,true,"EnemiesVaried2.png",19,16,startPos),m_StartPos(startPos)
 {
 }
 
@@ -9,7 +9,7 @@ ShyGuy::~ShyGuy()
 {
 }
 
-void ShyGuy::Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
+void ShyGuy::Update(const std::vector<std::vector<Point2f>>& platforms, const float elapsedSec)
 {
 
 	Entity::Update(platforms, elapsedSec);
@@ -56,7 +56,7 @@ void ShyGuy::Animate()
 
 }
 
-void ShyGuy::DeathAnimation()
+void ShyGuy::DeathAnimation() const
 {
 	if (m_IsAlive == false)
 	{

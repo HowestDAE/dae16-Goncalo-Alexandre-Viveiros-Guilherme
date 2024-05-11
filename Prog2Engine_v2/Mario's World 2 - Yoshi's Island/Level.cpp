@@ -2,11 +2,12 @@
 #include "Level.h"
 #include "Texture.h"
 #include "Camera.h"
+#include "SVGParser.h"
 
 Level::Level(const std::string& imagePath_lvlTxt, const std::string& backgroundTxt1, const std::string& backgroundTxt3):
 	m_LvlTexture{ new Texture {imagePath_lvlTxt}},m_BgTexture(new Texture { backgroundTxt1 }),m_BgTexture3(new Texture{ backgroundTxt3 })
 {
-	
+	SVGParser::GetVerticesFromSvgFile("ex3.svg", m_LvlVertices);
 }
 Level::~Level()
 {
@@ -36,4 +37,9 @@ void Level::DrawBackground() const
 	}
 	glPopMatrix();
 
+}
+
+std::vector<std::vector<Point2f>> Level::GetLevelVertices()
+{
+	return m_LvlVertices;
 }

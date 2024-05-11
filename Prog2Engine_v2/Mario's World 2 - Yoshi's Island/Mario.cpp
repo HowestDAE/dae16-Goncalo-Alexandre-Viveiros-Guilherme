@@ -13,7 +13,7 @@ Mario::~Mario()
 {
 }
 
-void Mario::Draw()
+void Mario::Draw() const
 {
 	glPushMatrix();
 	{
@@ -37,7 +37,7 @@ void Mario::Draw()
 	glPopMatrix();
 }
 
-void Mario::Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec)
+void Mario::Update(const std::vector< std::vector<Point2f>>& platforms, const float elapsedSec)
 {
 	Entity::Update(platforms, elapsedSec);
 

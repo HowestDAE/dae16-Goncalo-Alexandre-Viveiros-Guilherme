@@ -6,8 +6,8 @@
 #include "Texture.h"
 
 
-Camera::Camera(Point2f CamPos, Point2f YoshiStartPos):
-	m_CamPosition(CamPos)
+Camera::Camera(const Point2f camPos, Point2f yoshiStartPos):
+	m_CamPosition(camPos)
 {
 
 }
@@ -17,14 +17,14 @@ Camera::~Camera()
 	
 }
 
-void Camera::Pan(Point2f YoshiPos, bool isGrounded,bool isFacingRight)
+void Camera::Pan(const Point2f yoshiPos, const bool isGrounded, const bool isFacingRight)
 {
 
 	if (m_CamPosition.x <= 0 || m_CamPosition.x <= -7000)
 	{
 		if (isFacingRight == true)
 		{
-			if (m_CamPosition.x >= -YoshiPos.x + 200)
+			if (m_CamPosition.x >= -yoshiPos.x + 200)
 			{
 				m_CamPosition.x -= 5;
 			}
@@ -32,7 +32,7 @@ void Camera::Pan(Point2f YoshiPos, bool isGrounded,bool isFacingRight)
 
 		else
 		{
-			if (m_CamPosition.x <= -YoshiPos.x + 500)
+			if (m_CamPosition.x <= -yoshiPos.x + 500)
 			{
 				m_CamPosition.x += 5;
 			}
@@ -56,7 +56,7 @@ void Camera::Pan(Point2f YoshiPos, bool isGrounded,bool isFacingRight)
 	if (isGrounded == true)   
 	{
 		//lastYoshiYPos = YoshiPos.y;
-		if (m_CamPosition.y > -YoshiPos.y + 150)
+		if (m_CamPosition.y > -yoshiPos.y + 150)
 		{
 			m_CamPosition.y -= 5;
 		}
@@ -66,7 +66,7 @@ void Camera::Pan(Point2f YoshiPos, bool isGrounded,bool isFacingRight)
 	else
 	{
 		//lastYoshiYPos = YoshiPos.y;
-		if (m_CamPosition.y < -YoshiPos.y + 150)
+		if (m_CamPosition.y < -yoshiPos.y + 150)
 		{
 			m_CamPosition.y += 5;
 		}
@@ -74,7 +74,7 @@ void Camera::Pan(Point2f YoshiPos, bool isGrounded,bool isFacingRight)
 
 }
 
-Point2f Camera::GetCamPos()
+Point2f Camera::GetCamPos() const
 {
 	return m_CamPosition;
 }
