@@ -59,7 +59,7 @@ void Game::Update( float elapsedSec )
 	m_Mario->Update(m_LvlVertices,elapsedSec);
 	m_Mario->Animate(elapsedSec);
 	m_YoshiPlyr->Debug();
-	
+	m_YoshiPlyr->KeysDown();
 
 		
 	for(int idx{0};idx < m_Enemies.size(); idx++)
@@ -129,12 +129,12 @@ void Game::Draw( ) const
 
 		glPushMatrix();
 
-		glPushMatrix();
-
 		glTranslatef(-m_GameCam->GetCamPos().x / 2, -m_GameCam->GetCamPos().y / 2, 0);          //parallax scrolling
 		m_Level01->DrawBackground();
 
 		glPopMatrix();
+
+		glPushMatrix();
 
 		glScalef(1.959676875, 1.9868859, 0);
 		glTranslatef(0, -430, 0);
@@ -166,7 +166,7 @@ void Game::Draw( ) const
 
 void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 {
-	m_YoshiPlyr->KeysDown(e);
+	
 	switch (e.keysym.sym)
 	{
 	case SDLK_r:

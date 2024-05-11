@@ -14,7 +14,7 @@ public:
 	void Draw()const;
 	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
 	void Animate(float elapsedSec);
-	void KeysDown(const SDL_KeyboardEvent& e);
+	void KeysDown();
 	void KeysUp(const SDL_KeyboardEvent& e);
 	void Debug();
 	bool GetIsMarioOn() const;
@@ -35,6 +35,10 @@ private:
 	std::vector <Egg*> m_Eggs;
 	Point2f m_FeetPos;
 	bool m_IsJumpDone{ false };
+	bool m_IsHoldingEgg{ false };
+	bool m_IsCalculatingAngle{ true };
+	bool m_IsThrown{ false };
+	bool m_IsCrouching{ false };
 
 	enum class AnimState {
 		Idle,
@@ -49,7 +53,7 @@ private:
 		FullSprinting
 	};
 
-	AnimState currentState{};
-	AnimState lastState{};
+	AnimState m_CurrentState{};
+	AnimState m_LastState{};
 };
 

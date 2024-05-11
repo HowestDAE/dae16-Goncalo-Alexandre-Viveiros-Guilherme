@@ -194,8 +194,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 
 #pragma endregion
 
-	//Adds Entity's horizontal speed to his position
-	m_Position.x += m_VelocityX * elapsedSec;
+	
 
 
 #pragma region Friction and orientation
@@ -203,7 +202,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 	//simulates ground friction 
 	if (m_IsGrounded == true)
 	{
-		m_VelocityX -= (m_VelocityX * 3.3) * elapsedSec;
+		m_VelocityX -= (m_VelocityX * 5) * elapsedSec;
 	}
 
 	//simulates air friction
@@ -231,12 +230,9 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 	}
 
 #pragma endregion
-
-	////////////////////////////////////////////////////////////////////////////////////////////////////
-	for (int idx = 0; idx < m_Eggs.size(); idx++)
-	{
-		m_Eggs[idx]->Update(m_Position,m_Eggs.size(),platforms,elapsedSec);
-	}
+	
+	//Adds Entity's horizontal speed to his position
+	m_Position.x += m_VelocityX * elapsedSec;
 
 #pragma region Jump
 
@@ -268,7 +264,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 
 					if (m_FlightTime < 0.8)
 					{
-						currentState = AnimState::Hovering;
+						m_CurrentState = AnimState::Hovering;
 						m_VelocityY = 30.f;
 
 						if (m_FlightTime > 0.75)
@@ -294,7 +290,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 
 				if (m_FlightTime < 0.8)
 				{
-					currentState = AnimState::Hovering;
+					m_CurrentState = AnimState::Hovering;
 					m_VelocityY = 30.f;
 
 					if (m_FlightTime > 0.75)
@@ -383,6 +379,33 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 	//Update Hitbox
 
 	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	for (int idx = 0; idx < m_Eggs.size(); idx++)
+	{
+		if (m_IsHoldingEgg == true)
+		{
+			if (m_Eggs[idx] != m_Eggs.back())
+			{
+				m_Eggs[idx]->Update(m_Position, m_IsFacingRight, idx, platforms, elapsedSec);
+			}
+		}
+
+		else
+		{
+			m_Eggs[idx]->Update(m_Position, m_IsFacingRight, idx, platforms, elapsedSec);
+		}
+	}
+
+	if (m_IsHoldingEgg == true)
+	{
+		m_Eggs.back()->HoldEgg(m_Position, m_IsFacingRight,m_IsCalculatingAngle,m_IsThrown);
+		if (m_IsCrouching == true) { m_IsHoldingEgg = false; }
+		if (m_IsTonguing == true) { m_IsHoldingEgg = false; }
+
+	}
+
+
 }
 
 
@@ -395,41 +418,41 @@ void Yoshi::Animate(float elapsedSec)
 
 	if (m_VelocityX == 0 && m_VelocityY == 0)
 	{
-		currentState = AnimState::Idle;
+		m_CurrentState = AnimState::Idle;
 
 	}
 
 	if (m_VelocityX > 0 && m_VelocityX < 260 && m_VelocityY == 0 || m_VelocityX < 0 && m_VelocityX > -260 && m_VelocityY == 0)
 	{
-		currentState = AnimState::Walking;
+		m_CurrentState = AnimState::Walking;
 	}
 
 	if (m_VelocityX > 260 && m_VelocityY == 0 || m_VelocityX < -260 && m_VelocityY == 0)
 	{
-		currentState = AnimState::Sprinting;
+		m_CurrentState = AnimState::Sprinting;
 	}
 
 	if (m_IsTonguing == true)
 	{
-		currentState = AnimState::Tongue;
+		m_CurrentState = AnimState::Tongue;
 	}
 
 	if (m_IsMouthFull)
 	{
 		if (m_VelocityX == 0)
 		{
-			currentState = AnimState::FullIdle;
+			m_CurrentState = AnimState::FullIdle;
 
 		}
 
 		if (m_VelocityX > 0 && m_VelocityX < 260 || m_VelocityX < 0 && m_VelocityX > -260)
 		{
-			currentState = AnimState::FullWalking;
+			m_CurrentState = AnimState::FullWalking;
 		}
 
 		if (m_VelocityX > 260 || m_VelocityX < -260)
 		{
-			currentState = AnimState::FullSprinting;
+			m_CurrentState = AnimState::FullSprinting;
 		}
 	}
 
@@ -439,9 +462,9 @@ void Yoshi::Animate(float elapsedSec)
 
 
 	//Animations for Idle State
-	if (currentState == AnimState::Idle)
+	if (m_CurrentState == AnimState::Idle)
 	{
-		if (lastState != currentState)
+		if (m_LastState != m_CurrentState)
 		{
 			m_XTxtPos = 29;
 		}
@@ -468,13 +491,13 @@ void Yoshi::Animate(float elapsedSec)
 			m_XTxtPos = 29;
 		}
 
-		lastState = AnimState::Idle;
+		m_LastState = AnimState::Idle;
 	}
 
 	//Animate for Walking state
-	if (currentState == AnimState::Walking)
+	if (m_CurrentState == AnimState::Walking)
 	{
-		if (lastState != currentState)
+		if (m_LastState != m_CurrentState)
 		{
 			m_XTxtPos = 2;
 		}
@@ -500,23 +523,23 @@ void Yoshi::Animate(float elapsedSec)
 			m_XTxtPos = 2;
 		}
 
-		lastState = AnimState::Walking;
+		m_LastState = AnimState::Walking;
 	}
 
 	//Animate for Sprinting State
-	if (currentState == AnimState::Sprinting)
+	if (m_CurrentState == AnimState::Sprinting)
 	{
-		if (lastState != currentState)
+		if (m_LastState != m_CurrentState)
 		{
 			m_XTxtPos = 2;
 		}
-		//m_CurrentTxtWidth = m_StdTxtWidth + 6;
+		
 		m_TxtWidth = 36;
 		m_TxtHeight = 26;
 		m_YTxtPos = 703;
 		m_FrameTime += elapsedSec;
 
-		if (m_FrameTime >= 0.02)
+		if (m_FrameTime >= 0.05)
 		{
 			m_XTxtPos += m_TxtWidth + 2;
 			m_FrameTime = 0;
@@ -528,13 +551,13 @@ void Yoshi::Animate(float elapsedSec)
 			m_XTxtPos = 2;
 		}
 
-		lastState = AnimState::Sprinting;
+		m_LastState = AnimState::Sprinting;
 	}
 
 	//Animate for Tonguing State
-	if (currentState == AnimState::Tongue)
+	if (m_CurrentState == AnimState::Tongue)
 	{
-		if (lastState != currentState)
+		if (m_LastState != m_CurrentState)
 		{
 			m_XTxtPos = 2;
 			m_FrameTime = 0;
@@ -550,12 +573,12 @@ void Yoshi::Animate(float elapsedSec)
 			m_IsTonguing = false;
 		}
 
-		lastState = currentState;
+		m_LastState = m_CurrentState;
 	}
 
-	if (currentState == AnimState::Jumping)
+	if (m_CurrentState == AnimState::Jumping)
 	{
-		if (lastState != currentState)
+		if (m_LastState != m_CurrentState)
 		{
 			m_XTxtPos = 2;
 		}
@@ -574,12 +597,12 @@ void Yoshi::Animate(float elapsedSec)
 			m_XTxtPos = 2;
 		}
 
-		lastState = currentState;
+		m_LastState = m_CurrentState;
 	}
 
-	if (currentState == AnimState::Hovering)
+	if (m_CurrentState == AnimState::Hovering)
 	{
-		if (lastState != currentState)
+		if (m_LastState != m_CurrentState)
 		{
 			
 			m_XTxtPos = 2;
@@ -602,12 +625,12 @@ void Yoshi::Animate(float elapsedSec)
 			m_XTxtPos = 2;
 		}
 
-		lastState = currentState;
+		m_LastState = m_CurrentState;
 	}
 
-	if (currentState == AnimState::FullIdle)
+	if (m_CurrentState == AnimState::FullIdle)
 	{
-		if (lastState != currentState)
+		if (m_LastState != m_CurrentState)
 		{
 			m_XTxtPos = 720;
 		}
@@ -636,13 +659,13 @@ void Yoshi::Animate(float elapsedSec)
 			m_XTxtPos = 720;
 		}
 
-		lastState = AnimState::FullIdle;
+		m_LastState = AnimState::FullIdle;
 	}
 
 	//Animate for Walking state
-	if (currentState == AnimState::FullWalking)
+	if (m_CurrentState == AnimState::FullWalking)
 	{
-		if (lastState != currentState)
+		if (m_LastState != m_CurrentState)
 		{
 			m_XTxtPos = 720;
 		}
@@ -669,13 +692,13 @@ void Yoshi::Animate(float elapsedSec)
 			m_XTxtPos = 720;
 		}
 
-		lastState = AnimState::FullWalking;
+		m_LastState = AnimState::FullWalking;
 	}
 
 	//Animate for Sprinting State
-	if (currentState == AnimState::FullSprinting)
+	if (m_CurrentState == AnimState::FullSprinting)
 	{
-		if (lastState != currentState)
+		if (m_LastState != m_CurrentState)
 		{
 			m_XTxtPos = 723;
 		}
@@ -696,7 +719,7 @@ void Yoshi::Animate(float elapsedSec)
 			m_XTxtPos = 723;
 		}
 
-		lastState = AnimState::Sprinting;
+		m_LastState = AnimState::Sprinting;
 	}
 
 	for (int idx = 0; idx < m_Eggs.size(); idx++)
@@ -707,56 +730,72 @@ void Yoshi::Animate(float elapsedSec)
 
 
 
-void Yoshi::KeysDown(const SDL_KeyboardEvent& e)
+void Yoshi::KeysDown()
 {
-	switch (e.keysym.sym)
+	const Uint8* pKeyStates = SDL_GetKeyboardState(nullptr);
+	if (pKeyStates[SDL_SCANCODE_LEFT])
 	{
-	case SDLK_LEFT:
-		if (m_VelocityX > -310)
+		if (m_VelocityX > -280)
 		{
-			m_VelocityX -= 67;
+			m_VelocityX -= 28;
 		}
-
-		break;
-	case SDLK_RIGHT:
-		if (m_VelocityX < 310)
+	}
+	if (pKeyStates[SDL_SCANCODE_RIGHT])
+	{
+		if (m_VelocityX < 280)
 		{
-			m_VelocityX += 67;
+			m_VelocityX += 28;
 		}
-		break;
-	case SDLK_z:
-		m_IsYoshiJumping = true;
-		currentState = AnimState::Jumping;
-		break;
-	case SDLK_DOWN:
+	}
+	if (pKeyStates[SDL_SCANCODE_UP])
+	{
+		m_IsLookingUp = true;
+	}
+	if (pKeyStates[SDL_SCANCODE_DOWN])
+	{
 		if (m_IsMouthFull == true)
 		{
 			m_Eggs.push_back(new Egg(m_Position));
 
 			m_IsMouthFull = false;
 		}
-		break;
-	case SDLK_UP:
 
-		m_IsLookingUp = true;
-
-		break;
-
-	case SDLK_x:
-
-		m_IsTonguing = true;
-		
-		break;
-	case SDLK_c:
-		if (m_Eggs.size() > 0)
-		{
-			//TODO add throwing of the egg
-			m_Eggs.pop_back();
-		}
-		break;
+		m_IsCrouching = true;
 	}
+	if (pKeyStates[SDL_SCANCODE_Z])
+	{
+		m_IsYoshiJumping = true;
+		m_CurrentState = AnimState::Jumping;
+	}
+	if (pKeyStates[SDL_SCANCODE_X])
+	{
+		if (m_IsMouthFull == false)
+		{
+			m_IsTonguing = true;
+		}
+		else
+		{
+			//TODO add a functiom that throws the eaten enemy
+		}
+	}
+	if (pKeyStates[SDL_SCANCODE_C])
+	{
+		if (m_IsHoldingEgg == false)
+		{
+			if (m_Eggs.size() > 0)
+			{
+				//TODO add throwing of the egg
+				m_IsHoldingEgg = true;
 
+			}
+		}
 
+		else
+		{
+			m_IsThrown = true;
+		}
+
+	}
 }
 
 void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
@@ -773,7 +812,7 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 		m_IsYoshiJumping = false;
 		break;
 	case SDLK_DOWN:
-
+		m_IsCrouching = false;
 		break;
 	case SDLK_UP:
 
@@ -787,8 +826,9 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 
 		break;
 	case SDLK_c:
-
+		
 		break;
+
 
 	}
 }

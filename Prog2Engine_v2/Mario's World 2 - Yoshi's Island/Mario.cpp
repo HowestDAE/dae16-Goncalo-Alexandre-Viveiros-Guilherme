@@ -61,15 +61,21 @@ void Mario::Update(const std::vector< std::vector<Point2f>>& platforms, float el
 
 	else
 	{
-		if (m_Yoshi->GetIsFacingRight() == true)
+		m_Time += elapsedSec;
+
+		if (m_Time < 0.7)
 		{
-			m_VelocityX = -300;
+			if (m_Yoshi->GetIsFacingRight() == true)
+			{
+				m_VelocityX = -300;
+			}
+			else
+			{
+				m_VelocityX = 300;
+			}
+			m_VelocityY = 500;
 		}
-		else
-		{
-			m_VelocityX = 300;
-		}
-		m_VelocityY = 500;
+		
 	}
 }
 

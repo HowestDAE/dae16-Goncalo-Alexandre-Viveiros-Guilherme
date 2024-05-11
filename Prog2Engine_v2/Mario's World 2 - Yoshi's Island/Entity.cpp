@@ -34,7 +34,7 @@ void Entity::Draw() const
 			glScalef(-m_ScaleX, m_ScaleY, m_ScaleZ);
 		}
 
-		// Draw the Entity player
+		// Draw Yoshi player
 		m_EntityTxt->Draw(Rectf(-m_TxtWidth, 0, float(m_TxtWidth * 2), float(m_TxtHeight * 2)),
 			Rectf(m_XTxtPos, m_YTxtPos, m_TxtWidth, m_TxtHeight));
 	}
