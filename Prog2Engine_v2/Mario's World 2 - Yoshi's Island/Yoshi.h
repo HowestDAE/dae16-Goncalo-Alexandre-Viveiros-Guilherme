@@ -27,7 +27,6 @@ private:
 	bool m_IsMarioOn;
 	bool m_IsLookingUp{ false };
 	int m_MarioTimer ;
-	float m_FrameTime{0};
 	float m_FlightTime{ 0 };
 	float m_Countdown{ 0 };
 	Circlef m_Tongue;

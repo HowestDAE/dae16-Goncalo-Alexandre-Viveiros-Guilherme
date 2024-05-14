@@ -683,4 +683,9 @@ bool utils::IntersectRectLine(const Rectf& r, const Point2f& p1, const Point2f& 
 	return true;
 }
 
+float utils::lerp(float a, float b, float t)
+{
+	return a + t * (b - a);
+}
+
 #pragma endregion CollisionFunctionality

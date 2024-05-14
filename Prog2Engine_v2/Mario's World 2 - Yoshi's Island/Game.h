@@ -3,6 +3,7 @@
 #include <vector>
 
 
+class Platforms;
 class Enemy;
 class ShyGuy;
 class Yoshi;
@@ -32,10 +33,8 @@ public:
 	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
 
 private:
-
-	int m_LevelStartX{0};
-	int m_LevelStartY{-430};
 	Level* m_Level01;
+	Platforms* m_Platforms;
 	Yoshi* m_YoshiPlyr;
 	Mario* m_Mario;
 	Camera* m_GameCam;

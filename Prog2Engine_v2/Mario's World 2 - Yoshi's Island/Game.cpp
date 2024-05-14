@@ -8,6 +8,7 @@
 #include "Level.h"
 #include "Mario.h"
 #include "ShyGuy.h"
+#include "Platforms.h"
 
 
 Game::Game( const Window& window ) 
@@ -24,6 +25,7 @@ Game::~Game( )
 void Game::Initialize( )
 {
 	m_Level01 = new Level ("1-1 Make Eggs Throw Eggs no coins.png","ChocolateMountainsWIP.png","Gradient_BG.png");
+	m_Platforms = new Platforms(Point2f(50, 50), 48, 16, 48, 16, "Platforms.png");
 	m_YoshiPlyr = new Yoshi(Point2f(130,400));
 	m_Mario = new Mario(m_YoshiPlyr);
 	m_GameCam = new Camera(Point2f(0, 0), m_YoshiPlyr->GetPosition());
@@ -66,8 +68,15 @@ void Game::Update(const float elapsedSec )
 		{
 		if (auto ShyGuys = dynamic_cast<ShyGuy*>(m_Enemies[idx]))
 		{
-			ShyGuys->Update(m_Level01->GetLevelVertices(), elapsedSec);
-			ShyGuys->Animate();
+			if (ShyGuys->GetIsAlive() == true)
+			{
+				ShyGuys->Update(m_Level01->GetLevelVertices(), elapsedSec);
+				ShyGuys->Animate(elapsedSec);
+			}
+			else
+			{
+				ShyGuys->DeathHandling();
+			}
 		}
 		}
 
@@ -93,34 +102,6 @@ void Game::Draw( ) const
 {
 	ClearBackground( );
 
-	//Draws All elements of the game and uses matrixes to modify them
-
-	//glPushMatrix();
-	//{
-	//	glTranslatef(m_GameCam->GetCamPos().x, m_GameCam->GetCamPos().y, 0);
-
-	//	glPushMatrix();
-
-	//	glPushMatrix();
-
-	//	glTranslatef(-m_GameCam->GetCamPos().x/2,-m_GameCam->GetCamPos().y/2, 0);          //parallax scrolling
-	//	m_Level01->DrawBackground();
-
-	//	glPopMatrix();
-
-	//		glScalef(1.959676875, 1.9868859, 0);
-	//		glTranslatef(0,-430 , 0);
-	//		m_Level01->DrawLvl();
-
-	//	glPopMatrix();
-	//	m_Mario->Draw();
-	//	m_YoshiPlyr->Draw();
-	//	m_ShyGuy1->Draw();
-	//	
-	//	
-	//}
-	//glPopMatrix();
-
 	glPushMatrix();
 	{
 		glTranslatef(m_GameCam->GetCamPos().x, m_GameCam->GetCamPos().y, 0);
@@ -139,6 +120,7 @@ void Game::Draw( ) const
 		m_Level01->DrawLvl();
 		glPopMatrix();
 
+		m_Platforms->Draw();
 		m_Mario->Draw();
 		m_YoshiPlyr->Draw();
 
@@ -150,6 +132,7 @@ void Game::Draw( ) const
 			if (auto ShyGuys = dynamic_cast<ShyGuy*>(m_Enemies[idx]))
 			{
 				ShyGuys->Draw();
+
 			}
 			}
 		}

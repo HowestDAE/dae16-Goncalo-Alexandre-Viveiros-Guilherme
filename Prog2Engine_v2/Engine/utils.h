@@ -49,6 +49,8 @@ namespace utils
 	void FillPolygon( const Point2f* pVertices, size_t nrVertices);
 #pragma endregion OpenGLDrawFunctionality
 
+	float lerp(float a, float b, float t);
+
 #pragma region CollisionFunctionality
 	struct HitInfo
 	{
@@ -82,5 +84,6 @@ namespace utils
 	bool IntersectRectLine(const Rectf& r, const Point2f& p1, const Point2f& p2, float& intersectMin, float& intersectMax);
 
 #pragma endregion CollisionFunctionality
+
 
 }

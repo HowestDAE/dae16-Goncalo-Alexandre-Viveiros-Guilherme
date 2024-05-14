@@ -3,8 +3,8 @@
 #include "Texture.h"
 #include "utils.h"
 
-Entity::Entity(const std::string& TexturePath, const float txtHeight, const float txtWidth, const Point2f position):
- m_EntityTxt{ new Texture {TexturePath} },
+Entity::Entity(const std::string& texturePath, const float txtHeight, const float txtWidth, const Point2f position):
+ m_EntityTxt{ new Texture {texturePath} },
  m_TxtHeight{txtHeight},
  m_TxtWidth{txtWidth},
  m_Position {position}
@@ -34,7 +34,7 @@ void Entity::Draw() const
 			glScalef(-m_ScaleX, m_ScaleY, m_ScaleZ);
 		}
 
-		// Draw Yoshi player
+		// Draw Entity
 		m_EntityTxt->Draw(Rectf(-m_TxtWidth, 0, float(m_TxtWidth * 2), float(m_TxtHeight * 2)),
 			Rectf(m_XTxtPos, m_YTxtPos, m_TxtWidth, m_TxtHeight));
 	}

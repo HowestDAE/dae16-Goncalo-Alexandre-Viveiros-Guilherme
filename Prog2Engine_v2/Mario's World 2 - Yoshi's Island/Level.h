@@ -5,7 +5,7 @@ class Texture;
 class Level
 {
 public:
-	Level(const std::string& imagePath_lvlTxt, const std::string& backgroundTxt1, const std::string& backgroundTxt3);
+	Level(const std::string& imagePathLvlTxt, const std::string& backgroundTxt1, const std::string& backgroundTxt3);
 	~Level();
 	void DrawLvl() const;
 	void DrawBackground() const;

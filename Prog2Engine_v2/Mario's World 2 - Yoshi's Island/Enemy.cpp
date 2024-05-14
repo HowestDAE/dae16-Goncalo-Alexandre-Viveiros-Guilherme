@@ -29,3 +29,13 @@ void Enemy::EnemyDeath()
 	m_IsAlive = false;
 }
 
+bool Enemy::GetIsAlive()
+{
+	return m_IsAlive;
+}
+
+bool Enemy::GetIsDeathHandlingDone()
+{
+	return m_IsDeathHandlingDone;
+}
+

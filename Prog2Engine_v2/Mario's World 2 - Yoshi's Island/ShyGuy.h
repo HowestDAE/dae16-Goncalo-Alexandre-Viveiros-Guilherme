@@ -7,11 +7,12 @@ public:
 	ShyGuy(Point2f startPos);
 	~ShyGuy();
 	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
-	void Animate();
-	void DeathAnimation() const;
+	void Animate(float elapsedSec);
+	void DeathHandling();
 private:
 	float m_PatrolClock{ 0 };
 	int m_PatrolCycle{ 0 };
 	Point2f m_StartPos;
+	float lastYPosition{};
 };
 

@@ -9,11 +9,14 @@ public:
 	bool GetIsEdible() const;
 	bool GetIsSquashable();
 	void EnemyDeath();
+	bool GetIsAlive();
+	bool GetIsDeathHandlingDone();
 private:
 	bool m_IsEdible;
 	bool m_IsSquashable;
 
 protected:
 	bool m_IsAlive{ true };
+	bool m_IsDeathHandlingDone{ false };
 };
 

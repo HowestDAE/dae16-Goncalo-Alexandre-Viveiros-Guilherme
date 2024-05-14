@@ -6,7 +6,7 @@ class Texture;
 class Entity
 {
 public:
-	Entity(const std::string& TexturePath, float txtHeight, float txtWidth, Point2f position);
+	Entity(const std::string& texturePath, float txtHeight, float txtWidth, Point2f position);
 	~Entity();
 	void Draw() const;
 	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
@@ -26,6 +26,7 @@ protected:
 	float m_YTxtPos{ 0 };
 	bool m_IsGrounded{ false };
 	bool m_IsFacingRight{ true };
+	float m_FrameTime{ 0 };
 	Rectf m_Hitbox{ 0, 0, 0, 0 };
 
 	float m_AngleDeg{0};

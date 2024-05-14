@@ -83,26 +83,48 @@ void Egg::Animate(const float elapsedSec)
 
 }
 
-bool Egg::HoldEgg(const Point2f yoshiPos, const bool yoshiDirection,bool isCalculatingAngle,bool isThrown)
+bool Egg::HoldEgg(const Rectf yoshiHitBox, const bool yoshiDirection,bool isCalculatingAngle,bool isThrown,float elapsedSec)
 {
-
+	
 	m_IsBeingHeld = true;
-
-	if (m_Angle < 180)
+	if (isCalculatingAngle == true)
 	{
-		m_Angle += 0.1;
+		if (m_IsPointerGoingUp == true)
+		{
+			m_EggTime += elapsedSec;
+
+			if (m_EggTime >= 1)
+			{
+				m_IsPointerGoingUp = false;
+			}
+		}
+		else
+		{
+			m_EggTime -= elapsedSec;
+
+			if (m_EggTime <= 0)
+			{
+				m_IsPointerGoingUp = true;
+			}
+		}
 	}
+	
+
+	
 
 	if (yoshiDirection == true)
 	{
-		m_Position.x = yoshiPos.x + m_TxtWidth * 3;
-		m_Position.y = yoshiPos.y + m_TxtHeight * 2;
-		Points[0] = m_Position + Vector2f(cos(m_Angle), sin(m_Angle)) * 60;
+		m_Angle = utils::lerp(-1, 1.4, m_EggTime);
+		m_Position.x = yoshiHitBox.left + m_TxtWidth * 3;
+		m_Position.y = yoshiHitBox.bottom + m_TxtHeight * 2;
+		Points[0] = Point2f(yoshiHitBox.left + yoshiHitBox.width/2,yoshiHitBox.bottom + yoshiHitBox.height/2) + Vector2f(cos(m_Angle), sin(m_Angle)) * 90;
 	}
 	else
 	{
-		m_Position.x = yoshiPos.x;
-		m_Position.y = yoshiPos.y + m_TxtHeight * 2;
+		m_Angle = utils::lerp(4, 1.8, m_EggTime);
+		m_Position.x = yoshiHitBox.left;
+		m_Position.y = yoshiHitBox.bottom + m_TxtHeight * 2;
+		Points[0] = Point2f(yoshiHitBox.left + yoshiHitBox.width / 2, yoshiHitBox.bottom + yoshiHitBox.height / 2) + Vector2f(cos(m_Angle), sin(m_Angle)) * 110;
 	}
 
 	return true;

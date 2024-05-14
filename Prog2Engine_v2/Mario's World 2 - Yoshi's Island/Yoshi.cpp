@@ -72,7 +72,6 @@ void Yoshi::Draw() const
 			m_EntityTxt->Draw(Rectf{ m_Tongue.center.x,m_Tongue.center.y,8,7 }, Rectf{ 32 ,964,8,7 });
 		}
 	}
-	
 
 }
 
@@ -219,15 +218,20 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const flo
 
 
 	//Check if Entity is facing right
-	if (m_VelocityX < 0)
+	
+	if (m_IsHoldingEgg == false)
 	{
-		m_IsFacingRight = false;
-	}
+		if (m_VelocityX < 0)
+		{
+			m_IsFacingRight = false;
+		}
 
-	else if (m_VelocityX > 0)
-	{
-		m_IsFacingRight = true;
+		else if (m_VelocityX > 0)
+		{
+			m_IsFacingRight = true;
+		}
 	}
+	
 
 #pragma endregion
 	
@@ -399,7 +403,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const flo
 
 	if (m_IsHoldingEgg == true)
 	{
-		m_Eggs.back()->HoldEgg(m_Position, m_IsFacingRight,m_IsCalculatingAngle,m_IsThrown);
+		m_Eggs.back()->HoldEgg(m_Hitbox, m_IsFacingRight,m_IsCalculatingAngle,m_IsThrown,elapsedSec);
 		if (m_IsCrouching == true) { m_IsHoldingEgg = false; }
 		if (m_IsTonguing == true) { m_IsHoldingEgg = false; }
 
@@ -847,7 +851,7 @@ void Yoshi::KeysDown()
 		{
 			if (m_Eggs.size() > 0)
 			{
-				//TODO add throwing of the egg
+				
 				m_IsHoldingEgg = true;
 
 			}
@@ -859,6 +863,7 @@ void Yoshi::KeysDown()
 		}
 
 	}
+
 }
 
 void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
@@ -892,7 +897,10 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 		
 		break;
 
+	case SDLK_v:
 
+		m_IsCalculatingAngle = !m_IsCalculatingAngle;
+		break;
 	}
 }
 
