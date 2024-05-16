@@ -25,7 +25,6 @@ Game::~Game( )
 void Game::Initialize( )
 {
 	m_Level01 = new Level ("1-1 Make Eggs Throw Eggs no coins.png","ChocolateMountainsWIP.png","Gradient_BG.png");
-	m_Platforms = new Platforms(Point2f(50, 50), 48, 16, 48, 16, "Platforms.png");
 	m_YoshiPlyr = new Yoshi(Point2f(130,400));
 	m_Mario = new Mario(m_YoshiPlyr);
 	m_GameCam = new Camera(Point2f(0, 0), m_YoshiPlyr->GetPosition());
@@ -60,7 +59,7 @@ void Game::Update(const float elapsedSec )
 	m_Mario->Animate(elapsedSec);
 	m_YoshiPlyr->Debug();
 	m_YoshiPlyr->KeysDown();
-
+	m_Level01->Update(elapsedSec);
 		
 	for(int idx{0};idx < m_Enemies.size(); idx++)
 	{
@@ -120,7 +119,7 @@ void Game::Draw( ) const
 		m_Level01->DrawLvl();
 		glPopMatrix();
 
-		m_Platforms->Draw();
+		m_Level01->DrawPlatforms();
 		m_Mario->Draw();
 		m_YoshiPlyr->Draw();
 

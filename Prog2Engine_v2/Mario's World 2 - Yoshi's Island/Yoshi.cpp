@@ -194,8 +194,64 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const flo
 #pragma endregion
 
 	
+#pragma region Special Collisions
+
+	//Collisions
+
+	for (int idx{ 0 }; idx < platforms.size(); idx++)
+	{
+		//floor collision
+
+	//checks collision from the left side of Yoshis feet
+
+		if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x - 13,m_FeetPos.y + 32 },
+			Point2f{ m_FeetPos.x - 13,m_FeetPos.y }, hit_info))
+		{
+			m_VelocityY = 0;
+			m_Position.y = hit_info.intersectPoint.y;
+			m_IsGrounded = true;
+		}
+
+		//checks collision from the right side of Yoshis feet
+		if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 13,m_FeetPos.y + 32 },
+			Point2f{ m_FeetPos.x + 13,m_FeetPos.y }, hit_info))
+		{
+			m_VelocityY = 0;
+			m_Position.y = hit_info.intersectPoint.y;
+			m_IsGrounded = true;
+		}
+
+		//checks collision from the middle of Yoshis feet
+		if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x ,m_FeetPos.y + 32 },
+			Point2f{ m_FeetPos.x ,m_FeetPos.y }, hit_info))
+		{
+			m_VelocityY = 0;
+			m_Position.y = hit_info.intersectPoint.y;
+			m_IsGrounded = true;
+		}
+
+		//Gravity
+		else
+		{
+			m_IsGrounded = false;
+
+			if (m_VelocityY != -480.f)
+			{
+				m_VelocityY -= 48.f;
+
+				if (m_VelocityY < -480.f)
+				{
+					m_VelocityY -= -50.f;
+				}
+			}
 
 
+
+		}
+
+	}
+
+#pragma endregion
 #pragma region Friction and orientation
 
 	//simulates ground friction 

@@ -34,7 +34,6 @@ public:
 
 private:
 	Level* m_Level01;
-	Platforms* m_Platforms;
 	Yoshi* m_YoshiPlyr;
 	Mario* m_Mario;
 	Camera* m_GameCam;
