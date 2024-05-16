@@ -9,7 +9,7 @@ class Yoshi : public Entity
 {
 public:
 	Yoshi(Point2f startPos);
-	~Yoshi();
+	virtual ~Yoshi() override;
 
 	void Draw()const;
 	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
@@ -36,7 +36,6 @@ private:
 	bool m_IsJumpDone{ false };
 	bool m_IsHoldingEgg{ false };
 	bool m_IsCalculatingAngle{ true };
-	bool m_IsThrown{ false };
 	bool m_IsCrouching{ false };
 	bool m_IsLayingEgg{ false };
 

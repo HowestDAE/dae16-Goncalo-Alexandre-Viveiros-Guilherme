@@ -93,7 +93,7 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms, const f
 
 				if (m_VelocityY < -480.f)
 				{
-					m_VelocityY -= -50.f;
+					m_VelocityY += -50.f;
 				}
 			}
 

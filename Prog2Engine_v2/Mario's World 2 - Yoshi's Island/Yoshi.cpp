@@ -454,12 +454,13 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const flo
 		else
 		{
 			m_Eggs[idx]->Update(m_Position, m_IsFacingRight, idx, platforms, elapsedSec);
+
 		}
 	}
 
 	if (m_IsHoldingEgg == true)
 	{
-		m_Eggs.back()->HoldEgg(m_Hitbox, m_IsFacingRight,m_IsCalculatingAngle,m_IsThrown,elapsedSec);
+		m_Eggs.back()->HoldEgg(m_Hitbox, m_IsFacingRight,m_IsCalculatingAngle,elapsedSec);
 		if (m_IsCrouching == true) { m_IsHoldingEgg = false; }
 		if (m_IsTonguing == true) { m_IsHoldingEgg = false; }
 
@@ -901,24 +902,7 @@ void Yoshi::KeysDown()
 			//TODO add a functiom that throws the eaten enemy
 		}
 	}
-	if (pKeyStates[SDL_SCANCODE_C])
-	{
-		if (m_IsHoldingEgg == false)
-		{
-			if (m_Eggs.size() > 0)
-			{
-				
-				m_IsHoldingEgg = true;
 
-			}
-		}
-
-		else
-		{
-			m_IsThrown = true;
-		}
-
-	}
 
 }
 
@@ -950,7 +934,22 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 
 		break;
 	case SDLK_c:
-		
+
+		if (m_IsHoldingEgg == false)
+		{
+			if (m_Eggs.size() > 0)
+			{
+
+				m_IsHoldingEgg = true;
+
+			}
+		}
+
+		else if (m_IsHoldingEgg == true)
+			{
+			m_IsHoldingEgg = false;
+			m_Eggs.back()->ThrowEgg();
+			}
 		break;
 
 	case SDLK_v:
@@ -988,6 +987,7 @@ void Yoshi::HitCheck(std::vector<Enemy*>& Enemies)
 						if (m_Hitbox.bottom > Enemies[idx]->GetHitBox().bottom + (m_TxtHeight / 3))
 						{
 							Enemies[idx]->EnemyDeath();
+							delete Enemies[idx];
 							Enemies[idx] = nullptr;
 							m_VelocityY *= -1;
 						}
@@ -1006,6 +1006,7 @@ void Yoshi::HitCheck(std::vector<Enemy*>& Enemies)
 					if (utils::IsOverlapping(Enemies[idx]->GetHitBox(),m_Tongue) == true)
 					{
 						Enemies[idx]->EnemyDeath();
+						delete Enemies[idx];
 						Enemies[idx] = nullptr;
 						m_IsMouthFull = true;
 						m_IsTonguing = false;

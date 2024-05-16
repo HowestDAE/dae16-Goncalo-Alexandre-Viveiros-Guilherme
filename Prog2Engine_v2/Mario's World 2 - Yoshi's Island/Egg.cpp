@@ -9,6 +9,7 @@ Egg::Egg(const Point2f Pos):Entity("Eggs.png",16,14,Pos)
 
 Egg::~Egg()
 {
+	delete m_PointerTxt;
 }
 
 void Egg::Draw() const
@@ -23,28 +24,31 @@ void Egg::Draw() const
 
 void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int currentEgg, const std::vector< std::vector<Point2f>>& platforms, const float elapsedSec)
 {
-	m_IsBeingHeld = false;
+	if (m_IsThrown == false)
+	{
+		m_IsBeingHeld = false;
 
-	m_Timer += elapsedSec;
-	
-	if (m_Timer > 0.3)
-	{
-		m_LastYoshiPosX = yoshiPos.x;
-		m_LastYoshiPosY = yoshiPos.y;
-	
-		m_Timer = 0.26;
+		m_Timer += elapsedSec;
+
+		if (m_Timer > 0.3)
+		{
+			m_LastYoshiPosX = yoshiPos.x;
+			m_LastYoshiPosY = yoshiPos.y;
+
+			m_Timer = 0.26;
+		}
+		if (yoshiDirection == true)
+		{
+			m_Position.x = (m_LastYoshiPosX - m_TxtWidth * 2) - (m_TxtWidth * 2.5) * currentEgg;
+			m_Position.y = m_LastYoshiPosY;
+		}
+		else
+		{
+			m_Position.x = (m_LastYoshiPosX + m_TxtWidth * 5) + (m_TxtWidth * 2.5) * currentEgg;
+			m_Position.y = m_LastYoshiPosY;
+		}
 	}
-	if (yoshiDirection == true)
-	{
-		m_Position.x = (m_LastYoshiPosX - m_TxtWidth * 2) - (m_TxtWidth * 2.5) * currentEgg ;
-		m_Position.y = m_LastYoshiPosY;
-	}
-	else
-	{
-		m_Position.x = (m_LastYoshiPosX + m_TxtWidth * 5) + (m_TxtWidth * 2.5) * currentEgg;
-		m_Position.y = m_LastYoshiPosY;
-	}
-	
+
 	Entity::Update(platforms, elapsedSec);
 	
 	
@@ -83,7 +87,7 @@ void Egg::Animate(const float elapsedSec)
 
 }
 
-bool Egg::HoldEgg(const Rectf yoshiHitBox, const bool yoshiDirection,bool isCalculatingAngle,bool isThrown,float elapsedSec)
+bool Egg::HoldEgg(const Rectf yoshiHitBox, const bool yoshiDirection,bool isCalculatingAngle,float elapsedSec)
 {
 	
 	m_IsBeingHeld = true;
@@ -117,7 +121,7 @@ bool Egg::HoldEgg(const Rectf yoshiHitBox, const bool yoshiDirection,bool isCalc
 		m_Angle = utils::lerp(-1, 1.4, m_EggTime);
 		m_Position.x = yoshiHitBox.left + m_TxtWidth * 3;
 		m_Position.y = yoshiHitBox.bottom + m_TxtHeight * 2;
-		Points[0] = Point2f(yoshiHitBox.left + yoshiHitBox.width/2,yoshiHitBox.bottom + yoshiHitBox.height/2) + Vector2f(cos(m_Angle), sin(m_Angle)) * 90;
+		Points[0] =  Point2f(yoshiHitBox.left + yoshiHitBox.width/2,yoshiHitBox.bottom + yoshiHitBox.height/2) + Vector2f(cos(m_Angle), sin(m_Angle)) * 90;
 	}
 	else
 	{
@@ -132,7 +136,15 @@ bool Egg::HoldEgg(const Rectf yoshiHitBox, const bool yoshiDirection,bool isCalc
 
 }
 
-void Egg::ThrowEgg(bool isHoldingEgg)
+void Egg::ThrowEgg()
 {
+	m_IsThrown = true;
+	m_VelocityX = cos(m_Angle) * 2000;
+	m_VelocityY = sin(m_Angle) * 2000;
 
+}
+
+bool Egg::GetIsThrown()
+{
+	return m_IsThrown;
 }

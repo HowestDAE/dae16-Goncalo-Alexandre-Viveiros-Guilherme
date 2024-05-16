@@ -74,10 +74,6 @@ void ShyGuy::Animate(float elapsedSec)
 void ShyGuy::DeathHandling() 
 {
 
-	if (m_IsAlive == false)
-	{
-		delete this;
-	}
 
 }
 

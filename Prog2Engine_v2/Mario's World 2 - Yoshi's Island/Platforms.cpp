@@ -28,7 +28,7 @@ Platforms::Platforms(Point2f position, float txtWidth, float txtHeight, float pl
 
 Platforms::~Platforms()
 {
-
+	delete m_PlatformTxt;
 }
 
 void Platforms::Draw() const
