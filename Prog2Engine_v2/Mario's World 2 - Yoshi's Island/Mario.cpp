@@ -39,7 +39,6 @@ void Mario::Draw() const
 
 void Mario::Update(const std::vector< std::vector<Point2f>>& platforms, const float elapsedSec)
 {
-	Entity::Update(platforms, elapsedSec);
 
 	if (m_Yoshi->GetIsMarioOn() == true)
 	{
@@ -67,16 +66,55 @@ void Mario::Update(const std::vector< std::vector<Point2f>>& platforms, const fl
 		{
 			if (m_Yoshi->GetIsFacingRight() == true)
 			{
-				m_VelocityX = -300;
+				m_VelocityX = -1.5f;
 			}
 			else
 			{
-				m_VelocityX = 300;
+				m_VelocityX = 1.5f;
 			}
-			m_VelocityY = 500;
+			m_VelocityY += 1.5f;
 		}
-		
+		else
+		{
+			float distanceX{ m_Yoshi->GetPosition().x - m_Position.x };
+			float distanceY{ m_Yoshi->GetPosition().y - m_Position.y };
+
+			if (distanceX < 2 && distanceX > -2)
+			{
+				distanceX = 0;
+			}
+			if (distanceY < 2 && distanceY > -2)
+			{
+				distanceY = 0;
+			}
+
+			if (m_Position.x < m_Yoshi->GetPosition().x)
+			{
+				m_VelocityX = 0.1f * distanceX;
+			}
+
+			else
+			{
+				m_VelocityX = 0.1f * distanceX;
+			}
+
+			if (m_Position.y < m_Yoshi->GetPosition().y)
+			{
+				m_VelocityY = 0.1f * distanceY;
+			}
+
+			else
+			{
+				m_VelocityY = 0.1f * distanceY;
+			}
+		}
 	}
+
+
+	//collision and gravity
+	m_Position.y += m_VelocityY * elapsedSec;
+	//Adds Entity's horizontal speed to his position
+	m_Position.x += m_VelocityX * elapsedSec;
 }
 
 void Mario::Animate(float elapsedSec)

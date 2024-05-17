@@ -17,6 +17,6 @@ private:
 	float m_YTxtPos2;
 	float m_TxtWidth2;
 	float m_TxtHeight2;
-	float m_Time;
+	float m_Time{0};
 };
 

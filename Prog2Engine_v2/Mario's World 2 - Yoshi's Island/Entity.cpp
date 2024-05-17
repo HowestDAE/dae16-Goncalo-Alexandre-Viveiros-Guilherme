@@ -58,6 +58,15 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms, const f
 
 	utils::HitInfo hit_info;
 
+	if (m_TerminalVlcityTimer > 1)
+	{
+		m_TerminalVlcityTimer = 1;
+	}
+	else
+	{
+		m_TerminalVlcityTimer += elapsedSec;
+	}
+
 	//Collisions
 
 	for (int idx{ 0 }; idx < platforms.size(); idx++)
@@ -87,16 +96,15 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms, const f
 		{
 			m_IsGrounded = false;
 
-			if (m_VelocityY != -480.f)
+			if (m_VelocityY > -480.f)
 			{
-				m_VelocityY -= 48.f;
-
-				if (m_VelocityY < -480.f)
-				{
-					m_VelocityY += -50.f;
-				}
+				m_VelocityY -= 48.f * m_TerminalVlcityTimer;
 			}
 
+			if (m_VelocityY < -480.f)
+			{
+				m_VelocityY += 48.f;
+			}
 
 		}
 
@@ -120,10 +128,6 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms, const f
 
 
 	}
-
-	//Adds Entity's horizontal speed to his position
-	m_Position.x += m_VelocityX * elapsedSec;
-
 
 
 	//simulates ground friction 
@@ -154,7 +158,8 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms, const f
 
 	//collision and gravity
 	m_Position.y += m_VelocityY * elapsedSec;
-
+	//Adds Entity's horizontal speed to his position
+	m_Position.x += m_VelocityX * elapsedSec;
 
 	//Update Hitbox
 

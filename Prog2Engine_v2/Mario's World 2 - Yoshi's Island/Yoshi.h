@@ -29,6 +29,7 @@ private:
 	int m_MarioTimer ;
 	float m_FlightTime{ 0 };
 	float m_Countdown{ 0 };
+	float m_JumpTimer{0};
 	Circlef m_Tongue;
 	bool m_IsMouthFull{false};
 	std::vector <Egg*> m_Eggs;

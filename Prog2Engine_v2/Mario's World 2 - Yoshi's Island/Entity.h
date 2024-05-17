@@ -27,6 +27,7 @@ protected:
 	bool m_IsGrounded{ false };
 	bool m_IsFacingRight{ true };
 	float m_FrameTime{ 0 };
+	float m_TerminalVlcityTimer{ 0 };
 	Rectf m_Hitbox{ 0, 0, 0, 0 };
 
 	float m_AngleDeg{0};

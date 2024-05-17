@@ -49,7 +49,12 @@ void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int cu
 		}
 	}
 
-	Entity::Update(platforms, elapsedSec);
+	if (m_IsThrown == true)
+	{
+
+		Entity::Update(platforms, elapsedSec);
+	}
+	
 	
 	
 }
