@@ -14,6 +14,7 @@ public:
 	Point2f GetPosition() const;
 	bool GetIsFacingRight() const;
 	bool GetIsGrounded() const;
+	Point2f GetVelocity() const;
 
 protected:
 	Texture* m_EntityTxt;

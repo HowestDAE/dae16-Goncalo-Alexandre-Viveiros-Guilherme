@@ -12,7 +12,7 @@ public:
 	virtual ~Yoshi() override;
 
 	void Draw()const;
-	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
+	void Update(const std::vector< std::vector<Point2f>>& platforms, const std::vector< std::vector<Point2f>>& movingPlatforms,float elapsedSec);
 	void Animate(float elapsedSec);
 	void KeysDown();
 	void KeysUp(const SDL_KeyboardEvent& e);
@@ -22,7 +22,7 @@ public:
 	
 
 private:
-	bool m_IsTonguing;
+	bool m_IsTonguing{ false };
 	bool m_IsYoshiJumping{false};
 	bool m_IsMarioOn;
 	bool m_IsLookingUp{ false };

@@ -51,10 +51,10 @@ void Game::Update(const float elapsedSec )
 {
 	//std::cout << 1 / elapsedSec << "\n";
 
-	m_YoshiPlyr->Update(m_Level01->GetLevelVertices(),elapsedSec);
+	m_YoshiPlyr->Update(m_Level01->GetLevelVertices(),m_Level01->GetPlatformVertices(),elapsedSec);
 	m_YoshiPlyr->Animate(elapsedSec);
 	m_YoshiPlyr->HitCheck(m_Enemies);
-	m_GameCam->Pan(m_YoshiPlyr->GetPosition(), m_YoshiPlyr->GetIsGrounded(),m_YoshiPlyr->GetIsFacingRight());
+	m_GameCam->Pan(m_YoshiPlyr->GetPosition(), m_YoshiPlyr->GetIsGrounded(),m_YoshiPlyr->GetIsFacingRight(),m_YoshiPlyr->GetVelocity().x);
 	m_Mario->Update(m_Level01->GetLevelVertices(),elapsedSec);
 	m_Mario->Animate(elapsedSec);
 	m_YoshiPlyr->Debug();

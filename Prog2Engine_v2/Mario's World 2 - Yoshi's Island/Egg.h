@@ -12,6 +12,7 @@ public:
 	bool HoldEgg(Rectf yoshiHitBox, bool yoshiDirection, bool isCalculatingAngle,float elapsedSec);
 	void ThrowEgg();
 	bool GetIsThrown();
+	Rectf GetHitbox();
 
 private:
 	Texture* m_PointerTxt;

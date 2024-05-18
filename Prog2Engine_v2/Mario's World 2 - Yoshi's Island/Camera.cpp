@@ -17,7 +17,7 @@ Camera::~Camera()
 	
 }
 
-void Camera::Pan(const Point2f yoshiPos, const bool isGrounded, const bool isFacingRight)
+void Camera::Pan(const Point2f yoshiPos, const bool isGrounded, const bool isFacingRight, float yoshiSpeedX)
 {
 
 	if (m_CamPosition.x <= 0 || m_CamPosition.x <= -7000)
@@ -26,7 +26,11 @@ void Camera::Pan(const Point2f yoshiPos, const bool isGrounded, const bool isFac
 		{
 			if (m_CamPosition.x >= -yoshiPos.x + 200)
 			{
-				m_CamPosition.x -= 5;
+				m_CamPosition.x -= 0.05f * yoshiSpeedX / 5;
+				if (yoshiSpeedX ==  0)
+				{
+					m_CamPosition.x -= 0.5f;
+				}
 			}
 		}
 
@@ -34,7 +38,11 @@ void Camera::Pan(const Point2f yoshiPos, const bool isGrounded, const bool isFac
 		{
 			if (m_CamPosition.x <= -yoshiPos.x + 500)
 			{
-				m_CamPosition.x += 5;
+				m_CamPosition.x -= 0.05f * yoshiSpeedX / 5;
+				if (yoshiSpeedX == 0)
+				{
+					m_CamPosition.x += 0.5f;
+				}
 			}
 
 		}
@@ -55,17 +63,20 @@ void Camera::Pan(const Point2f yoshiPos, const bool isGrounded, const bool isFac
 	//If yoshi is standing on a platform moves camera upwards
 	if (isGrounded == true)   
 	{
-		//lastYoshiYPos = YoshiPos.y;
+		
 		if (m_CamPosition.y > -yoshiPos.y + 150)
 		{
 			m_CamPosition.y -= 5;
 		}
-
+		if (m_CamPosition.y < -yoshiPos.y + 150)
+		{
+			m_CamPosition.y += 5;
+		}
 	}
 	//If yoshi is falling pans camera towards him
 	else
 	{
-		//lastYoshiYPos = YoshiPos.y;
+	
 		if (m_CamPosition.y < -yoshiPos.y + 150)
 		{
 			m_CamPosition.y += 5;

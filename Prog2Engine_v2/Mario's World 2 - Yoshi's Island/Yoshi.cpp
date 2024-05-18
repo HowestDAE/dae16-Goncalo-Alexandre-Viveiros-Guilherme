@@ -31,7 +31,7 @@ void Yoshi::Draw() const
 	}
 
 	Entity::Draw();
-
+	
 #pragma region Debug
 	//utils::SetColor(Color4f{ 1,0,0,1 });
 	//////left side
@@ -40,7 +40,7 @@ void Yoshi::Draw() const
 	//utils::DrawLine(Point2f{ m_FeetPos.x + 13,m_FeetPos.y +32 },
 	//	Point2f{ m_FeetPos.x + 13,m_FeetPos.y });
 
-	//utils::SetColor(Color4f{ 0,1,0,1 });
+	utils::SetColor(Color4f{ 0,1,0,1 });
 	//if (m_IsFacingRight == true)
 	//{
 	//	utils::DrawLine(Point2f{ m_FeetPos.x,m_Position.y + 32 },
@@ -56,6 +56,8 @@ void Yoshi::Draw() const
 	//	utils::DrawLine(Point2f{ m_FeetPos.x,m_Position.y + 32 },
 	//		Point2f{ m_FeetPos.x - 15,m_Position.y + 32 });
 	//}
+
+	utils::DrawPoint(Point2f(m_FeetPos.x,m_Position.y), 2);
 #pragma endregion
 
 
@@ -75,7 +77,7 @@ void Yoshi::Draw() const
 
 }
 
-void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const float elapsedSec)
+void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std::vector< std::vector<Point2f>>& movingPlatforms, const float elapsedSec)
 {
 	//updates Yoshis Feet position
 	if (m_IsFacingRight == true)
@@ -104,9 +106,53 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const flo
 
 	for (int idx{ 0 }; idx < platforms.size(); idx++)
 	{
+
+		//Checks to see if its a brown platform and if so it changes behavior accordingly
+		if (platforms[idx].size() == 2)
+		{
+			if (m_VelocityY <= 0)
+			{
+				//checks collision from the left side of Yoshis feet
+				if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x - 13,m_FeetPos.y + 32 },
+					Point2f{ m_FeetPos.x - 13,m_FeetPos.y }, hit_info))
+				{
+					m_VelocityY = 0;
+					m_Position.y = hit_info.intersectPoint.y;
+					m_IsGrounded = true;
+					m_TerminalVlcityTimer = 0;
+					break;
+				}
+
+				//checks collision from the right side of Yoshis feet
+				if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 13,m_FeetPos.y + 32 },
+					Point2f{ m_FeetPos.x + 13,m_FeetPos.y }, hit_info))
+				{
+					m_VelocityY = 0;
+					m_Position.y = hit_info.intersectPoint.y;
+					m_IsGrounded = true;
+					m_TerminalVlcityTimer = 0;
+					break;
+				}
+
+				//checks collision from the middle of Yoshis feet
+				if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x ,m_FeetPos.y + 32 },
+					Point2f{ m_FeetPos.x ,m_FeetPos.y }, hit_info))
+				{
+					m_VelocityY = 0;
+					m_Position.y = hit_info.intersectPoint.y;
+					m_IsGrounded = true;
+					m_TerminalVlcityTimer = 0;
+					break;
+				}
+
+			}
+
+		}
+		else
+		{
 		//floor collision
 
-	//checks collision from the left side of Yoshis feet
+		//checks collision from the left side of Yoshis feet
 
 		if (utils::Raycast(platforms[idx], Point2f{m_FeetPos.x - 13,m_FeetPos.y + 32},
 			Point2f{ m_FeetPos.x - 13,m_FeetPos.y}, hit_info))
@@ -115,9 +161,10 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const flo
 			m_Position.y = hit_info.intersectPoint.y;
 			m_IsGrounded = true;
 			m_TerminalVlcityTimer = 0;
+			break;
 		}
 
-    //checks collision from the right side of Yoshis feet
+		 //checks collision from the right side of Yoshis feet
 		if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 13,m_FeetPos.y + 32},
 			Point2f{ m_FeetPos.x + 13,m_FeetPos.y }, hit_info))
 		{
@@ -125,6 +172,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const flo
 			m_Position.y = hit_info.intersectPoint.y;
 			m_IsGrounded = true;
 			m_TerminalVlcityTimer = 0;
+			break;
 		}
 
 		//checks collision from the middle of Yoshis feet
@@ -135,14 +183,15 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const flo
 			m_Position.y = hit_info.intersectPoint.y;
 			m_IsGrounded = true;
 			m_TerminalVlcityTimer = 0;
+			break;
 		}
 
 		//Gravity
-		else
+		if (idx == 0) //to prevent gravity from getting looped 12 times
 		{
 			m_IsGrounded = false;
 
-		if (m_VelocityY > -480.f)
+			if (m_VelocityY > -480.f)
 			{
 				m_VelocityY -= 48.f * m_TerminalVlcityTimer;
 			}
@@ -153,6 +202,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const flo
 			}
 
 		}
+	
 
 		//Wall Collision
 
@@ -163,6 +213,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const flo
 				Point2f{ m_FeetPos.x - 15,m_Position.y + 32 }, hit_info))
 			{
 				m_Position.x = hit_info.intersectPoint.x; //Teleports entity to the point of intersection with a small offset
+				break;
 			}
 
 			//right side
@@ -170,6 +221,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const flo
 				Point2f{ m_FeetPos.x + 15,m_Position.y + 32 }, hit_info))
 			{
 				m_Position.x = hit_info.intersectPoint.x - 40; //Teleports entity to the point of intersection with a small offset
+				break;
 			}
 
 		}
@@ -181,6 +233,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const flo
 				Point2f{ m_FeetPos.x + 15,m_Position.y + 32 }, hit_info))
 			{
 				m_Position.x = hit_info.intersectPoint.x - 60; //Teleports entity to the point of intersection with a small offset
+				break;
 			}
 
 			//left side
@@ -188,75 +241,81 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const flo
 				Point2f{ m_FeetPos.x - 15,m_Position.y + 32 }, hit_info))
 			{
 				m_Position.x = hit_info.intersectPoint.x - 19; //Teleports entity to the point of intersection with a small offset
+				break;
 			}
 
 
 		}
 
-
+		}
 	}
 
 #pragma endregion
-
 	
 #pragma region Special Collisions
 
 	//Collisions
 
-	//for (int idx{ 0 }; idx < platforms.size(); idx++)
-	//{
-	//	//floor collision
+	for (int idx{ 0 }; idx < movingPlatforms.size(); idx++)
+	{
+		//floor collision
 
-	////checks collision from the left side of Yoshis feet
+	
+		if (m_VelocityY <= 0)
+		{
+			//checks collision from the left side of Yoshis feet
+			if (utils::Raycast(movingPlatforms[idx], Point2f{ m_FeetPos.x - 13,m_FeetPos.y + 32 },
+				Point2f{ m_FeetPos.x - 13,m_FeetPos.y }, hit_info))
+			{
+				m_VelocityY = 0;
+				m_Position.y = hit_info.intersectPoint.y;
+				m_IsGrounded = true;
+				m_TerminalVlcityTimer = 0;
 
-	//	if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x - 13,m_FeetPos.y + 32 },
-	//		Point2f{ m_FeetPos.x - 13,m_FeetPos.y }, hit_info))
-	//	{
-	//		m_VelocityY = 0;
-	//		m_Position.y = hit_info.intersectPoint.y;
-	//		m_IsGrounded = true;
-	//	}
+				if (m_VelocityX == 0)
+				{
+					m_Position.x = hit_info.intersectPoint.x - (m_FeetPos.x - m_Position.x);
+				}
 
-	//	//checks collision from the right side of Yoshis feet
-	//	if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 13,m_FeetPos.y + 32 },
-	//		Point2f{ m_FeetPos.x + 13,m_FeetPos.y }, hit_info))
-	//	{
-	//		m_VelocityY = 0;
-	//		m_Position.y = hit_info.intersectPoint.y;
-	//		m_IsGrounded = true;
-	//	}
+			}
 
-	//	//checks collision from the middle of Yoshis feet
-	//	if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x ,m_FeetPos.y + 32 },
-	//		Point2f{ m_FeetPos.x ,m_FeetPos.y }, hit_info))
-	//	{
-	//		m_VelocityY = 0;
-	//		m_Position.y = hit_info.intersectPoint.y;
-	//		m_IsGrounded = true;
-	//	}
+			//checks collision from the right side of Yoshis feet
+			if (utils::Raycast(movingPlatforms[idx], Point2f{ m_FeetPos.x + 13,m_FeetPos.y + 32 },
+				Point2f{ m_FeetPos.x + 13,m_FeetPos.y }, hit_info))
+			{
+				m_VelocityY = 0;
+				m_Position.y = hit_info.intersectPoint.y;
+				m_IsGrounded = true;
+				m_TerminalVlcityTimer = 0;
 
-	//	//Gravity
-	//	else
-	//	{
-	//		m_IsGrounded = false;
+				if (m_VelocityX == 0)
+				{
+					m_Position.x = hit_info.intersectPoint.x - (m_FeetPos.x - m_Position.x);
+				}
+			}
 
-	//		if (m_VelocityY != -480.f)
-	//		{
-	//			m_VelocityY -= 48.f;
+			//checks collision from the middle of Yoshis feet
+			if (utils::Raycast(movingPlatforms[idx], Point2f{ m_FeetPos.x ,m_FeetPos.y + 32 },
+				Point2f{ m_FeetPos.x ,m_FeetPos.y }, hit_info))
+			{
+				m_VelocityY = 0;
+				m_Position.y = hit_info.intersectPoint.y;
+				m_IsGrounded = true;
+				m_TerminalVlcityTimer = 0;
 
-	//			if (m_VelocityY < -480.f)
-	//			{
-	//				m_VelocityY -= -50.f;
-	//			}
-	//		}
+				if (m_VelocityX == 0)
+				{
+					m_Position.x = hit_info.intersectPoint.x - (m_FeetPos.x - m_Position.x);
+				}
+			}
 
+		}
+		
 
-
-	//	}
-
-	//}
+	}
 
 #pragma endregion
+
 #pragma region Friction and orientation
 
 	//simulates ground friction 
@@ -427,6 +486,21 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const flo
 			m_Eggs[idx]->Update(m_Position, m_IsFacingRight, idx, platforms, elapsedSec);
 
 		}
+		
+		if (m_Eggs.back()->GetIsThrown() == true)
+		{
+			if (m_Eggs.back()->GetPosition().x > m_Position.x + 700 || m_Eggs.back()->GetPosition().x < m_Position.x - 700)
+			{
+				m_Eggs.pop_back();
+			}
+
+			else if (m_Eggs.back()->GetPosition().y > m_Position.y + 700 || m_Eggs.back()->GetPosition().y < m_Position.y - 700)
+			{
+				m_Eggs.pop_back();
+			}
+
+		}
+
 	}
 
 	if (m_IsHoldingEgg == true)
@@ -931,18 +1005,23 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 		{
 			if (m_Eggs.size() > 0)
 			{
-
-				m_IsHoldingEgg = true;
+				if (m_Eggs.back()->GetIsThrown() == false)
+				{
+					m_IsHoldingEgg = true;
+				}
 
 			}
 		}
 
 		else if (m_IsHoldingEgg == true)
+		{
+			if (m_Eggs.size() > 0)
 			{
-			m_IsHoldingEgg = false;
-			m_Eggs.back()->ThrowEgg();
-			//m_Eggs.pop_back();
+				m_IsHoldingEgg = false;
+				m_Eggs.back()->ThrowEgg();
+				//m_Eggs.pop_back();
 			}
+		}
 		break;
 
 	case SDLK_v:
@@ -1006,7 +1085,23 @@ void Yoshi::HitCheck(std::vector<Enemy*>& Enemies)
 					}
 				}
 			}
-			
+			if (Enemies[idx] != nullptr)
+			{
+				if (m_Eggs.size() > 0)
+				{
+					if (m_Eggs.back()->GetIsThrown() == true)
+					{
+						if (utils::IsOverlapping(m_Eggs.back()->GetHitBox(), Enemies[idx]->GetHitBox()) == true)
+						{
+							Enemies[idx]->EnemyDeath();
+							delete Enemies[idx];
+							Enemies[idx] = nullptr;
+							m_Eggs.pop_back();
+						}
+					}
+				}
+				
+			}
 		}
 	}
 	

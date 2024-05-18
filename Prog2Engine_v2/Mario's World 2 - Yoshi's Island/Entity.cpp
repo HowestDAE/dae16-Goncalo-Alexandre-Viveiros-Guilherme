@@ -189,3 +189,8 @@ bool Entity::GetIsGrounded() const
 {
 	return m_IsGrounded;
 }
+
+Point2f Entity::GetVelocity() const
+{
+	return Point2f(m_VelocityX, m_VelocityY);
+}

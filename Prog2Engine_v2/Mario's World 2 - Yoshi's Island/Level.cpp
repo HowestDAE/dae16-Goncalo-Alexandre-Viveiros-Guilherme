@@ -8,7 +8,7 @@
 Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTxt1, const std::string& backgroundTxt3):
 	m_LvlTexture{ new Texture {imagePathLvlTxt}},m_BgTexture(new Texture { backgroundTxt1 }),m_BgTexture3(new Texture{ backgroundTxt3 })
 {
-	SVGParser::GetVerticesFromSvgFile("ex3.svg", m_LvlVertices);
+	SVGParser::GetVerticesFromSvgFile("ex4.svg", m_LvlVertices);
 	m_Platforms = new Platforms(Point2f(3620, 400), 48, 16, 48 * 2, 16 * 2, "Platforms.png", 90);
 }
 Level::~Level()
@@ -53,7 +53,6 @@ void Level::DrawBackground() const
 void Level::Update(float elapsedSec)
 {
 	m_Platforms->Update();
-
 }
 
 std::vector<std::vector<Point2f>> Level::GetLevelVertices()

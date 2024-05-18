@@ -16,7 +16,7 @@ void Egg::Draw() const
 {
 	Entity::Draw();
 
-	if (m_IsBeingHeld == true)
+	if (m_IsBeingHeld == true && m_IsThrown == false)
 	{
 		m_PointerTxt->Draw(Rectf(Points[0].x, Points[0].y, 16*2, 16*2),m_PointerRect);
 	}
@@ -35,16 +35,16 @@ void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int cu
 			m_LastYoshiPosX = yoshiPos.x;
 			m_LastYoshiPosY = yoshiPos.y;
 
-			m_Timer = 0.26;
+			m_Timer = 0.26f;
 		}
 		if (yoshiDirection == true)
 		{
-			m_Position.x = (m_LastYoshiPosX - m_TxtWidth * 2) - (m_TxtWidth * 2.5) * currentEgg;
+			m_Position.x = (m_LastYoshiPosX - m_TxtWidth * 2.f) - (m_TxtWidth * 2.5f) * currentEgg;
 			m_Position.y = m_LastYoshiPosY;
 		}
 		else
 		{
-			m_Position.x = (m_LastYoshiPosX + m_TxtWidth * 5) + (m_TxtWidth * 2.5) * currentEgg;
+			m_Position.x = (m_LastYoshiPosX + m_TxtWidth * 5) + (m_TxtWidth * 2.5f) * currentEgg;
 			m_Position.y = m_LastYoshiPosY;
 		}
 	}
@@ -54,8 +54,6 @@ void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int cu
 
 		Entity::Update(platforms, elapsedSec);
 	}
-	
-	
 	
 }
 
@@ -152,4 +150,9 @@ void Egg::ThrowEgg()
 bool Egg::GetIsThrown()
 {
 	return m_IsThrown;
+}
+
+Rectf Egg::GetHitbox()
+{
+	return m_Hitbox;
 }
