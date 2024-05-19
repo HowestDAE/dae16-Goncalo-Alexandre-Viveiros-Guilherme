@@ -5,7 +5,7 @@ class Yoshi;
 class Mario: public Entity
 {
 public:
-	Mario(Yoshi* PlyrYoshi);
+	Mario(Yoshi* &PlyrYoshi);
 	~Mario();
 	void Draw() const;
 	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);

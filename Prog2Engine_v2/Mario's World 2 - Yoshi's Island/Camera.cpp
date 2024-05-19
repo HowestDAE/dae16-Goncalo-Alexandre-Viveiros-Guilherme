@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "Texture.h"
+#include "Yoshi.h"
 
 
 Camera::Camera(const Point2f camPos, Point2f yoshiStartPos):
@@ -17,17 +18,17 @@ Camera::~Camera()
 	
 }
 
-void Camera::Pan(const Point2f yoshiPos, const bool isGrounded, const bool isFacingRight, float yoshiSpeedX)
+void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 {
 
-	if (m_CamPosition.x <= 0 || m_CamPosition.x <= -7000)
+	if (m_CamPosition.x <= levelStart || m_CamPosition.x <= levelEnd)
 	{
-		if (isFacingRight == true)
+		if (yoshiPlyr->GetIsFacingRight() == true)
 		{
-			if (m_CamPosition.x >= -yoshiPos.x + 200)
+			if (m_CamPosition.x >= -yoshiPlyr->GetPosition().x + 200)
 			{
-				m_CamPosition.x -= 0.05f * yoshiSpeedX / 5;
-				if (yoshiSpeedX ==  0)
+				m_CamPosition.x -= 0.05f * yoshiPlyr->GetVelocity().x / 5;
+				if (yoshiPlyr->GetVelocity().x ==  0)
 				{
 					m_CamPosition.x -= 0.5f;
 				}
@@ -36,10 +37,10 @@ void Camera::Pan(const Point2f yoshiPos, const bool isGrounded, const bool isFac
 
 		else
 		{
-			if (m_CamPosition.x <= -yoshiPos.x + 500)
+			if (m_CamPosition.x <= -yoshiPlyr->GetPosition().x + 500)
 			{
-				m_CamPosition.x -= 0.05f * yoshiSpeedX / 5;
-				if (yoshiSpeedX == 0)
+				m_CamPosition.x -= 0.05f * yoshiPlyr->GetVelocity().x / 5;
+				if (yoshiPlyr->GetVelocity().x == 0)
 				{
 					m_CamPosition.x += 0.5f;
 				}
@@ -61,14 +62,14 @@ void Camera::Pan(const Point2f yoshiPos, const bool isGrounded, const bool isFac
 
 	
 	//If yoshi is standing on a platform moves camera upwards
-	if (isGrounded == true)   
+	if (yoshiPlyr->GetIsGrounded() == true)   
 	{
 		
-		if (m_CamPosition.y > -yoshiPos.y + 150)
+		if (m_CamPosition.y > -yoshiPlyr->GetPosition().y + 150)
 		{
 			m_CamPosition.y -= 5;
 		}
-		if (m_CamPosition.y < -yoshiPos.y + 150)
+		if (m_CamPosition.y < -yoshiPlyr->GetPosition().y + 150)
 		{
 			m_CamPosition.y += 5;
 		}
@@ -77,12 +78,17 @@ void Camera::Pan(const Point2f yoshiPos, const bool isGrounded, const bool isFac
 	else
 	{
 	
-		if (m_CamPosition.y < -yoshiPos.y + 150)
+		if (m_CamPosition.y < -yoshiPlyr->GetPosition().y + 150)
 		{
 			m_CamPosition.y += 5;
 		}
 	}
 
+}
+
+void Camera::CenterCamera(Point2f yoshiPos)
+{
+	m_CamPosition = Point2f(-yoshiPos.x,-yoshiPos.y);
 }
 
 Point2f Camera::GetCamPos() const

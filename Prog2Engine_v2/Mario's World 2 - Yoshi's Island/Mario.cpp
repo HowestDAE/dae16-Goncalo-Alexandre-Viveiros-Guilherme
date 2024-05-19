@@ -4,7 +4,7 @@
 #include "Texture.h"
 #include "Yoshi.h"
 
-Mario::Mario(Yoshi* PlyrYoshi) :Entity("Mario_SpriteSheet.png", 14, 16, PlyrYoshi->GetPosition()), m_Yoshi(PlyrYoshi),
+Mario::Mario(Yoshi* &PlyrYoshi) :Entity("Mario_SpriteSheet.png", 14, 16, PlyrYoshi->GetPosition()), m_Yoshi(PlyrYoshi),
 m_XTxtPos2(m_XTxtPos), m_YTxtPos2(m_YTxtPos2), m_TxtWidth2(m_TxtWidth), m_TxtHeight2(m_TxtHeight)
 {
 }

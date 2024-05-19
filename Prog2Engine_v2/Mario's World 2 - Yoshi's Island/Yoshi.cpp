@@ -57,7 +57,7 @@ void Yoshi::Draw() const
 	//		Point2f{ m_FeetPos.x - 15,m_Position.y + 32 });
 	//}
 
-	utils::DrawPoint(Point2f(m_FeetPos.x,m_Position.y), 2);
+	//utils::DrawPoint(Point2f(m_FeetPos.x,m_Position.y), 2);
 #pragma endregion
 
 
@@ -102,8 +102,8 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 	{
 		m_TerminalVlcityTimer += elapsedSec;
 	}
-	//Collisions
 
+	//Floor Collisions
 	for (int idx{ 0 }; idx < platforms.size(); idx++)
 	{
 
@@ -202,10 +202,13 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 			}
 
 		}
-	
 
-		//Wall Collision
+		}
+	}
 
+	//Wall Collision
+	for (int idx{ 0 }; idx < platforms.size(); idx++)
+	{
 		if (m_IsFacingRight == true)
 		{
 			//left side
@@ -229,7 +232,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 		else
 		{
 			//right side
-			if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x -6,m_Position.y + 32 },
+			if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x - 6,m_Position.y + 32 },
 				Point2f{ m_FeetPos.x + 15,m_Position.y + 32 }, hit_info))
 			{
 				m_Position.x = hit_info.intersectPoint.x - 60; //Teleports entity to the point of intersection with a small offset
@@ -244,8 +247,6 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 				break;
 			}
 
-
-		}
 
 		}
 	}
@@ -968,8 +969,15 @@ void Yoshi::KeysDown()
 			//TODO add a functiom that throws the eaten enemy
 		}
 	}
-
-
+	//TODO debug keys remove later
+	if (pKeyStates[SDL_SCANCODE_SPACE])
+	{
+		m_Position.y += 5;
+	}
+	if (pKeyStates[SDL_SCANCODE_RSHIFT])
+	{
+		m_Position.y -= 5;
+	}
 }
 
 void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
@@ -1032,15 +1040,40 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 }
 
 
-void Yoshi::Debug() const
+void Yoshi::Debug() 
 {
+	//collision and gravity
+	m_Position.y += m_VelocityY / 100;
 
-	std::cout << m_MarioTimer << "\n";
+	//Adds Entity's horizontal speed to his position
+	m_Position.x += m_VelocityX / 100;
 }
 
 bool Yoshi::GetIsMarioOn() const
 {
 	return m_IsMarioOn;
+}
+
+bool Yoshi::GetIsJumping() const
+{
+	return m_IsYoshiJumping;
+}
+
+bool Yoshi::GetIsHovering() const
+{
+	if (m_CurrentState == AnimState::Hovering)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Yoshi::GetIsCrouching() const
+{
+	return m_IsCrouching;
 }
 
 

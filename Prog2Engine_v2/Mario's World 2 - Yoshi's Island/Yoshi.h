@@ -16,8 +16,11 @@ public:
 	void Animate(float elapsedSec);
 	void KeysDown();
 	void KeysUp(const SDL_KeyboardEvent& e);
-	void Debug() const;
+	void Debug();
 	bool GetIsMarioOn() const;
+	bool GetIsJumping() const;
+	bool GetIsHovering() const;
+	bool GetIsCrouching() const;
 	void HitCheck(std::vector<Enemy*>&);
 	
 

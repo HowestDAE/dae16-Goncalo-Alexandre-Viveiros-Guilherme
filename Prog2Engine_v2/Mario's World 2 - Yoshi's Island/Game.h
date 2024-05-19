@@ -38,6 +38,8 @@ private:
 	Mario* m_Mario;
 	Camera* m_GameCam;
 	ShyGuy* m_ShyGuy1;
+	bool debugging {false};
+	bool noclip{ false };
 	std::vector<Enemy*> m_Enemies;
 	// FUNCTIONS
 	void Initialize();

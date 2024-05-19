@@ -10,6 +10,7 @@ public:
 	virtual ~Entity();
 	void Draw() const;
 	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
+	void SetPosition(Point2f newPosition);
 	Rectf GetHitBox() const;
 	Point2f GetPosition() const;
 	bool GetIsFacingRight() const;

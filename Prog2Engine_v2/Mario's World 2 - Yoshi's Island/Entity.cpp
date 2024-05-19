@@ -167,6 +167,11 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms, const f
 
 }
 
+void Entity::SetPosition(Point2f newPosition)
+{
+	m_Position = newPosition;
+}
+
 Rectf Entity::GetHitBox() const
 {
 	return m_Hitbox;

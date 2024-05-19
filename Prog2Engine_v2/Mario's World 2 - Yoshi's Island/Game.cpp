@@ -24,7 +24,7 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	m_Level01 = new Level ("1-1 Make Eggs Throw Eggs no coins.png","ChocolateMountainsWIP.png","Gradient_BG.png");
+	m_Level01 = new Level ("1-1 Make Eggs Throw Eggs no coins.png","ChocolateMountainsWIP.png","Gradient_BG.png",0,-7000);
 	m_YoshiPlyr = new Yoshi(Point2f(130,280));
 	m_Mario = new Mario(m_YoshiPlyr);
 	m_GameCam = new Camera(Point2f(0, 0), m_YoshiPlyr->GetPosition());
@@ -51,15 +51,22 @@ void Game::Update(const float elapsedSec )
 {
 	//std::cout << 1 / elapsedSec << "\n";
 
-	m_YoshiPlyr->Update(m_Level01->GetLevelVertices(),m_Level01->GetPlatformVertices(),elapsedSec);
+	if (noclip == false)
+	{
+		m_YoshiPlyr->Update(m_Level01->GetLevelVertices(), m_Level01->GetPlatformVertices(), elapsedSec);
+	}
+	else
+	{
+		m_YoshiPlyr->Debug();
+	}
 	m_YoshiPlyr->Animate(elapsedSec);
 	m_YoshiPlyr->HitCheck(m_Enemies);
-	m_GameCam->Pan(m_YoshiPlyr->GetPosition(), m_YoshiPlyr->GetIsGrounded(),m_YoshiPlyr->GetIsFacingRight(),m_YoshiPlyr->GetVelocity().x);
+	m_YoshiPlyr->KeysDown();
+	m_GameCam->Pan(m_YoshiPlyr,m_Level01->GetLevelStart(),m_Level01->GetLevelEnd());
 	m_Mario->Update(m_Level01->GetLevelVertices(),elapsedSec);
 	m_Mario->Animate(elapsedSec);
-	m_YoshiPlyr->Debug();
-	m_YoshiPlyr->KeysDown();
 	m_Level01->Update(elapsedSec);
+	m_Level01->WarpPipesUpdate(true, m_YoshiPlyr, Point2f(2708, 348), 16, 16, Point2f(740, -515),m_GameCam);
 		
 	for(int idx{0};idx < m_Enemies.size(); idx++)
 	{
@@ -80,9 +87,12 @@ void Game::Update(const float elapsedSec )
 		}
 
 	}
-	
-		
 
+
+	if (debugging == true)
+	{
+		std::cout << "X Position" << m_YoshiPlyr->GetPosition().x << "\n" << "Y Position" <<m_YoshiPlyr->GetPosition().y ;
+	}
 		
 	
 	// Check keyboard state
@@ -151,6 +161,12 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 	{
 	case SDLK_r:
 		m_Enemies.push_back(new ShyGuy(Point2f(m_YoshiPlyr->GetPosition().x + 100, m_YoshiPlyr->GetPosition().y + 100)));
+		break;
+	case SDLK_d:
+		debugging = !debugging;
+		break;
+	case SDLK_n:
+		noclip = !noclip;
 		break;
 	}
 }

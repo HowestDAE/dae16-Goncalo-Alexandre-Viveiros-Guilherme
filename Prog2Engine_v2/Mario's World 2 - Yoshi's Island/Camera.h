@@ -1,5 +1,6 @@
 #pragma once
 
+class Yoshi;
 class Texture;
 class Camera
 {
@@ -7,7 +8,8 @@ public:
 	Camera(Point2f camPos, Point2f yoshiStartPos);
 	~Camera();
 
-	void Pan(Point2f yoshiPos, bool isGrounded, bool isFacingRight,float yoshiSpeedX);
+	void Pan(Yoshi*& yoshiPlyr, float levelStart, float levelEnd);
+	void CenterCamera(Point2f yoshiPos);
 	Point2f GetCamPos() const;
 
 private:
