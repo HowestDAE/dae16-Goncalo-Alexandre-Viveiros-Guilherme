@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "utils.h"
 #include "Egg.h"
+#include "WingedClouds.h"
 
 Yoshi::Yoshi(Point2f startPos):
 Entity("Yoshi_SpriteSheet.png",32,30,startPos),
@@ -1077,23 +1078,23 @@ bool Yoshi::GetIsCrouching() const
 }
 
 
-void Yoshi::HitCheck(std::vector<Enemy*>& Enemies)
+void Yoshi::HitCheck(std::vector<Enemy*>& enemies,std::vector<WingedClouds*>& wingedClouds)
 {
-	if (Enemies.size() > 0)
+	if (enemies.size() > 0)
 	{
-		for (int idx{ 0 }; idx < Enemies.size(); idx++)
+		for (int idx{ 0 }; idx < enemies.size(); idx++)
 		{
-			if (Enemies[idx] != nullptr)
+			if (enemies[idx] != nullptr)
 			{
-				if (utils::IsOverlapping(m_Hitbox, Enemies[idx]->GetHitBox()) == true)
+				if (utils::IsOverlapping(m_Hitbox, enemies[idx]->GetHitBox()) == true)
 				{
-					if (Enemies[idx]->GetIsSquashable() == true)
+					if (enemies[idx]->GetIsSquashable() == true)
 					{
-						if (m_Hitbox.bottom > Enemies[idx]->GetHitBox().bottom + (m_TxtHeight / 3))
+						if (m_Hitbox.bottom > enemies[idx]->GetHitBox().bottom + (m_TxtHeight / 3))
 						{
-							Enemies[idx]->EnemyDeath();
-							delete Enemies[idx];
-							Enemies[idx] = nullptr;
+							enemies[idx]->EnemyDeath();
+							delete enemies[idx];
+							enemies[idx] = nullptr;
 							m_VelocityY *= -2.f;
 						}
 						else
@@ -1104,31 +1105,31 @@ void Yoshi::HitCheck(std::vector<Enemy*>& Enemies)
 					}
 				}
 			}
-			if (Enemies[idx] != nullptr)
+			if (enemies[idx] != nullptr)
 			{
-				if (Enemies[idx]->GetIsEdible() == true)
+				if (enemies[idx]->GetIsEdible() == true)
 				{
-					if (utils::IsOverlapping(Enemies[idx]->GetHitBox(),m_Tongue) == true)
+					if (utils::IsOverlapping(enemies[idx]->GetHitBox(),m_Tongue) == true)
 					{
-						Enemies[idx]->EnemyDeath();
-						delete Enemies[idx];
-						Enemies[idx] = nullptr;
+						enemies[idx]->EnemyDeath();
+						delete enemies[idx];
+						enemies[idx] = nullptr;
 						m_IsMouthFull = true;
 						m_IsTonguing = false;
 					}
 				}
 			}
-			if (Enemies[idx] != nullptr)
+			if (enemies[idx] != nullptr)
 			{
 				if (m_Eggs.size() > 0)
 				{
 					if (m_Eggs.back()->GetIsThrown() == true)
 					{
-						if (utils::IsOverlapping(m_Eggs.back()->GetHitBox(), Enemies[idx]->GetHitBox()) == true)
+						if (utils::IsOverlapping(m_Eggs.back()->GetHitBox(), enemies[idx]->GetHitBox()) == true)
 						{
-							Enemies[idx]->EnemyDeath();
-							delete Enemies[idx];
-							Enemies[idx] = nullptr;
+							enemies[idx]->EnemyDeath();
+							delete enemies[idx];
+							enemies[idx] = nullptr;
 							m_Eggs.pop_back();
 						}
 					}
@@ -1137,6 +1138,26 @@ void Yoshi::HitCheck(std::vector<Enemy*>& Enemies)
 			}
 		}
 	}
-	
-	
+
+	if (wingedClouds.size() > 0)
+	{
+		for (int idx{ 0 }; idx < wingedClouds.size(); idx++)
+		{
+			if (wingedClouds[idx] != nullptr)
+			{
+				if (m_Eggs.size() > 0)
+				{
+					if (m_Eggs.back()->GetIsThrown() == true)
+					{
+						if (utils::IsOverlapping(m_Eggs.back()->GetHitBox(), wingedClouds[idx]->GetHitBox()) == true)
+						{
+							wingedClouds[idx]->SetIsHit();
+							m_Eggs.pop_back();
+						}
+					}
+				}
+
+			}
+		}
+	}
 }

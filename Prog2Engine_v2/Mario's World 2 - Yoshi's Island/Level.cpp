@@ -1,13 +1,18 @@
 #include "pch.h"
 #include "Level.h"
+
+#include <iostream>
+
 #include "Texture.h"
 #include "Camera.h"
 #include "Platforms.h"
 #include "SVGParser.h"
 #include "utils.h"
 #include "Yoshi.h"
+#include "WingedClouds.h"
 
-Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTxt1, const std::string& backgroundTxt3, float levelStart, float levelEnd):
+Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTxt1, const std::string& backgroundTxt3, float levelStart, Point2f levelEnd,int levelNumber):
+	m_LevelNumber(levelNumber),
 	m_LvlTexture{ new Texture {imagePathLvlTxt} },
 	m_BgTexture(new Texture{ backgroundTxt1 }),
 	m_BgTexture3(new Texture{ backgroundTxt3 }),
@@ -15,7 +20,20 @@ Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTx
 	m_LevelEnd(levelEnd)
 {
 	SVGParser::GetVerticesFromSvgFile("ex4.svg", m_LvlVertices);
-	m_Platforms = new Platforms(Point2f(3620, 400), 48, 16, 48 * 2, 16 * 2, "Platforms.png", 90);
+	if (m_LevelNumber == 1)
+	{
+		//Add platforms for Lvl 1
+		m_Platforms.push_back(new Platforms(Point2f(3620, 400), 48, 16, 48, 16 * 2, "Platforms.png", 90));
+		m_Platforms.push_back(new Platforms(Point2f(5299, 743), 48, 16, 48, 16 * 2, "Platforms.png", 90));
+
+		//Add Winged Clouds for Lvl 1
+		m_WingedClouds.push_back(new WingedClouds(true, false, false, "GeneralSprites.png", Point2f(2256, 483)));
+		m_WingedClouds.push_back(new WingedClouds(false, true, false, "GeneralSprites.png", Point2f(4294, 325)) );
+		m_WingedClouds.push_back(new WingedClouds(true, false, false, "GeneralSprites.png", Point2f(4940, 294)));
+		m_WingedClouds.push_back(new WingedClouds(false, false, true, "GeneralSprites.png", Point2f(4450, 743)));
+		m_WingedClouds.push_back(new WingedClouds(false, false, true, "GeneralSprites.png", Point2f(6292, 639)));
+	}
+	
 }
 Level::~Level()
 {
@@ -23,7 +41,14 @@ Level::~Level()
 	delete m_LvlTexture;
 	//delete m_BgTexture2;
 	delete m_BgTexture3;
-	delete m_Platforms;
+	for (int idx = 0; idx  < m_Platforms.size(); idx ++)
+	{
+		delete m_Platforms[idx];
+	}
+	for (int idx = 0; idx < m_WingedClouds.size(); idx++)
+	{
+		delete m_WingedClouds[idx];
+	}
 }
 
 void Level::DrawLvl() const  
@@ -31,9 +56,16 @@ void Level::DrawLvl() const
 	m_LvlTexture->Draw();
 }
 
-void Level::DrawPlatforms() const
+void Level::DrawOthers() const
 {
-	m_Platforms->Draw();
+	for (int idx = 0; idx < m_Platforms.size(); idx++)
+	{
+		m_Platforms[idx]->Draw();
+	}
+	for (int idx = 0; idx < m_WingedClouds.size(); idx++)
+	{
+		m_WingedClouds[idx]->Draw();
+	}
 }
 
 void Level::DrawBackground() const
@@ -58,7 +90,23 @@ void Level::DrawBackground() const
 
 void Level::Update(float elapsedSec) const
 {
-	m_Platforms->Update();
+	for (int idx = 0; idx < m_Platforms.size(); idx++)
+	{
+		m_Platforms[idx]->Update();
+	}
+
+	for (int idx = 0; idx < m_WingedClouds.size(); idx++)
+	{
+		m_WingedClouds[idx]->Update();
+	}
+}
+
+void Level::Animate(float elapsedSec)
+{
+	for (int idx = 0; idx < m_WingedClouds.size(); idx++)
+	{
+		m_WingedClouds[idx]->Animate(elapsedSec);
+	}
 }
 
 void Level::WarpPipesUpdate(bool isDownPipe, Yoshi* &yoshiPlyr, Point2f pipePosition, float pipeWidth, float pipeHeight, Point2f pipeWarpDestination,Camera* &plyrCamera)
@@ -88,12 +136,23 @@ void Level::WarpPipesUpdate(bool isDownPipe, Yoshi* &yoshiPlyr, Point2f pipePosi
 
 }
 
+void Level::LevelEndUpdate(Point2f yoshiPos)
+{
+	if (yoshiPos.x >= m_LevelEnd.x)
+	{
+		if (yoshiPos.y >= m_LevelEnd.y)
+		{
+			std::cout << "YOU WON!!!!";
+		}
+	}
+}
+
 float Level::GetLevelStart() const
 {
 	return m_LevelStart;
 }
 
-float Level::GetLevelEnd() const
+Point2f Level::GetLevelEnd() const
 {
 	return m_LevelEnd;
 }
@@ -106,6 +165,15 @@ std::vector<std::vector<Point2f>> Level::GetLevelVertices()
 
 std::vector<std::vector<Point2f>> Level::GetPlatformVertices() const
 {
-	return m_Platforms->GetPlatformVertices();
+	for (int idx = 0; idx < m_Platforms.size(); idx++)
+	{
+		return m_Platforms[idx]->GetPlatformVertices();
+	}
+
+}
+
+std::vector<WingedClouds*>& Level::GetWingedClouds()
+{
+	return m_WingedClouds;
 }
 

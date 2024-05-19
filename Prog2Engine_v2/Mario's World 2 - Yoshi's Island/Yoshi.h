@@ -2,6 +2,7 @@
 #include <vector>
 #include "Entity.h"
 
+class WingedClouds;
 class Egg;
 class Enemy;
 class Texture;
@@ -21,7 +22,7 @@ public:
 	bool GetIsJumping() const;
 	bool GetIsHovering() const;
 	bool GetIsCrouching() const;
-	void HitCheck(std::vector<Enemy*>&);
+	void HitCheck(std::vector<Enemy*>&, std::vector<WingedClouds*> &wingedClouds);
 	
 
 private:

@@ -24,7 +24,7 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	m_Level01 = new Level ("1-1 Make Eggs Throw Eggs no coins.png","ChocolateMountainsWIP.png","Gradient_BG.png",0,-7000);
+	m_Level01 = new Level ("1-1 Make Eggs Throw Eggs no coins.png","ChocolateMountainsWIP.png","Gradient_BG.png",0,Point2f(7300,633),1 );
 	m_YoshiPlyr = new Yoshi(Point2f(130,280));
 	m_Mario = new Mario(m_YoshiPlyr);
 	m_GameCam = new Camera(Point2f(0, 0), m_YoshiPlyr->GetPosition());
@@ -51,6 +51,7 @@ void Game::Update(const float elapsedSec )
 {
 	//std::cout << 1 / elapsedSec << "\n";
 
+	//Yoshis functions
 	if (noclip == false)
 	{
 		m_YoshiPlyr->Update(m_Level01->GetLevelVertices(), m_Level01->GetPlatformVertices(), elapsedSec);
@@ -60,14 +61,23 @@ void Game::Update(const float elapsedSec )
 		m_YoshiPlyr->Debug();
 	}
 	m_YoshiPlyr->Animate(elapsedSec);
-	m_YoshiPlyr->HitCheck(m_Enemies);
+	m_YoshiPlyr->HitCheck(m_Enemies,m_Level01->GetWingedClouds());
 	m_YoshiPlyr->KeysDown();
-	m_GameCam->Pan(m_YoshiPlyr,m_Level01->GetLevelStart(),m_Level01->GetLevelEnd());
+
+	//Camera functions
+	m_GameCam->Pan(m_YoshiPlyr,m_Level01->GetLevelStart(),m_Level01->GetLevelEnd().x);
+
+	//Mario's functions
 	m_Mario->Update(m_Level01->GetLevelVertices(),elapsedSec);
 	m_Mario->Animate(elapsedSec);
+
+	//Levels Functions
 	m_Level01->Update(elapsedSec);
 	m_Level01->WarpPipesUpdate(true, m_YoshiPlyr, Point2f(2708, 348), 16, 16, Point2f(740, -515),m_GameCam);
-		
+	m_Level01->LevelEndUpdate(m_YoshiPlyr->GetPosition());
+	m_Level01->Animate(elapsedSec);
+
+	//Enemy Functions
 	for(int idx{0};idx < m_Enemies.size(); idx++)
 	{
 		if (m_Enemies[idx] != nullptr)
@@ -129,7 +139,7 @@ void Game::Draw( ) const
 		m_Level01->DrawLvl();
 		glPopMatrix();
 
-		m_Level01->DrawPlatforms();
+		m_Level01->DrawOthers();
 		m_Mario->Draw();
 		m_YoshiPlyr->Draw();
 

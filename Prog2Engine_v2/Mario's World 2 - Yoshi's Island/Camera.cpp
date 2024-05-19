@@ -21,7 +21,7 @@ Camera::~Camera()
 void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 {
 
-	if (m_CamPosition.x <= levelStart || m_CamPosition.x <= levelEnd)
+	if (m_CamPosition.x <= levelStart || m_CamPosition.x <= -levelEnd)
 	{
 		if (yoshiPlyr->GetIsFacingRight() == true)
 		{

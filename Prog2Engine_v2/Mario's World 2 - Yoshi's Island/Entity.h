@@ -8,7 +8,7 @@ class Entity
 public:
 	Entity(const std::string& texturePath, float txtHeight, float txtWidth, Point2f position);
 	virtual ~Entity();
-	void Draw() const;
+	virtual void Draw() const;
 	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
 	void SetPosition(Point2f newPosition);
 	Rectf GetHitBox() const;
