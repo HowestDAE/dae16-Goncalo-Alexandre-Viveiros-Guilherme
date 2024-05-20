@@ -67,32 +67,45 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms, const f
 		m_TerminalVlcityTimer += elapsedSec;
 	}
 
-	//Collisions
 
+	if (m_TerminalVlcityTimer > 1)
+	{
+		m_TerminalVlcityTimer = 1;
+	}
+	else
+	{
+		m_TerminalVlcityTimer += elapsedSec;
+	}
+
+	//Floor Collisions
 	for (int idx{ 0 }; idx < platforms.size(); idx++)
 	{
-		//floor collision
 
-	//checks collision from the left side of Entity
-		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left,m_Hitbox.bottom + m_TxtHeight*2 },
+
+		//checks collision from the left side of Entity's feet
+		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left,m_Hitbox.bottom + m_TxtHeight * 2 },
 			Point2f{ m_Hitbox.left,m_Hitbox.bottom - 1 }, hit_info))
 		{
 			m_VelocityY = 0;
 			m_Position.y = hit_info.intersectPoint.y;
 			m_IsGrounded = true;
+			m_TerminalVlcityTimer = 0;
+			break;
 		}
 
-		//checks collision from the right side of Entity
-		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom + m_TxtHeight*2 },
-			Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom - 1}, hit_info))
+		//checks collision from the right side of Entity's feet
+		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom + m_TxtHeight * 2 },
+			Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom - 1 }, hit_info))
 		{
 			m_VelocityY = 0;
 			m_Position.y = hit_info.intersectPoint.y;
 			m_IsGrounded = true;
+			m_TerminalVlcityTimer = 0;
+			break;
 		}
 
 		//Gravity
-		else
+		if (idx == 0) //to prevent gravity from getting looped 12 times
 		{
 			m_IsGrounded = false;
 
@@ -108,6 +121,12 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms, const f
 
 		}
 
+		
+	}
+
+	//Wall Collision
+	for (int idx{ 0 }; idx < platforms.size(); idx++)
+	{
 		//Wall Collision
 
 	//left side collision
@@ -121,30 +140,12 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms, const f
 		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
 			Point2f{ m_Hitbox.left + m_TxtWidth * 2 + 2,m_Hitbox.bottom + m_TxtHeight }, hit_info))
 		{
-			m_Position.x = hit_info.intersectPoint.x - m_TxtWidth * 2+ 2;
+			m_Position.x = hit_info.intersectPoint.x - m_TxtWidth * 2 + 2;
 		}
 
-
-
-
 	}
 
-
-	//simulates ground friction 
-	if (m_IsGrounded == true)
-	{
-		m_VelocityX -= (m_VelocityX * 3.3) * elapsedSec;
-	}
-
-
-	//Stops movement once it falls below a certain range
-	if (m_VelocityX < 20 && m_VelocityX > 0 || m_VelocityX > -20 && m_VelocityX < 0)
-	{
-		m_VelocityX = 0;
-	}
-
-
-	//Check if Entity is facing right
+	//checks if entity is facing right or left
 	if (m_VelocityX < 0)
 	{
 		m_IsFacingRight = false;
@@ -154,7 +155,6 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms, const f
 	{
 		m_IsFacingRight = true;
 	}
-
 
 	//collision and gravity
 	m_Position.y += m_VelocityY * elapsedSec;

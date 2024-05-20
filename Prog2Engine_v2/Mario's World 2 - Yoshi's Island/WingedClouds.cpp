@@ -1,11 +1,15 @@
 #include "pch.h"
 #include "WingedClouds.h"
 
-WingedClouds::WingedClouds(bool isLevelCloud, bool isStarCloud, bool isFlowerCloud, const std::string& texturePath,Point2f position):Entity(texturePath,30,42,position),
-m_IsLevelCloud(isLevelCloud),
-m_IsStarCloud(isStarCloud),
-m_IsFlowerCloud(isFlowerCloud)
+#include <iostream>
+
+#include "Flowers.h"
+#include "Texture.h"
+
+WingedClouds::WingedClouds(Type typeOfCloud, const std::string& texturePath,Point2f position):Entity(texturePath,30,42,position),
+                                                                                              m_TypeOfCloud(typeOfCloud)
 {
+
 }
 
 WingedClouds::~WingedClouds()
@@ -13,31 +17,22 @@ WingedClouds::~WingedClouds()
 
 }
 
-void WingedClouds::Update() const
+void WingedClouds::Update()
 {
+	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
+
 	if (m_IsHit == true)
 	{
-		if (m_IsLevelCloud == true)
-		{
 
-			if (m_AreStructureSpawned == true)
-			{
-				delete this;
-			}
-		}
-
-		else if (m_IsStarCloud == true)
+		if (m_TypeOfCloud == Type::StarCloud)
 		{
 			//TODO make it spawn those stupid stars
 
-			delete this;
 		}
 
-		else if (m_IsFlowerCloud == true)
+		else if (m_TypeOfCloud == Type::FlowerCloud)
 		{
-			//TODO make it spawn a flower
-
-			delete this;
+			CloudFlower = new Flower(m_Position);
 		}
 	}
 }
@@ -64,3 +59,20 @@ void WingedClouds::SetIsHit()
 {
 	m_IsHit = true;
 }
+
+bool WingedClouds::GetIsHit()
+{
+	return m_IsHit;
+}
+
+
+WingedClouds::Type WingedClouds::GetTypeOfCloud() const
+{
+	return m_TypeOfCloud;
+}
+
+Flower* WingedClouds::GetFlower() const
+{
+	return CloudFlower;
+}
+

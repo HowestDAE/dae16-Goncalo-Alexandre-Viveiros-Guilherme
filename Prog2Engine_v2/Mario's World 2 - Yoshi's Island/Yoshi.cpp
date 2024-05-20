@@ -6,6 +6,7 @@
 #include "utils.h"
 #include "Egg.h"
 #include "WingedClouds.h"
+#include "Flowers.h"
 
 Yoshi::Yoshi(Point2f startPos):
 Entity("Yoshi_SpriteSheet.png",32,30,startPos),
@@ -31,7 +32,19 @@ void Yoshi::Draw() const
 		m_Eggs[idx]->Draw();
 	}
 
-	Entity::Draw();
+	if (m_IsHit == true)
+	{
+		if (m_HitTimer > 0.05)
+		{
+			Entity::Draw();
+		}
+	}
+
+	else
+	{
+		Entity::Draw();
+	}
+	
 	
 #pragma region Debug
 	//utils::SetColor(Color4f{ 1,0,0,1 });
@@ -318,7 +331,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 
 #pragma endregion
 
-#pragma region Friction and orientation
+#pragma region Friction and orientation. Hit timer
 
 	//simulates ground friction 
 	if (m_IsGrounded == true)
@@ -340,20 +353,43 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 
 
 	//Check if Entity is facing right
-	
-	if (m_IsHoldingEgg == false)
+	if (m_IsHit == false)
 	{
-		if (m_VelocityX < 0)
+		if (m_IsHoldingEgg == false)
 		{
-			m_IsFacingRight = false;
-		}
+			if (m_VelocityX < 0)
+			{
+				m_IsFacingRight = false;
+			}
 
-		else if (m_VelocityX > 0)
-		{
-			m_IsFacingRight = true;
+			else if (m_VelocityX > 0)
+			{
+				m_IsFacingRight = true;
+			}
 		}
 	}
+	else 
+	{
+		m_HitTimer += elapsedSec;
+
+		for (float idx{ 0 }; idx < 2; idx += elapsedSec)
+		{
+			if (m_HitTimer > 0.1)
+			{
+				m_HitTimer = 0;
+			}
+
+			if (idx > 1.8)
+			{
+				m_IsHit = false;
+			}
+		}
+
+
 	
+
+	}
+
 
 #pragma endregion
 	
@@ -434,8 +470,8 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 
 	else if (m_IsTonguing == false)
 	{
-		m_Tongue.center.x = m_Position.x;
-		m_Tongue.center.y = m_Position.y + m_TxtHeight;
+		m_Tongue.center.x = -3000;
+		m_Tongue.center.y = -3000;
 	}
 #pragma endregion
 
@@ -1037,6 +1073,10 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 
 		m_IsCalculatingAngle = !m_IsCalculatingAngle;
 		break;
+
+	case SDLK_ESCAPE:
+		m_PlayerPause = !m_PlayerPause;
+		break;
 	}
 }
 
@@ -1077,64 +1117,103 @@ bool Yoshi::GetIsCrouching() const
 	return m_IsCrouching;
 }
 
-
-void Yoshi::HitCheck(std::vector<Enemy*>& enemies,std::vector<WingedClouds*>& wingedClouds)
+bool Yoshi::GetPlayerPause() const
 {
-	if (enemies.size() > 0)
+	return m_PlayerPause;
+}
+
+
+void Yoshi::HitCheck(std::vector<Enemy*>& enemies, const std::vector<WingedClouds*>& wingedClouds, Rectf marioHitbox,std::vector<Flower*>& flowers)
+{
+	if (m_IsHit == false)
 	{
-		for (int idx{ 0 }; idx < enemies.size(); idx++)
+		if (enemies.size() > 0)
 		{
-			if (enemies[idx] != nullptr)
+			for (int idx{ 0 }; idx < enemies.size(); idx++)
 			{
-				if (utils::IsOverlapping(m_Hitbox, enemies[idx]->GetHitBox()) == true)
+				if (enemies[idx] != nullptr)
 				{
+					//checks if enemy is "squashable" and if the yoshi hits his head kills him
 					if (enemies[idx]->GetIsSquashable() == true)
 					{
-						if (m_Hitbox.bottom > enemies[idx]->GetHitBox().bottom + (m_TxtHeight / 3))
+						if (utils::IsOverlapping(m_Hitbox, enemies[idx]->GetHitBox()) == true)
+						{
+							if (m_Hitbox.bottom > enemies[idx]->GetHitBox().bottom + enemies[idx]->GetHitBox().height - 3)
+							{
+								enemies[idx]->EnemyDeath();
+								delete enemies[idx];
+								enemies[idx] = nullptr;
+								m_VelocityY *= -2.f;
+
+								break;
+							}
+						}
+					}
+
+					//checks if enemy can be eaten and if the tongue hits him it eats him
+					if (enemies[idx]->GetIsEdible() == true)
+					{
+						if (utils::IsOverlapping(enemies[idx]->GetHitBox(), m_Tongue) == true)
 						{
 							enemies[idx]->EnemyDeath();
 							delete enemies[idx];
 							enemies[idx] = nullptr;
-							m_VelocityY *= -2.f;
+							m_IsMouthFull = true;
+							m_IsTonguing = false;
+
+							break;
 						}
-						else
+					}
+
+					//checks if egg hit the enemy
+					if (m_Eggs.size() > 0)
+					{
+						if (m_Eggs.back()->GetIsThrown() == true)
 						{
-							m_IsMarioOn = false;
+							if (utils::IsOverlapping(m_Eggs.back()->GetHitBox(), enemies[idx]->GetHitBox()) == true)
+							{
+								enemies[idx]->EnemyDeath();
+								delete enemies[idx];
+								enemies[idx] = nullptr;
+								m_Eggs.pop_back();
+								break;
+							}
+						}
+					}
+
+					//checks if enemy his hitting yoshi
+					if (utils::IsOverlapping(m_Hitbox, enemies[idx]->GetHitBox()) == true)
+					{
+						m_IsHit = true;
+
+						if (enemies[idx]->GetIsFacingRight() == true)
+						{
+							m_VelocityX *= -1.f;
+							m_VelocityX += 300.f;
+							
 						}
 
-					}
-				}
-			}
-			if (enemies[idx] != nullptr)
-			{
-				if (enemies[idx]->GetIsEdible() == true)
-				{
-					if (utils::IsOverlapping(enemies[idx]->GetHitBox(),m_Tongue) == true)
-					{
-						enemies[idx]->EnemyDeath();
-						delete enemies[idx];
-						enemies[idx] = nullptr;
-						m_IsMouthFull = true;
-						m_IsTonguing = false;
-					}
-				}
-			}
-			if (enemies[idx] != nullptr)
-			{
-				if (m_Eggs.size() > 0)
-				{
-					if (m_Eggs.back()->GetIsThrown() == true)
-					{
-						if (utils::IsOverlapping(m_Eggs.back()->GetHitBox(), enemies[idx]->GetHitBox()) == true)
+						else
 						{
-							enemies[idx]->EnemyDeath();
-							delete enemies[idx];
-							enemies[idx] = nullptr;
-							m_Eggs.pop_back();
+							m_VelocityX *= -1.f;
+							m_VelocityX -= 300.f;
 						}
+
+						m_VelocityY += 200;
+
+						m_IsMarioOn = false;
+
+						break;
 					}
 				}
-				
+			}
+		}
+
+		if (m_IsMarioOn == false)
+		{
+			if (utils::IsOverlapping(m_Hitbox, marioHitbox) == true)
+			{
+				m_IsMarioOn = true;
 			}
 		}
 	}
@@ -1156,6 +1235,26 @@ void Yoshi::HitCheck(std::vector<Enemy*>& enemies,std::vector<WingedClouds*>& wi
 						}
 					}
 				}
+
+			}
+		}
+	}
+
+	if (flowers.size() > 0)
+	{
+		for (int idx{ 0 }; idx < flowers.size(); idx++)
+		{
+			if (flowers[idx] != nullptr)
+			{
+				
+				if (utils::IsOverlapping(m_Hitbox, flowers[idx]->GetHitBox()) == true)
+				{
+					delete flowers[idx];
+					flowers[idx] = nullptr;
+
+					m_Flowers += 1;
+				}
+					
 
 			}
 		}

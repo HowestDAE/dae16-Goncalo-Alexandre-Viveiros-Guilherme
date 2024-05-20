@@ -49,52 +49,65 @@ void Game::Cleanup() const
 
 void Game::Update(const float elapsedSec )
 {
-	//std::cout << 1 / elapsedSec << "\n";
-
-	//Yoshis functions
-	if (noclip == false)
-	{
-		m_YoshiPlyr->Update(m_Level01->GetLevelVertices(), m_Level01->GetPlatformVertices(), elapsedSec);
-	}
-	else
-	{
-		m_YoshiPlyr->Debug();
-	}
-	m_YoshiPlyr->Animate(elapsedSec);
-	m_YoshiPlyr->HitCheck(m_Enemies,m_Level01->GetWingedClouds());
-	m_YoshiPlyr->KeysDown();
-
-	//Camera functions
-	m_GameCam->Pan(m_YoshiPlyr,m_Level01->GetLevelStart(),m_Level01->GetLevelEnd().x);
-
-	//Mario's functions
-	m_Mario->Update(m_Level01->GetLevelVertices(),elapsedSec);
-	m_Mario->Animate(elapsedSec);
 
 	//Levels Functions
-	m_Level01->Update(elapsedSec);
-	m_Level01->WarpPipesUpdate(true, m_YoshiPlyr, Point2f(2708, 348), 16, 16, Point2f(740, -515),m_GameCam);
-	m_Level01->LevelEndUpdate(m_YoshiPlyr->GetPosition());
-	m_Level01->Animate(elapsedSec);
+	m_Level01->Update(elapsedSec,m_YoshiPlyr->GetPlayerPause());
 
-	//Enemy Functions
-	for(int idx{0};idx < m_Enemies.size(); idx++)
+
+	//std::cout << 1 / elapsedSec << "\n";
+	if (m_Level01->GetLevelPause() == false)
 	{
-		if (m_Enemies[idx] != nullptr)
+		
+
+		if (m_YoshiPlyr->GetPlayerPause() == false)
 		{
-		if (auto ShyGuys = dynamic_cast<ShyGuy*>(m_Enemies[idx]))
-		{
-			if (ShyGuys->GetIsAlive() == true)
+			//Level Functions
+			m_Level01->WarpPipesUpdate(true, m_YoshiPlyr, Point2f(2708, 348), 16, 16, Point2f(740, -515), m_GameCam);
+			m_Level01->LevelEndUpdate(m_YoshiPlyr->GetPosition());
+			m_Level01->Animate(elapsedSec);
+
+			//Yoshis functions
+			if (noclip == false)
 			{
-				ShyGuys->Update(m_Level01->GetLevelVertices(), elapsedSec);
-				ShyGuys->Animate(elapsedSec);
+				m_YoshiPlyr->Update(m_Level01->GetLevelVertices(), m_Level01->GetPlatformVertices(), elapsedSec);
 			}
 			else
 			{
-				ShyGuys->DeathHandling();
+				m_YoshiPlyr->Debug();
+			}
+			m_YoshiPlyr->Animate(elapsedSec);
+			m_YoshiPlyr->HitCheck(m_Enemies, m_Level01->GetWingedClouds(), m_Mario->GetHitBox(), m_Level01->GetFlowers());
+			m_YoshiPlyr->KeysDown();
+
+			//Camera functions
+			m_GameCam->Pan(m_YoshiPlyr, m_Level01->GetLevelStart(), m_Level01->GetLevelEnd().x);
+
+			//Mario's functions
+			m_Mario->Update(m_Level01->GetLevelVertices(), elapsedSec);
+			m_Mario->Animate(elapsedSec);
+
+			//Enemy Functions
+			for (int idx{ 0 }; idx < m_Enemies.size(); idx++)
+			{
+				if (m_Enemies[idx] != nullptr)
+				{
+					if (auto ShyGuys = dynamic_cast<ShyGuy*>(m_Enemies[idx]))
+					{
+						if (ShyGuys->GetIsAlive() == true)
+						{
+							ShyGuys->Update(m_Level01->GetLevelVertices(), elapsedSec);
+							ShyGuys->Animate(elapsedSec);
+						}
+						else
+						{
+							ShyGuys->DeathHandling();
+						}
+					}
+				}
 			}
 		}
-		}
+		
+	
 
 	}
 

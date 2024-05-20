@@ -2,6 +2,7 @@
 #include <vector>
 #include "Entity.h"
 
+class Flower;
 class WingedClouds;
 class Egg;
 class Enemy;
@@ -22,7 +23,8 @@ public:
 	bool GetIsJumping() const;
 	bool GetIsHovering() const;
 	bool GetIsCrouching() const;
-	void HitCheck(std::vector<Enemy*>&, std::vector<WingedClouds*> &wingedClouds);
+	bool GetPlayerPause() const;
+	void HitCheck(std::vector<Enemy*>&, const std::vector<WingedClouds*> &wingedClouds, Rectf marioHitbox, std::vector<Flower*>& flowers);
 	
 
 private:
@@ -30,9 +32,12 @@ private:
 	bool m_IsYoshiJumping{false};
 	bool m_IsMarioOn;
 	bool m_IsLookingUp{ false };
+	bool m_IsHit{ false };
 	int m_MarioTimer ;
+	int m_Flowers{ 0 };
 	float m_FlightTime{ 0 };
 	float m_Countdown{ 0 };
+	float m_HitTimer{ 0 };
 	float m_JumpTimer{0};
 	Circlef m_Tongue;
 	bool m_IsMouthFull{false};
@@ -43,6 +48,7 @@ private:
 	bool m_IsCalculatingAngle{ true };
 	bool m_IsCrouching{ false };
 	bool m_IsLayingEgg{ false };
+	bool m_PlayerPause{ false };
 
 	enum class AnimState {
 		Idle,
