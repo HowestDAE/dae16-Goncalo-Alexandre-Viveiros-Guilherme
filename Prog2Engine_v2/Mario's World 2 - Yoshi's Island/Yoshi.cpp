@@ -392,8 +392,6 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 
 
 #pragma endregion
-	
-
 
 #pragma region Jump
 
@@ -499,7 +497,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 		{
 			if (m_Countdown >= 1)
 			{
-				m_MarioTimer -= 1;
+				m_MarioTimer += 1;
 				m_Countdown = 0;
 			}
 		}
@@ -1154,8 +1152,6 @@ void Yoshi::HitCheck(std::vector<Enemy*>& enemies, const std::vector<WingedCloud
 						if (utils::IsOverlapping(enemies[idx]->GetHitBox(), m_Tongue) == true)
 						{
 							enemies[idx]->EnemyDeath();
-							delete enemies[idx];
-							enemies[idx] = nullptr;
 							m_IsMouthFull = true;
 							m_IsTonguing = false;
 
@@ -1171,8 +1167,6 @@ void Yoshi::HitCheck(std::vector<Enemy*>& enemies, const std::vector<WingedCloud
 							if (utils::IsOverlapping(m_Eggs.back()->GetHitBox(), enemies[idx]->GetHitBox()) == true)
 							{
 								enemies[idx]->EnemyDeath();
-								delete enemies[idx];
-								enemies[idx] = nullptr;
 								m_Eggs.pop_back();
 								break;
 							}

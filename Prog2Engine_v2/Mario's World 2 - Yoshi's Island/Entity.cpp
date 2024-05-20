@@ -30,7 +30,8 @@ void Entity::Draw() const
 			glScalef(m_ScaleX, m_ScaleY, m_ScaleZ);
 		}
 
-		else if (m_IsFacingRight == true) {
+		else if (m_IsFacingRight == true) 
+		{
 			glScalef(-m_ScaleX, m_ScaleY, m_ScaleZ);
 		}
 

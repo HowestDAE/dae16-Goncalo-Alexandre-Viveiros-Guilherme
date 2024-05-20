@@ -2,8 +2,8 @@
 #include "Enemy.h"
 
 
-Enemy::Enemy(const bool isEdible, const bool isSquashable, const std::string& TexturePath, const float txtHeight, const float txtWidth, const Point2f position):
-Entity(TexturePath, txtHeight, txtWidth, position),
+Enemy::Enemy(const bool isEdible, const bool isSquashable, const std::string& texturePath, const float txtHeight, const float txtWidth, const Point2f position):
+Entity(texturePath, txtHeight, txtWidth, position),
 m_IsEdible(isEdible),
 m_IsSquashable(isSquashable)
 {

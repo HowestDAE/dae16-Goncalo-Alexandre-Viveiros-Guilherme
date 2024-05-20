@@ -3,6 +3,10 @@
 #include <vector>
 
 
+class FlyingShyGuy;
+class PogoShyGuy;
+class WalkingTulip;
+class PiranhaPlant;
 class EnemyManager;
 class Platforms;
 class Enemy;
@@ -39,6 +43,10 @@ private:
 	Mario* m_Mario;
 	Camera* m_GameCam;
 	ShyGuy* m_ShyGuy1;
+	PiranhaPlant* m_PiranhaPlant;
+	WalkingTulip* m_WalkingTulip;
+	PogoShyGuy* m_PogoShyGuy;
+	FlyingShyGuy* m_FlyingShyGuy;
 	EnemyManager* m_EnemyManager;
 	bool debugging {false};
 	bool noclip{ false };

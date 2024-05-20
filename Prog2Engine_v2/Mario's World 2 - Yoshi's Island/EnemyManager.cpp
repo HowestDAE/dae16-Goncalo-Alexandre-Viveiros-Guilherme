@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "EnemyManager.h"
+#include "PiranhaPlant.h"
 #include "ShyGuy.h"
 
 EnemyManager::EnemyManager(std::vector<Enemy*>& enemies)
@@ -30,15 +31,26 @@ void EnemyManager::Draw() const
 	
 }
 
-void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec)
+void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec,Point2f yoshiPos)
 {
-	//Updates Shy Guys
+	
+	//Updates Enemies
 	for (int idx{ 0 }; idx < m_Enemies.size(); idx++)
 	{
 		if (m_Enemies[idx]->GetIsAlive() == true)
 		{
-			m_Enemies[idx]->Update(platforms, elapsedSec);
-			m_Enemies[idx]->Animate(elapsedSec);
+			if (auto piranhaPlant = dynamic_cast<::PiranhaPlant*>(m_Enemies[idx]))
+			{
+				piranhaPlant->Update(yoshiPos);
+				piranhaPlant->Animate(elapsedSec);
+			}
+			else
+			{
+				m_Enemies[idx]->Update(platforms, elapsedSec);
+				m_Enemies[idx]->Animate(elapsedSec);
+				
+			}
+			
 		}
 		else
 		{

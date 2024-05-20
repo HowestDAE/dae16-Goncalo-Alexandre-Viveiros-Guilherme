@@ -3,13 +3,15 @@
 #include <iostream>
 #include "Texture.h"
 #include "Yoshi.h"
-#include "utils.h"
 #include "Camera.h"
 #include "EnemyManager.h"
+#include "FlyingShyGuy.h"
 #include "Level.h"
 #include "Mario.h"
+#include "PiranhaPlant.h"
+#include "PogoShyGuy.h"
 #include "ShyGuy.h"
-#include "Platforms.h"
+#include "WalkingTulip.h"
 
 
 Game::Game( const Window& window ) 
@@ -30,7 +32,15 @@ void Game::Initialize( )
 	m_Mario = new Mario(m_YoshiPlyr);
 	m_GameCam = new Camera(Point2f(0, 0), m_YoshiPlyr->GetPosition());
 	m_ShyGuy1 = new ShyGuy(Point2f(550, 280));
+	m_PiranhaPlant = new PiranhaPlant(Point2f(1782, 300));
+	m_WalkingTulip = new WalkingTulip(Point2f(800, 300));
+	m_PogoShyGuy = new PogoShyGuy(Point2f(500, 700));
+	m_FlyingShyGuy = new FlyingShyGuy(Point2f(500, 700), Point2f(300, 400), true);
 	m_Enemies = { m_ShyGuy1};
+	m_Enemies.push_back(m_PiranhaPlant);
+	m_Enemies.push_back(m_WalkingTulip);
+	m_Enemies.push_back(m_PogoShyGuy);
+	m_Enemies.push_back(m_FlyingShyGuy);
 	m_EnemyManager = new EnemyManager(m_Enemies);
 }
 
@@ -83,7 +93,7 @@ void Game::Update(const float elapsedSec )
 			m_Mario->Animate(elapsedSec);
 
 			//Enemy Functions
-			m_EnemyManager->Update(m_Level01->GetLevelVertices(), elapsedSec);
+			m_EnemyManager->Update(m_Level01->GetLevelVertices(), elapsedSec,m_YoshiPlyr->GetPosition());
 		}
 		
 	

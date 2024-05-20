@@ -291,6 +291,3 @@ std::vector<Flower*>& Level::GetFlowers()
 {
 	return m_Flowers;
 }
-
-
-
