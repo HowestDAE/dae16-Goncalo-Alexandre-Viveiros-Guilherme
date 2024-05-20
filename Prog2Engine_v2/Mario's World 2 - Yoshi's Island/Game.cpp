@@ -5,6 +5,7 @@
 #include "Yoshi.h"
 #include "utils.h"
 #include "Camera.h"
+#include "EnemyManager.h"
 #include "Level.h"
 #include "Mario.h"
 #include "ShyGuy.h"
@@ -30,6 +31,7 @@ void Game::Initialize( )
 	m_GameCam = new Camera(Point2f(0, 0), m_YoshiPlyr->GetPosition());
 	m_ShyGuy1 = new ShyGuy(Point2f(550, 280));
 	m_Enemies = { m_ShyGuy1};
+	m_EnemyManager = new EnemyManager(m_Enemies);
 }
 
 void Game::Cleanup() const
@@ -38,13 +40,7 @@ void Game::Cleanup() const
 	delete m_YoshiPlyr;
 	delete m_GameCam;
 	delete m_Mario;
-	for (int idx{ 0 }; idx < m_Enemies.size(); idx++)
-	{
-		if (m_Enemies[idx] != nullptr)
-		{
-			delete m_Enemies[idx];
-		}
-	}
+	delete m_EnemyManager;
 }
 
 void Game::Update(const float elapsedSec )
@@ -76,7 +72,7 @@ void Game::Update(const float elapsedSec )
 				m_YoshiPlyr->Debug();
 			}
 			m_YoshiPlyr->Animate(elapsedSec);
-			m_YoshiPlyr->HitCheck(m_Enemies, m_Level01->GetWingedClouds(), m_Mario->GetHitBox(), m_Level01->GetFlowers());
+			m_YoshiPlyr->HitCheck(m_EnemyManager->GetEnemyVector(), m_Level01->GetWingedClouds(), m_Mario->GetHitBox(), m_Level01->GetFlowers());
 			m_YoshiPlyr->KeysDown();
 
 			//Camera functions
@@ -87,24 +83,7 @@ void Game::Update(const float elapsedSec )
 			m_Mario->Animate(elapsedSec);
 
 			//Enemy Functions
-			for (int idx{ 0 }; idx < m_Enemies.size(); idx++)
-			{
-				if (m_Enemies[idx] != nullptr)
-				{
-					if (auto ShyGuys = dynamic_cast<ShyGuy*>(m_Enemies[idx]))
-					{
-						if (ShyGuys->GetIsAlive() == true)
-						{
-							ShyGuys->Update(m_Level01->GetLevelVertices(), elapsedSec);
-							ShyGuys->Animate(elapsedSec);
-						}
-						else
-						{
-							ShyGuys->DeathHandling();
-						}
-					}
-				}
-			}
+			m_EnemyManager->Update(m_Level01->GetLevelVertices(), elapsedSec);
 		}
 		
 	
@@ -155,23 +134,7 @@ void Game::Draw( ) const
 		m_Level01->DrawOthers();
 		m_Mario->Draw();
 		m_YoshiPlyr->Draw();
-
-		
-		for (int idx{ 0 }; idx < m_Enemies.size(); idx++)
-		{
-			if (m_Enemies[idx] != nullptr)
-			{
-			if (auto ShyGuys = dynamic_cast<ShyGuy*>(m_Enemies[idx]))
-			{
-				ShyGuys->Draw();
-
-			}
-			}
-		}
-
-	
-
-
+		m_EnemyManager->Draw();
 
 	}
 	glPopMatrix();
@@ -183,7 +146,7 @@ void Game::ProcessKeyDownEvent( const SDL_KeyboardEvent & e )
 	switch (e.keysym.sym)
 	{
 	case SDLK_r:
-		m_Enemies.push_back(new ShyGuy(Point2f(m_YoshiPlyr->GetPosition().x + 100, m_YoshiPlyr->GetPosition().y + 100)));
+		m_EnemyManager->AddEnemy(m_YoshiPlyr->GetPosition(), m_YoshiPlyr->GetIsFacingRight());
 		break;
 	case SDLK_d:
 		debugging = !debugging;

@@ -3,6 +3,7 @@
 #include <vector>
 
 
+class EnemyManager;
 class Platforms;
 class Enemy;
 class ShyGuy;
@@ -38,6 +39,7 @@ private:
 	Mario* m_Mario;
 	Camera* m_GameCam;
 	ShyGuy* m_ShyGuy1;
+	EnemyManager* m_EnemyManager;
 	bool debugging {false};
 	bool noclip{ false };
 	std::vector<Enemy*> m_Enemies;

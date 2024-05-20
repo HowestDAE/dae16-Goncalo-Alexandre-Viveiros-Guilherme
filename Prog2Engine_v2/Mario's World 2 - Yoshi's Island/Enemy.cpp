@@ -14,6 +14,10 @@ Enemy::~Enemy()
 {
 }
 
+void Enemy::Animate(float elapsedSec)
+{
+}
+
 bool Enemy::GetIsEdible() const
 {
 	return m_IsEdible;
@@ -32,10 +36,5 @@ void Enemy::EnemyDeath()
 bool Enemy::GetIsAlive()
 {
 	return m_IsAlive;
-}
-
-bool Enemy::GetIsDeathHandlingDone()
-{
-	return m_IsDeathHandlingDone;
 }
 

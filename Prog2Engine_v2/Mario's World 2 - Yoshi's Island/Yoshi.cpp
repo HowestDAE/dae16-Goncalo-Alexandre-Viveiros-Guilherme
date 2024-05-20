@@ -1131,7 +1131,7 @@ void Yoshi::HitCheck(std::vector<Enemy*>& enemies, const std::vector<WingedCloud
 		{
 			for (int idx{ 0 }; idx < enemies.size(); idx++)
 			{
-				if (enemies[idx] != nullptr)
+				if (enemies[idx]->GetIsAlive() == true)
 				{
 					//checks if enemy is "squashable" and if the yoshi hits his head kills him
 					if (enemies[idx]->GetIsSquashable() == true)
@@ -1141,8 +1141,6 @@ void Yoshi::HitCheck(std::vector<Enemy*>& enemies, const std::vector<WingedCloud
 							if (m_Hitbox.bottom > enemies[idx]->GetHitBox().bottom + enemies[idx]->GetHitBox().height - 3)
 							{
 								enemies[idx]->EnemyDeath();
-								delete enemies[idx];
-								enemies[idx] = nullptr;
 								m_VelocityY *= -2.f;
 
 								break;
@@ -1182,6 +1180,7 @@ void Yoshi::HitCheck(std::vector<Enemy*>& enemies, const std::vector<WingedCloud
 					}
 
 					//checks if enemy his hitting yoshi
+
 					if (utils::IsOverlapping(m_Hitbox, enemies[idx]->GetHitBox()) == true)
 					{
 						m_IsHit = true;
@@ -1190,7 +1189,7 @@ void Yoshi::HitCheck(std::vector<Enemy*>& enemies, const std::vector<WingedCloud
 						{
 							m_VelocityX *= -1.f;
 							m_VelocityX += 300.f;
-							
+
 						}
 
 						else
@@ -1206,6 +1205,8 @@ void Yoshi::HitCheck(std::vector<Enemy*>& enemies, const std::vector<WingedCloud
 						break;
 					}
 				}
+					
+				
 			}
 		}
 

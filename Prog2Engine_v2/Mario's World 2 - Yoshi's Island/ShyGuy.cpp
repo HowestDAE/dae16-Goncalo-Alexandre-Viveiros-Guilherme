@@ -71,11 +71,6 @@ void ShyGuy::Animate(float elapsedSec)
 
 }
 
-void ShyGuy::DeathHandling() 
-{
-
-
-}
 
 
 
