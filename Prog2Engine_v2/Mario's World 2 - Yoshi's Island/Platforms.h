@@ -8,8 +8,10 @@ public:
 	Platforms(Point2f position,float txtWidth,float txtHeight,float platformWidth, float platformHeight, const std::string& texturePath,float radius);
 	~Platforms();
 	void Draw() const;
-	void Update();
+	void Update(float elapsedSec, Point2f yoshiPos);
 	std::vector<std::vector<Point2f>> GetPlatformVertices();
+	float GetAngle();
+	Point2f GetPlatformPosition();
 
 private:
 	Point2f m_Position;
@@ -20,16 +22,12 @@ private:
 	Texture* m_PlatformTxt;
 	float m_Radius;
 	float m_Angle{0};
-	Point2f m_PlatformPos1;
-	Point2f m_PlatformPos2;
-	Point2f m_PlatformPos3;
-	Point2f m_PlatformPos4;
+	int m_WhichPlatformIsYoshiOn {0};
+	std::vector<Point2f> m_PlatformPos {4};
 
 	std::vector< std::vector<Point2f>> m_PlatformVertices{4};
-	std::vector<Point2f> m_Platform1Vertices{ 2 };
-	std::vector<Point2f> m_Platform2Vertices{ 2 };
-	std::vector<Point2f> m_Platform3Vertices{ 2 };
-	std::vector<Point2f> m_Platform4Vertices{ 2 };
+
+
 
 };
 

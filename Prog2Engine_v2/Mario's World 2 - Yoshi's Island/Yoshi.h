@@ -24,6 +24,7 @@ public:
 	bool GetIsHovering() const;
 	bool GetIsCrouching() const;
 	bool GetPlayerPause() const;
+	bool GetIsOnMovingPlatform() const;
 	void HitCheck(std::vector<Enemy*>&, const std::vector<WingedClouds*> &wingedClouds, Rectf marioHitbox, std::vector<Flower*>& flowers);
 	
 
@@ -49,6 +50,7 @@ private:
 	bool m_IsCrouching{ false };
 	bool m_IsLayingEgg{ false };
 	bool m_PlayerPause{ false };
+	bool m_IsOnMovingPlatform{ false };
 
 	enum class AnimState {
 		Idle,

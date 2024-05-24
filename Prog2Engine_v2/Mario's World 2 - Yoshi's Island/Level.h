@@ -15,7 +15,7 @@ public:
 	void DrawLvl() const;
 	void DrawOthers() const;
 	void DrawBackground() const;
-	void Update(float elapsedSec, bool isPlayerPauseTrue);
+	void Update(float elapsedSec, bool isPlayerPauseTrue, Yoshi*& yoshiPlyr);
 	void Animate(float elapsedSec);
 	void WarpPipesUpdate(bool isDownPipe, Yoshi* &yoshiPlyr, Point2f pipePosition, float pipeWidth, float pipeHeight, Point2f pipeWarpDestination, Camera* &plyrCamera);
 	void LevelEndUpdate(Point2f yoshiPos);

@@ -13,7 +13,7 @@ FlyingShyGuy::~FlyingShyGuy()
 {
 }
 
-void FlyingShyGuy::Update()
+void FlyingShyGuy::Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
 {
 	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
 
@@ -21,37 +21,42 @@ void FlyingShyGuy::Update()
 	{
 		if (m_Position.x < m_EndPoint.x)
 		{
-			m_VelocityX = 30;
+			m_VelocityX = 45;
 		}
-		else
+		if (m_Position.x > m_EndPoint.x)
 		{
-			m_VelocityX = -30;
+			m_VelocityX = -45;
 		}
 
 		if (m_Position.y < m_EndPoint.y)
 		{
-			m_VelocityY = 30;
+			m_VelocityY = 45;
 		}
-		else
+		if (m_Position.y > m_EndPoint.y)
 		{
-			m_VelocityY = -30;
+			m_VelocityY = -45;
 		}
 
-		if (m_Position.x - m_EndPoint.x < 10 || m_Position.x - m_EndPoint.x > -10)
+
+		if (m_Position.x - m_EndPoint.x < 10 && m_Position.x - m_EndPoint.x > -10)
 		{
-			m_Position.x = m_EndPoint.x;
+			if (m_Position.y - m_EndPoint.y < 10 && m_Position.y - m_EndPoint.y > -10)
+			{
+				m_HoldPoint = m_EndPoint;
+				m_EndPoint = m_StartPoint;
+				m_StartPoint = m_HoldPoint;
+			}
 		}
 
-		if (m_Position.y - m_EndPoint.y < 10 || m_Position.y - m_EndPoint.y > -10)
-		{
-			m_Position.y = m_EndPoint.y;
-		}
+		
 
-		if (m_Position.x == m_EndPoint.x && m_Position.y == m_EndPoint.y)
-		{
-			m_EndPoint = m_StartPoint;
-		}
 	}
+
+	//collision and gravity
+	m_Position.y += m_VelocityY * elapsedSec;
+	//Adds Entity's horizontal speed to his position
+	m_Position.x += m_VelocityX * elapsedSec;
+
 }
 
 void FlyingShyGuy::Animate(float elapsedSec)

@@ -63,6 +63,10 @@ Level::~Level()
 	{
 		delete m_WingedClouds[idx];
 	}
+	for (int idx = 0; idx < m_Flowers.size(); idx++)
+	{
+		delete m_Flowers[idx];
+	}
 	delete m_StairCloudTxt;
 	delete m_SunflowerCloudTxt;
 
@@ -137,13 +141,18 @@ void Level::DrawBackground() const
 }
 
 
-void Level::Update(float elapsedSec,bool isPlayerPauseTrue)
+void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr)
 {
 	if (isPlayerPauseTrue == false)
 	{
 		for (int idx = 0; idx < m_Platforms.size(); idx++)
 		{
-			m_Platforms[idx]->Update();
+			m_Platforms[idx]->Update(elapsedSec,yoshiPlyr->GetPosition());
+
+			if (yoshiPlyr->GetIsOnMovingPlatform() == true)
+			{
+				yoshiPlyr->SetPosition(m_Platforms[idx]->GetPlatformPosition());
+			}
 		}
 	}
 

@@ -38,6 +38,11 @@ void PiranhaPlant::Update(Point2f yoshiPos)
 {
 	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
 
+	Vector2f toPlayer = yoshiPos - m_Position;
+	float angleToPlayer = atan2f(toPlayer.y, toPlayer.x);
+	m_AngleDeg = angleToPlayer * 180 /M_PI; // Set the Elf's angle to face the player
+	m_AngleDeg += 270;
+	m_AngZ = 1;
 }
 
 void PiranhaPlant::Animate(float elapsedSec)

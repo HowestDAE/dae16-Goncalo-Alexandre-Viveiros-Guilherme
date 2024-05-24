@@ -13,17 +13,13 @@ Platforms::Platforms(Point2f position, float txtWidth, float txtHeight, float pl
 	m_PlatformHeight(platformHeight),
 	m_Radius{ radius }
 {
-	m_PlatformPos1.y = m_Position.y + m_Radius;
-	m_PlatformPos1.x = m_Position.x;
 
-	m_PlatformPos2.y = m_Position.y;
-	m_PlatformPos2.x = m_Position.x + m_Radius;
+	for (int idx = 0; idx < m_PlatformVertices.size(); idx++)
+	{
+		m_PlatformVertices[idx].push_back(m_Position);
+		m_PlatformVertices[idx].push_back(m_Position);
+	}
 
-	m_PlatformPos3.y = m_Position.y - m_Radius;
-	m_PlatformPos3.x = m_Position.x;
-
-	m_PlatformPos4.y = m_Position.y;
-	m_PlatformPos4.x = m_Position.x - m_Radius;
 }
 
 Platforms::~Platforms()
@@ -33,49 +29,59 @@ Platforms::~Platforms()
 
 void Platforms::Draw() const
 {
-
-	m_PlatformTxt->Draw(Rectf(m_PlatformPos1.x - m_PlatformWidth /2, m_PlatformPos1.y, m_PlatformWidth, m_PlatformHeight),
+	for (int idx = 0; idx < m_PlatformPos.size(); idx++)
+	{
+		m_PlatformTxt->Draw(Rectf(m_PlatformPos[idx].x - m_PlatformWidth / 2, m_PlatformPos[idx].y, m_PlatformWidth, m_PlatformHeight),
 			Rectf(0, 0, m_TxtWidth, m_TxtHeight));
-	m_PlatformTxt->Draw(Rectf(m_PlatformPos2.x - m_PlatformWidth/2, m_PlatformPos2.y, m_PlatformWidth, m_PlatformHeight),
-			Rectf(0, 0, m_TxtWidth, m_TxtHeight));
-	m_PlatformTxt->Draw(Rectf(m_PlatformPos3.x - m_PlatformWidth/2, m_PlatformPos3.y, m_PlatformWidth, m_PlatformHeight),
-			Rectf(0, 0, m_TxtWidth, m_TxtHeight));
-	m_PlatformTxt->Draw(Rectf(m_PlatformPos4.x - m_PlatformWidth/2, m_PlatformPos4.y, m_PlatformWidth, m_PlatformHeight),
-			Rectf(0, 0, m_TxtWidth, m_TxtHeight));
-
-	utils::DrawPolygon(m_Platform1Vertices);
-	utils::DrawPolygon(m_Platform2Vertices);
-	utils::DrawPolygon(m_Platform3Vertices);
-	utils::DrawPolygon(m_Platform4Vertices);
+	}
 
 	
 }
 
-void Platforms::Update()
+void Platforms::Update(float elapsedSec,Point2f yoshiPos)
 {
-	m_Angle += 0.0025;
-	m_PlatformPos1 = m_Position + Vector2f(cos(m_Angle), sin(m_Angle)) * m_Radius;
-	m_PlatformPos2 = m_Position + Vector2f(cos(m_Angle + (M_PI/2)), sin(m_Angle + (M_PI / 2) ) ) * m_Radius;
-	m_PlatformPos3 = m_Position + Vector2f(cos(m_Angle + M_PI), sin(m_Angle + M_PI)) * m_Radius;
-	m_PlatformPos4 = m_Position + Vector2f(cos(m_Angle + ((3*M_PI)/2)), sin(m_Angle + ((3 * M_PI) / 2))) * m_Radius;
 
-	m_Platform1Vertices[0] = Point2f(m_PlatformPos1.x - (m_PlatformWidth /2),(m_PlatformPos1.y + m_PlatformHeight));
-	m_Platform2Vertices[0] = Point2f(m_PlatformPos2.x - (m_PlatformWidth /2),(m_PlatformPos2.y + m_PlatformHeight));
-	m_Platform3Vertices[0] = Point2f(m_PlatformPos3.x - (m_PlatformWidth /2),(m_PlatformPos3.y + m_PlatformHeight));
-	m_Platform4Vertices[0] = Point2f(m_PlatformPos4.x - (m_PlatformWidth /2),(m_PlatformPos4.y + m_PlatformHeight));
+	m_Angle += 1 * elapsedSec;
+	for (int idx = 0; idx < m_PlatformPos.size(); idx++)
+	{
+		m_PlatformPos[idx] = m_Position + Vector2f(cos(m_Angle + ((M_PI/2) *idx)), sin(m_Angle + ((M_PI / 2) * idx))) * m_Radius;
+	}
 
-	m_Platform1Vertices[1] = Point2f(m_PlatformPos1.x + (m_PlatformWidth / 2), (m_PlatformPos1.y + m_PlatformHeight));
-	m_Platform2Vertices[1] = Point2f(m_PlatformPos2.x + (m_PlatformWidth / 2), (m_PlatformPos2.y + m_PlatformHeight));
-	m_Platform3Vertices[1] = Point2f(m_PlatformPos3.x + (m_PlatformWidth / 2), (m_PlatformPos3.y + m_PlatformHeight));
-	m_Platform4Vertices[1] = Point2f(m_PlatformPos4.x + (m_PlatformWidth / 2), (m_PlatformPos4.y + m_PlatformHeight));
 
-	m_PlatformVertices[0] = m_Platform1Vertices;
-	m_PlatformVertices[1] = m_Platform2Vertices;
-	m_PlatformVertices[2] = m_Platform3Vertices;
-	m_PlatformVertices[3] = m_Platform4Vertices;
+	for (int idx = 0; idx < m_PlatformVertices.size(); idx++)
+	{
+		m_PlatformVertices[idx][0] = Point2f(m_PlatformPos[idx].x - (m_PlatformWidth / 2), (m_PlatformPos[idx].y + m_PlatformHeight));
+	
+		m_PlatformVertices[idx][1] = Point2f(m_PlatformPos[idx].x + (m_PlatformWidth / 2), (m_PlatformPos[idx].y + m_PlatformHeight));
+
+	}
+	for (int idx = 0; idx < m_PlatformPos.size(); idx++)
+	{
+		if (yoshiPos.x > m_PlatformPos[idx].x - (m_PlatformWidth / 2), (m_PlatformPos[idx].y + m_PlatformHeight) 
+			&& yoshiPos.x < m_PlatformPos[idx].x + (m_PlatformWidth / 2), (m_PlatformPos[idx].y + m_PlatformHeight))
+		{
+			if (yoshiPos.y < m_PlatformPos[idx].y +2 && yoshiPos.y > m_PlatformPos[idx].y - 2)
+			{
+				m_WhichPlatformIsYoshiOn = idx;
+				break;
+			}
+		}
+	}
+
+
 }
 
 std::vector<std::vector<Point2f>> Platforms::GetPlatformVertices()
 {
 	return m_PlatformVertices;
+}
+
+float Platforms::GetAngle()
+{
+	return m_Angle;
+}
+
+Point2f Platforms::GetPlatformPosition()
+{
+	return m_PlatformPos[m_WhichPlatformIsYoshiOn];
 }

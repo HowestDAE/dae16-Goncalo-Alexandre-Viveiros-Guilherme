@@ -221,47 +221,51 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 	}
 
 	//Wall Collision
+
 	for (int idx{ 0 }; idx < platforms.size(); idx++)
 	{
-		if (m_IsFacingRight == true)
+		if (platforms[idx].size() != 2)
 		{
-			//left side
-			if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 6,m_Position.y + 32 },
-				Point2f{ m_FeetPos.x - 15,m_Position.y + 32 }, hit_info))
+			if (m_IsFacingRight == true)
 			{
-				m_Position.x = hit_info.intersectPoint.x; //Teleports entity to the point of intersection with a small offset
-				break;
+				//left side
+				if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 6,m_Position.y + 32 },
+					Point2f{ m_FeetPos.x - 15,m_Position.y + 32 }, hit_info))
+				{
+					m_Position.x = hit_info.intersectPoint.x; //Teleports entity to the point of intersection with a small offset
+					break;
+				}
+
+				//right side
+				if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 6,m_Position.y + 32 },
+					Point2f{ m_FeetPos.x + 15,m_Position.y + 32 }, hit_info))
+				{
+					m_Position.x = hit_info.intersectPoint.x - 40; //Teleports entity to the point of intersection with a small offset
+					break;
+				}
+
 			}
 
-			//right side
-			if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 6,m_Position.y + 32 },
-				Point2f{ m_FeetPos.x + 15,m_Position.y + 32 }, hit_info))
+			else
 			{
-				m_Position.x = hit_info.intersectPoint.x - 40; //Teleports entity to the point of intersection with a small offset
-				break;
+				//right side
+				if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x - 6,m_Position.y + 32 },
+					Point2f{ m_FeetPos.x + 15,m_Position.y + 32 }, hit_info))
+				{
+					m_Position.x = hit_info.intersectPoint.x - 60; //Teleports entity to the point of intersection with a small offset
+					break;
+				}
+
+				//left side
+				if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x - 6,m_Position.y + 32 },
+					Point2f{ m_FeetPos.x - 15,m_Position.y + 32 }, hit_info))
+				{
+					m_Position.x = hit_info.intersectPoint.x - 19; //Teleports entity to the point of intersection with a small offset
+					break;
+				}
+
+
 			}
-
-		}
-
-		else
-		{
-			//right side
-			if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x - 6,m_Position.y + 32 },
-				Point2f{ m_FeetPos.x + 15,m_Position.y + 32 }, hit_info))
-			{
-				m_Position.x = hit_info.intersectPoint.x - 60; //Teleports entity to the point of intersection with a small offset
-				break;
-			}
-
-			//left side
-			if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x - 6,m_Position.y + 32 },
-				Point2f{ m_FeetPos.x - 15,m_Position.y + 32 }, hit_info))
-			{
-				m_Position.x = hit_info.intersectPoint.x - 19; //Teleports entity to the point of intersection with a small offset
-				break;
-			}
-
-
 		}
 	}
 
@@ -278,6 +282,24 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 	
 		if (m_VelocityY <= 0)
 		{
+
+			//checks collision from the middle of Yoshis feet
+			if (utils::Raycast(movingPlatforms[idx], Point2f{ m_FeetPos.x ,m_FeetPos.y + 32 },
+				Point2f{ m_FeetPos.x ,m_FeetPos.y }, hit_info))
+			{
+				m_VelocityY = 0;
+				m_Position.y = hit_info.intersectPoint.y;
+				m_IsGrounded = true;
+				m_TerminalVlcityTimer = 0;
+
+				if (m_VelocityX == 0)
+				{
+					m_IsOnMovingPlatform = true;
+				}
+				break;
+
+			}
+
 			//checks collision from the left side of Yoshis feet
 			if (utils::Raycast(movingPlatforms[idx], Point2f{ m_FeetPos.x - 13,m_FeetPos.y + 32 },
 				Point2f{ m_FeetPos.x - 13,m_FeetPos.y }, hit_info))
@@ -289,8 +311,10 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 
 				if (m_VelocityX == 0)
 				{
-					m_Position.x = hit_info.intersectPoint.x - (m_FeetPos.x - m_Position.x);
+					m_IsOnMovingPlatform = true;
 				}
+
+				break;
 
 			}
 
@@ -305,24 +329,13 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 
 				if (m_VelocityX == 0)
 				{
-					m_Position.x = hit_info.intersectPoint.x - (m_FeetPos.x - m_Position.x);
+					m_IsOnMovingPlatform = true;
 				}
+
+				break;
 			}
 
-			//checks collision from the middle of Yoshis feet
-			if (utils::Raycast(movingPlatforms[idx], Point2f{ m_FeetPos.x ,m_FeetPos.y + 32 },
-				Point2f{ m_FeetPos.x ,m_FeetPos.y }, hit_info))
-			{
-				m_VelocityY = 0;
-				m_Position.y = hit_info.intersectPoint.y;
-				m_IsGrounded = true;
-				m_TerminalVlcityTimer = 0;
-
-				if (m_VelocityX == 0)
-				{
-					m_Position.x = hit_info.intersectPoint.x - (m_FeetPos.x - m_Position.x);
-				}
-			}
+			m_IsOnMovingPlatform = false;
 
 		}
 		
@@ -1118,6 +1131,11 @@ bool Yoshi::GetIsCrouching() const
 bool Yoshi::GetPlayerPause() const
 {
 	return m_PlayerPause;
+}
+
+bool Yoshi::GetIsOnMovingPlatform() const
+{
+	return m_IsOnMovingPlatform;
 }
 
 
