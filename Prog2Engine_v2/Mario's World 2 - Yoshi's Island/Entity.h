@@ -8,6 +8,10 @@ class Entity
 public:
 	Entity(const std::string& texturePath, float txtHeight, float txtWidth, Point2f position);
 	virtual ~Entity();
+	Entity(const Entity& rhs) = delete;
+	Entity& operator=(const Entity& rhs) = delete;
+	Entity(Entity&& rhs) = delete;
+
 	virtual void Draw() const;
 	virtual void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
 	void SetPosition(Point2f newPosition);

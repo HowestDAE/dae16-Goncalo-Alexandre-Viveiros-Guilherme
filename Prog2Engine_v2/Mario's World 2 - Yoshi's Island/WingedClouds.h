@@ -2,7 +2,7 @@
 #include "Entity.h"
 
 class Flower;
-class WingedClouds:public Entity
+class WingedClouds final :public Entity
 {
 public:
 	enum class Type
@@ -13,11 +13,12 @@ public:
 		FlowerCloud
 	};
 	WingedClouds(Type typeOfCloud, const std::string& texturePath,Point2f position);
-	~WingedClouds();
+	~WingedClouds() override;
+
 	void Update();
 	void Animate(float elapsedSec);
 	void SetIsHit();
-	bool GetIsHit();
+	bool GetIsHit() const;
 	Type GetTypeOfCloud() const;
 	Flower* GetFlower() const;
 	
@@ -25,6 +26,6 @@ public:
 private:
 	Type m_TypeOfCloud;
 	bool m_IsHit;
-	Flower* CloudFlower;
+	Flower* m_CloudFlower;
 };
 

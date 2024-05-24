@@ -5,10 +5,6 @@ WalkingTulip::WalkingTulip(Point2f position):Enemy(true,true,"EnemiesVaried.png"
 {
 }
 
-WalkingTulip::~WalkingTulip()
-{
-}
-
 void WalkingTulip::Animate(float elapsedSec)
 {
 	m_YTxtPos = 34;

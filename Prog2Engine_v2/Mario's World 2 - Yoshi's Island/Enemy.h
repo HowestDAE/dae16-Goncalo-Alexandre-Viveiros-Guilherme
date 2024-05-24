@@ -6,6 +6,7 @@ class Enemy: public Entity
 public:
 	Enemy(bool isEdible,bool isSquashable, const std::string& texturePath, float txtHeight, float txtWidth, Point2f position);
 	~Enemy() override;
+
 	void virtual Animate(float elapsedSec);
 	bool GetIsEdible() const;
 	bool GetIsSquashable();

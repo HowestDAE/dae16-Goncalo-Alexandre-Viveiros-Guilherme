@@ -31,17 +31,9 @@ void Game::Initialize( )
 	m_YoshiPlyr = new Yoshi(Point2f(130,280));
 	m_Mario = new Mario(m_YoshiPlyr);
 	m_GameCam = new Camera(Point2f(0, 0), m_YoshiPlyr->GetPosition());
-	m_ShyGuy1 = new ShyGuy(Point2f(550, 280));
-	m_PiranhaPlant = new PiranhaPlant(Point2f(1782, 300));
-	m_WalkingTulip = new WalkingTulip(Point2f(800, 300));
-	m_PogoShyGuy = new PogoShyGuy(Point2f(500, 700));
-	m_FlyingShyGuy = new FlyingShyGuy(Point2f(500, 500), Point2f(300, 300), true);
-	m_Enemies = { m_ShyGuy1};
-	m_Enemies.push_back(m_PiranhaPlant);
-	m_Enemies.push_back(m_WalkingTulip);
-	m_Enemies.push_back(m_PogoShyGuy);
-	m_Enemies.push_back(m_FlyingShyGuy);
-	m_EnemyManager = new EnemyManager(m_Enemies);
+	m_EnemyManager = new EnemyManager();
+
+	m_EnemyManager->SpawnEnemies(1);
 }
 
 void Game::Cleanup() const

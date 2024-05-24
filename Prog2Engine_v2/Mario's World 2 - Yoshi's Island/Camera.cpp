@@ -13,11 +13,6 @@ Camera::Camera(const Point2f camPos, Point2f yoshiStartPos):
 
 }
 
-Camera::~Camera()
-{
-	
-}
-
 void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 {
 

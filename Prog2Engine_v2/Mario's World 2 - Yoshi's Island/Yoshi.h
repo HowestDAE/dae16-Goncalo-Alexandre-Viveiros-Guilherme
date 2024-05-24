@@ -7,13 +7,13 @@ class WingedClouds;
 class Egg;
 class Enemy;
 class Texture;
-class Yoshi : public Entity
+class Yoshi final : public Entity
 {
 public:
-	Yoshi(Point2f startPos);
-	virtual ~Yoshi() override;
+	explicit Yoshi(Point2f startPos);
+	~Yoshi() override;
 
-	void Draw()const;
+	void Draw()const override;
 	void Update(const std::vector< std::vector<Point2f>>& platforms, const std::vector< std::vector<Point2f>>& movingPlatforms,float elapsedSec);
 	void Animate(float elapsedSec);
 	void KeysDown();

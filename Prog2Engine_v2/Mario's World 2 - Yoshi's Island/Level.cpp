@@ -256,6 +256,7 @@ void Level::LevelEndUpdate(Point2f yoshiPos)
 	{
 		if (yoshiPos.y >= m_LevelEnd.y)
 		{
+			m_LevelPause = true;
 			std::cout << "YOU WON!!!!";
 		}
 	}

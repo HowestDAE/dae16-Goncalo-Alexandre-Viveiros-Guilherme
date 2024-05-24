@@ -12,6 +12,11 @@ class Level
 public:
 	Level(const std::string& imagePathLvlTxt, const std::string& backgroundTxt1, const std::string& backgroundTxt3,float levelStart,Point2f levelEnd, int levelNumber);
 	~Level();
+	Level(const Level& rhs) = delete;
+	Level& operator=(const Level& rhs) = delete;
+	Level(Level&& rhs) = delete;
+
+
 	void DrawLvl() const;
 	void DrawOthers() const;
 	void DrawBackground() const;

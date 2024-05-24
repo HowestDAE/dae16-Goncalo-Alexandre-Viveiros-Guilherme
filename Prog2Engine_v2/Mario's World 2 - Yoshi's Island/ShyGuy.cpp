@@ -5,10 +5,6 @@ ShyGuy::ShyGuy(const Point2f startPos):Enemy(true,true,"EnemiesVaried2.png",19,2
 {
 }
 
-ShyGuy::~ShyGuy()
-{
-}
-
 void ShyGuy::Update(const std::vector<std::vector<Point2f>>& platforms, const float elapsedSec)
 {
 

@@ -7,10 +7,6 @@ PiranhaPlant::PiranhaPlant(Point2f position):Enemy(false,false,"EnemiesVaried.pn
 {
 }
 
-PiranhaPlant::~PiranhaPlant()
-{
-}
-
 void PiranhaPlant::Draw() const
 {
 	Entity::Draw();

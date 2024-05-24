@@ -2,11 +2,12 @@
 #include "Entity.h"
 
 class Yoshi;
-class Mario: public Entity
+class Mario final : public Entity
 {
 public:
-	Mario(Yoshi* &PlyrYoshi);
-	~Mario();
+	explicit Mario(Yoshi* &plyrYoshi);
+	~Mario() override;
+
 	void Draw() const;
 	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
 	void Animate(float elapsedSec);

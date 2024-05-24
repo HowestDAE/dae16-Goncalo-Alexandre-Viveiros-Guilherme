@@ -2,11 +2,12 @@
 #include "Enemy.h"
 
 
-class PiranhaPlant:public Enemy
+class PiranhaPlant final :public Enemy
 {
 public:
 	PiranhaPlant(Point2f position);
-	~PiranhaPlant();
+	~PiranhaPlant() override = default;
+
 	void Draw()const override;
 	void Update(Point2f yoshiPos);
 	void Animate(float elapsedSec) override;

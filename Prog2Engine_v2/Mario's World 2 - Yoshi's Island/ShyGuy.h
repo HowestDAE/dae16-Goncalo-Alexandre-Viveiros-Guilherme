@@ -1,11 +1,13 @@
 #pragma once
 #include "Enemy.h"
 
-class ShyGuy:public Enemy
+class ShyGuy final :public Enemy
 {
 public:
-	ShyGuy(Point2f startPos);
-	virtual ~ShyGuy() override;
+	explicit ShyGuy(Point2f startPos);
+	~ShyGuy() override = default;
+
+
 	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec) override;
 	void Animate(float elapsedSec) override;
 	

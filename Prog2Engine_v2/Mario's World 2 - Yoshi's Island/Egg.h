@@ -1,11 +1,12 @@
 #pragma once
 #include "Entity.h"
 
-class Egg: public Entity
+class Egg final : public Entity
 {
 public:
 	Egg(Point2f Pos);
-	virtual ~Egg() override;
+	~Egg() override;
+
 	void Draw() const;
 	void Update(Point2f yoshiPos, bool yoshiDirection, int currentEgg, const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
 	void Animate(float elapsedSec);

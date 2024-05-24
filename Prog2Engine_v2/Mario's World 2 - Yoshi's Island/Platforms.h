@@ -7,6 +7,10 @@ class Platforms
 public:
 	Platforms(Point2f position,float txtWidth,float txtHeight,float platformWidth, float platformHeight, const std::string& texturePath,float radius);
 	~Platforms();
+	Platforms(const Platforms& rhs) = delete;
+	Platforms& operator=(const Platforms& rhs) = delete;
+	Platforms(Platforms&& rhs) = delete;
+
 	void Draw() const;
 	void Update(float elapsedSec, Point2f yoshiPos);
 	std::vector<std::vector<Point2f>> GetPlatformVertices();

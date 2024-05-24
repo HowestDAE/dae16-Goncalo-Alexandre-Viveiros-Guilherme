@@ -16,7 +16,7 @@ class Camera;
 class Texture;
 class Level;
 class Mario;
-class Game : public BaseGame
+class Game final : public BaseGame
 {
 public:
 	explicit Game( const Window& window );
@@ -42,15 +42,9 @@ private:
 	Yoshi* m_YoshiPlyr;
 	Mario* m_Mario;
 	Camera* m_GameCam;
-	ShyGuy* m_ShyGuy1;
-	PiranhaPlant* m_PiranhaPlant;
-	WalkingTulip* m_WalkingTulip;
-	PogoShyGuy* m_PogoShyGuy;
-	FlyingShyGuy* m_FlyingShyGuy;
 	EnemyManager* m_EnemyManager;
 	bool debugging {false};
 	bool noclip{ false };
-	std::vector<Enemy*> m_Enemies;
 	// FUNCTIONS
 	void Initialize();
 	void Cleanup( ) const;

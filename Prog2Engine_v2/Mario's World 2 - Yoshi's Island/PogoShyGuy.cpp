@@ -3,11 +3,7 @@
 
 #include "Texture.h"
 
-PogoShyGuy::PogoShyGuy(Point2f position):Enemy(true,false,"EnemiesVaried2.png", 19, 21,position)
-{
-}
-
-PogoShyGuy::~PogoShyGuy()
+PogoShyGuy::PogoShyGuy(Point2f position):Enemy(true,true,"EnemiesVaried2.png", 19, 21,position)
 {
 }
 
@@ -42,17 +38,26 @@ void PogoShyGuy::Update(const std::vector<std::vector<Point2f>>& platforms, floa
 
 	if (m_Timer > 2)
 	{
-		m_VelocityX = -30;
-		m_VelocityY += 800;
-
+		if (m_IsGrounded == true)
+		{
+			m_VelocityX = -200;
+			m_VelocityY = 400;
+			m_Position.y += 2;
+		}
+		
 		m_Timer = 0;
 	}
 
-	if(m_Timer > 0.5)
+	if (m_Timer > 0.5 && m_Timer < 1.5)
 	{
 		m_VelocityX = 0;
 		m_VelocityY = 0;
 	}
+
+
 	m_XTxtPos = 61;
 	m_YTxtPos = 29;
+
+
+
 }

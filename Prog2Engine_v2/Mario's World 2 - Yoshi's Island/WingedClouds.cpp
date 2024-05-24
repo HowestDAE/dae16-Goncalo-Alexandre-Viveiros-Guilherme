@@ -14,8 +14,9 @@ WingedClouds::WingedClouds(Type typeOfCloud, const std::string& texturePath,Poin
 
 WingedClouds::~WingedClouds()
 {
-
+	delete m_CloudFlower;
 }
+
 
 void WingedClouds::Update()
 {
@@ -32,13 +33,15 @@ void WingedClouds::Update()
 
 		else if (m_TypeOfCloud == Type::FlowerCloud)
 		{
-			CloudFlower = new Flower(m_Position);
+			m_CloudFlower = new Flower(m_Position);
 		}
 	}
 }
 
 void WingedClouds::Animate(float elapsedSec)
 {
+	m_ScaleX = -1;
+
 	m_FrameTime += elapsedSec;
 
 	m_YTxtPos = 312;
@@ -50,7 +53,7 @@ void WingedClouds::Animate(float elapsedSec)
 
 	if (m_FrameTime > 0.2)
 	{
-		m_XTxtPos += m_TxtWidth;
+		m_XTxtPos += m_TxtWidth + 2;
 		m_FrameTime = 0;
 	}
 }
@@ -60,7 +63,7 @@ void WingedClouds::SetIsHit()
 	m_IsHit = true;
 }
 
-bool WingedClouds::GetIsHit()
+bool WingedClouds::GetIsHit() const
 {
 	return m_IsHit;
 }
@@ -73,6 +76,12 @@ WingedClouds::Type WingedClouds::GetTypeOfCloud() const
 
 Flower* WingedClouds::GetFlower() const
 {
-	return CloudFlower;
+	if (m_TypeOfCloud == Type::FlowerCloud)
+	{
+		return m_CloudFlower;
+	}
+
+	throw std::invalid_argument("Cloud must be of Flower type");
+	
 }
 
