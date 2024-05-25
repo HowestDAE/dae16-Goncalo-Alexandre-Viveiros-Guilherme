@@ -162,6 +162,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="PiranhaPlant.cpp" />
     <ClCompile Include="Platforms.cpp" />
     <ClCompile Include="PogoShyGuy.cpp" />
+    <ClCompile Include="Boulder.cpp" />
     <ClCompile Include="ShyGuy.cpp" />
     <ClCompile Include="WalkingTulip.cpp" />
     <ClCompile Include="WingedClouds.cpp" />
@@ -183,6 +184,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="Platforms.h" />
     <ClInclude Include="PogoShyGuy.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Boulder.h" />
     <ClInclude Include="ShyGuy.h" />
     <ClInclude Include="WalkingTulip.h" />
     <ClInclude Include="WingedClouds.h" />

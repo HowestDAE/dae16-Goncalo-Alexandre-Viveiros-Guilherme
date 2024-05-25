@@ -20,14 +20,9 @@ public:
 	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec, Point2f yoshiPos);
 	void SpawnEnemies(int levelNumber);
 	std::vector<Enemy*>& GetEnemyVector();
-	void AddEnemy(Point2f yoshiPos, bool isYoshiRight);
+	void AddEnemy(Point2f yoshiPos, bool isYoshiFacingRight);
 
 private:
-	std::vector< ShyGuy*> m_ShyGuy;
-	std::vector<PiranhaPlant*> m_PiranhaPlant;
-	std::vector<WalkingTulip*> m_WalkingTulip;
-	std::vector<PogoShyGuy*> m_PogoShyGuy;
-	std::vector<FlyingShyGuy*>	 m_FlyingShyGuy;
 	std::vector<Enemy*> m_Enemies;
 };
 

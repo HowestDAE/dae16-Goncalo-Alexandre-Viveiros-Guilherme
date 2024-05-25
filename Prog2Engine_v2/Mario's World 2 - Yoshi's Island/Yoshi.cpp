@@ -7,6 +7,7 @@
 #include "Egg.h"
 #include "WingedClouds.h"
 #include "Flowers.h"
+#include "Boulder.h"
 
 Yoshi::Yoshi(Point2f startPos):
 Entity("Yoshi_SpriteSheet.png",32,30,startPos),
@@ -220,7 +221,9 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 		}
 	}
 
-	//Wall Collision
+	//Wall Collision and pushing
+
+	m_PushTimer += elapsedSec;
 
 	for (int idx{ 0 }; idx < platforms.size(); idx++)
 	{
@@ -240,7 +243,9 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 				if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 6,m_Position.y + 32 },
 					Point2f{ m_FeetPos.x + 15,m_Position.y + 32 }, hit_info))
 				{
-					m_Position.x = hit_info.intersectPoint.x - 40; //Teleports entity to the point of intersection with a small offset
+					m_Position.x = hit_info.intersectPoint.x - m_TxtWidth - 5; //Teleports entity to the point of intersection with a small offset
+					m_IsPushing = true;
+					m_PushTimer = 0;
 					break;
 				}
 
@@ -258,15 +263,23 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 
 				//left side
 				if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x - 6,m_Position.y + 32 },
-					Point2f{ m_FeetPos.x - 15,m_Position.y + 32 }, hit_info))
+					Point2f{ m_FeetPos.x - 19,m_Position.y + 32 }, hit_info))
 				{
-					m_Position.x = hit_info.intersectPoint.x - 19; //Teleports entity to the point of intersection with a small offset
+					m_Position.x = hit_info.intersectPoint.x - 20; //Teleports entity to the point of intersection with a small offset
+					m_IsPushing = true;
+					m_PushTimer = 0;
 					break;
 				}
 
 
 			}
 		}
+	}
+
+	//stops pushing after a brief interval
+	if (m_PushTimer > 0.03)
+	{
+		m_IsPushing = false;
 	}
 
 #pragma endregion
@@ -420,15 +433,15 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 
 			m_Position.y += 5;
 
-			m_VelocityY += 60.f;
+			m_VelocityY += 15.f;
 
 		}
 		else
 		{
 			m_JumpTimer += elapsedSec;
-			if (m_JumpTimer < 0.04)
+			if (m_JumpTimer < 0.15)
 			{
-				m_VelocityY += 60.f;
+				m_VelocityY += 15.f;
 			}
 		}
 		if (m_VelocityY < 0)
@@ -449,7 +462,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 				if (m_FlightTime > 0.75)
 				{
 					m_VelocityY *= -1.f;
-					m_VelocityY += 140.f;
+					m_VelocityY += 120.f;
 				}
 				}
 			
@@ -652,6 +665,11 @@ void Yoshi::Animate(const float elapsedSec)
 		m_CurrentState = AnimState::LayingEgg;
 	}
 
+	if (m_IsPushing == true)
+	{
+		m_CurrentState = AnimState::Pushing;
+	}
+
 	////////////////////////////////////
 	// ANIMATIONS FOR CURRENT STATE  //
 	//////////////////////////////////
@@ -800,7 +818,6 @@ void Yoshi::Animate(const float elapsedSec)
 	{
 		if (m_LastState != m_CurrentState)
 		{
-			
 			m_XTxtPos = 2;
 			m_FrameTime = 0;
 		}
@@ -817,6 +834,33 @@ void Yoshi::Animate(const float elapsedSec)
 		}
 
 		if (m_XTxtPos > 2 + m_TxtWidth * 2)
+		{
+			m_XTxtPos = 2;
+		}
+
+		m_LastState = m_CurrentState;
+	}
+
+	if (m_CurrentState == AnimState::Pushing)
+	{
+		if (m_LastState != m_CurrentState)
+		{
+			m_XTxtPos = 2;
+			m_FrameTime = 0;
+		}
+
+		m_YTxtPos = 1291;
+		m_TxtHeight = 30;
+		m_TxtWidth = 29;
+		m_FrameTime += elapsedSec;
+
+		if (m_FrameTime > 0.1)
+		{
+			m_XTxtPos += m_TxtWidth;
+			m_FrameTime = 0;
+		}
+
+		if (m_XTxtPos > 2 + m_TxtWidth * 4)
 		{
 			m_XTxtPos = 2;
 		}
@@ -898,7 +942,8 @@ void Yoshi::Animate(const float elapsedSec)
 		{
 			m_XTxtPos = 723;
 		}
-		//m_CurrentTxtWidth = m_StdTxtWidth + 6;
+
+
 		m_TxtWidth = 37;
 		m_TxtHeight = 28;
 		m_YTxtPos = 663;
@@ -964,8 +1009,6 @@ void Yoshi::Animate(const float elapsedSec)
 		
 	}
 }
-
-
 
 void Yoshi::KeysDown()
 {
@@ -1139,12 +1182,13 @@ bool Yoshi::GetIsOnMovingPlatform() const
 }
 
 
-void Yoshi::HitCheck(std::vector<Enemy*>& enemies, const std::vector<WingedClouds*>& wingedClouds, Rectf marioHitbox,std::vector<Flower*>& flowers)
+void Yoshi::HitCheck(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEntities, Rectf marioHitbox)
 {
-	if (m_IsHit == false)
+	if (!enemies.empty())
 	{
-		if (enemies.size() > 0)
+		if (m_IsHit == false)
 		{
+		
 			for (int idx{ 0 }; idx < enemies.size(); idx++)
 			{
 				if (enemies[idx]->GetIsAlive() == true)
@@ -1178,7 +1222,7 @@ void Yoshi::HitCheck(std::vector<Enemy*>& enemies, const std::vector<WingedCloud
 					}
 
 					//checks if egg hit the enemy
-					if (m_Eggs.size() > 0)
+					if (!m_Eggs.empty())
 					{
 						if (m_Eggs.back()->GetIsThrown() == true)
 						{
@@ -1231,44 +1275,74 @@ void Yoshi::HitCheck(std::vector<Enemy*>& enemies, const std::vector<WingedCloud
 		}
 	}
 
-	if (wingedClouds.size() > 0)
+	for (int idx{ 0 }; idx < lvlEntities.size(); idx++)
 	{
-		for (int idx{ 0 }; idx < wingedClouds.size(); idx++)
+		if (lvlEntities[idx] != nullptr)
 		{
-			if (wingedClouds[idx] != nullptr)
+			if (const auto wingedClouds = dynamic_cast<::WingedClouds*>(lvlEntities[idx]))
 			{
-				if (m_Eggs.size() > 0)
+				if (!m_Eggs.empty())
 				{
 					if (m_Eggs.back()->GetIsThrown() == true)
 					{
-						if (utils::IsOverlapping(m_Eggs.back()->GetHitBox(), wingedClouds[idx]->GetHitBox()) == true)
+						if (utils::IsOverlapping(m_Eggs.back()->GetHitBox(), wingedClouds->GetHitBox()) == true)
 						{
-							wingedClouds[idx]->SetIsHit();
+							wingedClouds->SetIsHit();
 							m_Eggs.pop_back();
+							break;
 						}
 					}
 				}
-
 			}
 		}
 	}
-
-	if (flowers.size() > 0)
+	
+	for (int idx{ 0 }; idx < lvlEntities.size(); idx++)
 	{
-		for (int idx{ 0 }; idx < flowers.size(); idx++)
+		if (lvlEntities[idx] != nullptr)
 		{
-			if (flowers[idx] != nullptr)
+			if (auto flowers = dynamic_cast<::Flower*>(lvlEntities[idx]))
 			{
-				
-				if (utils::IsOverlapping(m_Hitbox, flowers[idx]->GetHitBox()) == true)
+				if (utils::IsOverlapping(m_Hitbox, flowers->GetHitBox()) == true)
 				{
-					delete flowers[idx];
-					flowers[idx] = nullptr;
+					lvlEntities[idx] = nullptr;
+					delete lvlEntities[idx];
 
 					m_Flowers += 1;
+					break;
 				}
-					
+			}
+		}
+		
+	}
 
+	for (int idx{ 0 }; idx < lvlEntities.size(); idx++)
+	{
+		if (lvlEntities[idx] != nullptr)
+		{
+			if (const auto boulder = dynamic_cast<::Boulder*>(lvlEntities[idx]))
+			{
+				if (utils::IsOverlapping(m_Hitbox, boulder->GetHitBox()) == true)
+				{
+					if (m_Position.y  > boulder->GetPosition().y + 30)
+					{
+						m_VelocityY = 0;
+						m_IsGrounded = true;
+						break;
+					}
+					if (m_Position.x < boulder->GetPosition().x)
+					{
+						boulder->AddVelocity(m_IsFacingRight);
+						m_IsPushing = true;
+						break;
+					}
+					if (m_Position.x > boulder->GetPosition().x)
+					{
+						boulder->AddVelocity(m_IsFacingRight);
+						m_IsPushing = true;
+						break;
+					}
+				}
 			}
 		}
 	}

@@ -10,10 +10,6 @@ m_IsSquashable(isSquashable)
 
 }
 
-Enemy::~Enemy()
-{
-}
-
 void Enemy::Animate(float elapsedSec)
 {
 }

@@ -13,7 +13,7 @@ public:
 		FlowerCloud
 	};
 	WingedClouds(Type typeOfCloud, const std::string& texturePath,Point2f position);
-	~WingedClouds() override;
+	~WingedClouds() override = default;
 
 	void Update();
 	void Animate(float elapsedSec);

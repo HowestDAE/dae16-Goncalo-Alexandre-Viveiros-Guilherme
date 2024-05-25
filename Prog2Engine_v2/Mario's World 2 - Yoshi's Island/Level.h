@@ -1,6 +1,9 @@
 #pragma once
 #include <vector>
 
+class Entity;
+class Enemy;
+class Boulder;
 class Flower;
 class WingedClouds;
 class Camera;
@@ -20,8 +23,8 @@ public:
 	void DrawLvl() const;
 	void DrawOthers() const;
 	void DrawBackground() const;
-	void Update(float elapsedSec, bool isPlayerPauseTrue, Yoshi*& yoshiPlyr);
-	void Animate(float elapsedSec);
+	void Update(float elapsedSec, bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, const std::vector<Enemy*>& enemies);
+	void Animate(float elapsedSec) const;
 	void WarpPipesUpdate(bool isDownPipe, Yoshi* &yoshiPlyr, Point2f pipePosition, float pipeWidth, float pipeHeight, Point2f pipeWarpDestination, Camera* &plyrCamera);
 	void LevelEndUpdate(Point2f yoshiPos);
 	float GetLevelStart() const;
@@ -29,8 +32,8 @@ public:
 	Point2f GetLevelEnd() const;
 	std::vector<std::vector<Point2f>> GetLevelVertices();
 	std::vector<std::vector<Point2f>> GetPlatformVertices() const;
-	std::vector<WingedClouds*>& GetWingedClouds();
-	std::vector<Flower*>& GetFlowers();
+	std::vector<Entity*>& GetLevelEntities();
+
 
 private:
 	bool m_LevelPause{ false };
@@ -48,8 +51,7 @@ private:
 	Texture* m_BgTexture3;
 	std::vector< std::vector<Point2f>> m_LvlVertices{};
 	std::vector<Platforms*> m_Platforms;
-	std::vector<WingedClouds*> m_WingedClouds {};
-	std::vector<Flower*> m_Flowers{};
+	std::vector<Entity*> m_LvlEntities;
 	Texture* m_StairCloudTxt;
 	Texture* m_SunflowerCloudTxt;
 };

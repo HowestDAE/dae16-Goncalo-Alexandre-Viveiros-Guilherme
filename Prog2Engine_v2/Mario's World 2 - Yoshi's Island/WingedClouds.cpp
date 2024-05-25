@@ -12,12 +12,6 @@ WingedClouds::WingedClouds(Type typeOfCloud, const std::string& texturePath,Poin
 
 }
 
-WingedClouds::~WingedClouds()
-{
-	delete m_CloudFlower;
-}
-
-
 void WingedClouds::Update()
 {
 	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));

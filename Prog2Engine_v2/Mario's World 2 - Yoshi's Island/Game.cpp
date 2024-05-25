@@ -49,7 +49,7 @@ void Game::Update(const float elapsedSec )
 {
 
 	//Levels Functions
-	m_Level01->Update(elapsedSec,m_YoshiPlyr->GetPlayerPause(),m_YoshiPlyr);
+	m_Level01->Update(elapsedSec,m_YoshiPlyr->GetPlayerPause(),m_YoshiPlyr,m_EnemyManager->GetEnemyVector());
 
 
 	//std::cout << 1 / elapsedSec << "\n";
@@ -74,7 +74,7 @@ void Game::Update(const float elapsedSec )
 				m_YoshiPlyr->Debug();
 			}
 			m_YoshiPlyr->Animate(elapsedSec);
-			m_YoshiPlyr->HitCheck(m_EnemyManager->GetEnemyVector(), m_Level01->GetWingedClouds(), m_Mario->GetHitBox(), m_Level01->GetFlowers());
+			m_YoshiPlyr->HitCheck(m_EnemyManager->GetEnemyVector(), m_Level01->GetLevelEntities(), m_Mario->GetHitBox());
 			m_YoshiPlyr->KeysDown();
 
 			//Camera functions

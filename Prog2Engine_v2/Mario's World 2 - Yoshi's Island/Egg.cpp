@@ -90,7 +90,7 @@ void Egg::Animate(const float elapsedSec)
 
 }
 
-bool Egg::HoldEgg(const Rectf yoshiHitBox, const bool yoshiDirection,bool isCalculatingAngle,float elapsedSec)
+bool Egg::HoldEgg(const Rectf yoshiHitBox, const bool isYoshiFacingRight, bool isCalculatingAngle, float elapsedSec)
 {
 	
 	m_IsBeingHeld = true;
@@ -119,7 +119,7 @@ bool Egg::HoldEgg(const Rectf yoshiHitBox, const bool yoshiDirection,bool isCalc
 
 	
 
-	if (yoshiDirection == true)
+	if (isYoshiFacingRight == true)
 	{
 		m_Angle = utils::lerp(-1, 1.4, m_EggTime);
 		m_Position.x = yoshiHitBox.left + m_TxtWidth * 3;

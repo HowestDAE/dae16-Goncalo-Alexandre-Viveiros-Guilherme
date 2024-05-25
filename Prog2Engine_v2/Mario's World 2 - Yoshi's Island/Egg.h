@@ -10,7 +10,7 @@ public:
 	void Draw() const;
 	void Update(Point2f yoshiPos, bool yoshiDirection, int currentEgg, const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
 	void Animate(float elapsedSec);
-	bool HoldEgg(Rectf yoshiHitBox, bool yoshiDirection, bool isCalculatingAngle,float elapsedSec);
+	bool HoldEgg(Rectf yoshiHitBox, bool isYoshiFacingRight, bool isCalculatingAngle, float elapsedSec);
 	void ThrowEgg();
 	bool GetIsThrown();
 	Rectf GetHitbox();
