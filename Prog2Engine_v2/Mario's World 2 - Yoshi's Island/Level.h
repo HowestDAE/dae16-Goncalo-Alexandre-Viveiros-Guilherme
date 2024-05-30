@@ -31,7 +31,7 @@ public:
 	bool GetLevelPause() const;
 	Point2f GetLevelEnd() const;
 	std::vector<std::vector<Point2f>> GetLevelVertices();
-	std::vector<std::vector<Point2f>> GetPlatformVertices() const;
+	std::vector<std::vector<Point2f>> GetPlatformVertices();
 	std::vector<Entity*>& GetLevelEntities();
 
 
@@ -50,6 +50,7 @@ private:
 	Texture* m_BgTexture2;
 	Texture* m_BgTexture3;
 	std::vector< std::vector<Point2f>> m_LvlVertices{};
+	std::vector<std::vector<Point2f>> m_PlatformVertices{};
 	std::vector<Platforms*> m_Platforms;
 	std::vector<Entity*> m_LvlEntities;
 	Texture* m_StairCloudTxt;

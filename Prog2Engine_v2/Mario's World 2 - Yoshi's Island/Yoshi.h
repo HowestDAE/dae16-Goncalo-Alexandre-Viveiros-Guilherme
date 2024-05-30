@@ -24,10 +24,14 @@ public:
 	bool GetIsJumping() const;
 	bool GetIsHovering() const;
 	bool GetIsCrouching() const;
+	bool GetIsLookingUp() const;
 	bool GetPlayerPause() const;
+	bool GetIsEnemySpatOut()const;
 	bool GetIsOnMovingPlatform() const;
 	void HitCheck(std::vector<Enemy*>&, std::vector<Entity*> & lvlEntities, Rectf marioHitbox);
-	
+	void AddFlower();
+	void AddCoin();
+	void EmptyMouth();
 
 private:
 	bool m_IsTonguing{ false };
@@ -35,13 +39,16 @@ private:
 	bool m_IsMarioOn;
 	bool m_IsLookingUp{ false };
 	bool m_IsHit{ false };
-	int m_MarioTimer ;
+	bool m_IsEnemySpitOut{ false };
 	int m_Flowers{ 0 };
+	int m_Coins{ 0 };
+	int m_MarioTimer;
 	float m_FlightTime{ 0 };
 	float m_Countdown{ 0 };
 	float m_HitTimer{ 0 };
 	float m_JumpTimer{0};
 	float m_PushTimer{ 0 };
+	float m_ControlsTimer{ 0 };
 	Circlef m_Tongue;
 	bool m_IsMouthFull{false};
 	std::vector <Egg*> m_Eggs;
@@ -54,6 +61,7 @@ private:
 	bool m_PlayerPause{ false };
 	bool m_IsOnMovingPlatform{ false };
 	bool m_IsPushing{ false };
+	bool m_IsTongueReady{ true };
 
 	enum class AnimState {
 		Idle,

@@ -31,12 +31,14 @@ Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTx
 		m_Platforms.push_back(new Platforms(Point2f(3620, 400), 48 ,16, 48 * 2, 16 * 2, "Platforms.png", 90));
 		m_Platforms.push_back(new Platforms(Point2f(4930, 774), 48, 16, 48, 16 * 2, "Platforms.png", 90));
 
+		
 		//Add Winged Clouds for Lvl 1
 		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::StairCloud, "GeneralSprites.png", Point2f(2256, 483)));
 		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::StarCloud, "GeneralSprites.png", Point2f(4294, 325)) );
 		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::SunflowerCloud, "GeneralSprites.png", Point2f(4940, 294)));
 		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::FlowerCloud, "GeneralSprites.png", Point2f(4450, 743)));
 		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::StarCloud, "GeneralSprites.png", Point2f(6292, 639)));
+		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::StarCloud, "GeneralSprites.png", Point2f(4604, 520))); //TODO make it a invisible secret cloud
 
 		//Adds the 5 flower locations
 		m_LvlEntities.push_back(new Flower(Point2f(1537,355)));
@@ -286,14 +288,18 @@ std::vector<std::vector<Point2f>> Level::GetLevelVertices()
 	return m_LvlVertices;
 }
 
-std::vector<std::vector<Point2f>> Level::GetPlatformVertices() const
+std::vector<std::vector<Point2f>> Level::GetPlatformVertices()
 {
-	for (int idx = 0; idx < m_Platforms.size(); idx++)
+	std::vector<std::vector<Point2f>> temp;
+	for (int idx{0};idx < m_Platforms.size(); idx++)
 	{
-		return m_Platforms[idx]->GetPlatformVertices();
+		for (int idx2{ 0 }; idx2 < m_Platforms[idx]->GetPlatformVertices().size(); idx2++)
+		{
+			temp.push_back(m_Platforms[idx]->GetPlatformVertices()[idx2]);
+		}
+	
 	}
-
-
+	return temp;
 }
 
 std::vector<Entity*>& Level::GetLevelEntities() 

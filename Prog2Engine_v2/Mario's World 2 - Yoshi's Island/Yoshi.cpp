@@ -80,12 +80,12 @@ void Yoshi::Draw() const
 	{
 		if (m_IsFacingRight == true)
 		{
-			m_EntityTxt->Draw(Rectf(m_Position.x + m_TxtWidth * 2, m_Position.y + m_TxtHeight, 250 * m_FrameTime, 5), Rectf(41, 962, 8, 3));
+			m_EntityTxt->Draw(Rectf(m_Position.x + m_TxtWidth * 2, m_Position.y + m_TxtHeight, 350 * m_FrameTime, 5), Rectf(41, 962, 8, 3));
 			m_EntityTxt->Draw(Rectf{ m_Tongue.center.x,m_Tongue.center.y,8,7 }, Rectf{ 32 ,964,8,7 });
 		}
 		else
 		{
-			m_EntityTxt->Draw(Rectf(m_Tongue.center.x, m_Position.y + m_TxtHeight, 250*m_FrameTime, 5), Rectf(41, 962, 8, 3));
+			m_EntityTxt->Draw(Rectf(m_Tongue.center.x, m_Position.y + m_TxtHeight, 330*m_FrameTime, 5), Rectf(41, 962, 8, 3));
 			m_EntityTxt->Draw(Rectf{ m_Tongue.center.x,m_Tongue.center.y,8,7 }, Rectf{ 32 ,964,8,7 });
 		}
 	}
@@ -304,7 +304,6 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 				m_Position.y = hit_info.intersectPoint.y;
 				m_IsGrounded = true;
 				m_TerminalVlcityTimer = 0;
-
 				if (m_VelocityX == 0)
 				{
 					m_IsOnMovingPlatform = true;
@@ -321,7 +320,6 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 				m_Position.y = hit_info.intersectPoint.y;
 				m_IsGrounded = true;
 				m_TerminalVlcityTimer = 0;
-
 				if (m_VelocityX == 0)
 				{
 					m_IsOnMovingPlatform = true;
@@ -339,7 +337,6 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 				m_Position.y = hit_info.intersectPoint.y;
 				m_IsGrounded = true;
 				m_TerminalVlcityTimer = 0;
-
 				if (m_VelocityX == 0)
 				{
 					m_IsOnMovingPlatform = true;
@@ -398,14 +395,14 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 	{
 		m_HitTimer += elapsedSec;
 
-		for (float idx{ 0 }; idx < 2; idx += elapsedSec)
+		for (int idx{ 0 }; idx < 11; idx += 1)
 		{
 			if (m_HitTimer > 0.1)
 			{
 				m_HitTimer = 0;
 			}
 
-			if (idx > 1.8)
+			if (idx > 10)
 			{
 				m_IsHit = false;
 			}
@@ -483,13 +480,25 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 
 		if (m_IsFacingRight == true)
 		{
-			m_Tongue.center.x = (m_Position.x + m_TxtWidth*2) + 250 * m_FrameTime;
+			m_Tongue.center.x = (m_Position.x + m_TxtWidth*2) + 350 * m_FrameTime;
+
+			if (m_Tongue.center.x > m_Position.x + 150)
+			{
+				m_IsTonguing = false;
+			}
 		}
 
 		else
 		{
-			m_Tongue.center.x = m_Position.x - 250 * m_FrameTime;
+			m_Tongue.center.x = (m_Position.x + 20 )- 350 * m_FrameTime;
+
+			if (m_Tongue.center.x < m_Position.x - 150)
+			{
+				m_IsTonguing = false;
+			}
 		}
+
+		
 	}
 
 	else if (m_IsTonguing == false)
@@ -585,6 +594,16 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 		m_FeetPos = Point2f{ m_Position.x + 39,m_Position.y - 3 };
 	}
 
+	if (m_IsTongueReady == false)
+	{
+		m_ControlsTimer += elapsedSec;
+
+		if (m_ControlsTimer > 0.7)
+		{
+			m_IsTongueReady = true;
+			m_ControlsTimer = 0;
+		}
+	}
 
 	//collision and gravity
 	m_Position.y += m_VelocityY * elapsedSec;
@@ -1048,17 +1067,25 @@ void Yoshi::KeysDown()
 	{
 		m_IsYoshiJumping = true;
 		m_CurrentState = AnimState::Jumping;
+
 	}
 	if (pKeyStates[SDL_SCANCODE_X])
 	{
-		if (m_IsMouthFull == false)
+		if (m_IsTongueReady == true)
 		{
-			m_IsTonguing = true;
+			if (m_IsMouthFull == false)
+			{
+				m_IsTonguing = true;
+				m_IsTongueReady = false;
+			}
+
+			else
+			{
+				m_IsEnemySpitOut = true;
+				m_IsTongueReady = false;
+			}
 		}
-		else
-		{
-			//TODO add a functiom that throws the eaten enemy
-		}
+		
 	}
 	//TODO debug keys remove later
 	if (pKeyStates[SDL_SCANCODE_SPACE])
@@ -1094,9 +1121,7 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 		break;
 
 	case SDLK_x:
-
 		m_IsTonguing = false;
-
 		break;
 	case SDLK_c:
 
@@ -1134,7 +1159,6 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 	}
 }
 
-
 void Yoshi::Debug() 
 {
 	//collision and gravity
@@ -1171,9 +1195,19 @@ bool Yoshi::GetIsCrouching() const
 	return m_IsCrouching;
 }
 
+bool Yoshi::GetIsLookingUp() const
+{
+	return m_IsLookingUp;
+}
+
 bool Yoshi::GetPlayerPause() const
 {
 	return m_PlayerPause;
+}
+
+bool Yoshi::GetIsEnemySpatOut() const
+{
+	return m_IsEnemySpitOut;
 }
 
 bool Yoshi::GetIsOnMovingPlatform() const
@@ -1181,88 +1215,90 @@ bool Yoshi::GetIsOnMovingPlatform() const
 	return m_IsOnMovingPlatform;
 }
 
-
 void Yoshi::HitCheck(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEntities, Rectf marioHitbox)
 {
 	if (!enemies.empty())
 	{
 		if (m_IsHit == false)
 		{
-		
 			for (int idx{ 0 }; idx < enemies.size(); idx++)
 			{
 				if (enemies[idx]->GetIsAlive() == true)
 				{
-					//checks if enemy is "squashable" and if the yoshi hits his head kills him
-					if (enemies[idx]->GetIsSquashable() == true)
+					if (enemies[idx]->GetIsSpat() == false)
 					{
-						if (utils::IsOverlapping(m_Hitbox, enemies[idx]->GetHitBox()) == true)
+						if (enemies[idx]->GetIsSwallowed() == false)
 						{
-							if (m_Hitbox.bottom > enemies[idx]->GetHitBox().bottom + enemies[idx]->GetHitBox().height - 3)
+							//checks if enemy is "squashable" and if the yoshi hits his head kills him
+							if (enemies[idx]->GetIsSquashable() == true)
 							{
-								enemies[idx]->EnemyDeath();
-								m_VelocityY *= -2.f;
+								if (utils::IsOverlapping(m_Hitbox, enemies[idx]->GetHitBox()) == true)
+								{
+									if (m_Hitbox.bottom > enemies[idx]->GetHitBox().bottom + enemies[idx]->GetHitBox().height - 3)
+									{
+										enemies[idx]->EnemyDeath();
+										m_VelocityY *= -2.f;
+
+										break;
+									}
+								}
+							}
+
+							//checks if enemy can be eaten and if the tongue hits him it eats him
+							if (enemies[idx]->GetIsEdible() == true)
+							{
+								if (utils::IsOverlapping(enemies[idx]->GetHitBox(), m_Tongue) == true)
+								{
+									enemies[idx]->EnemySwallowed();
+									m_IsMouthFull = true;
+									break;
+								}
+							}
+
+							//checks if egg hit the enemy
+							if (!m_Eggs.empty())
+							{
+								if (m_Eggs.back()->GetIsThrown() == true)
+								{
+									if (utils::IsOverlapping(m_Eggs.back()->GetHitBox(), enemies[idx]->GetHitBox()) == true)
+									{
+										enemies[idx]->EnemyDeath();
+										m_Eggs.pop_back();
+										break;
+									}
+								}
+							}
+
+							//checks if enemy his hitting yoshi
+
+							if (utils::IsOverlapping(m_Hitbox, enemies[idx]->GetHitBox()) == true)
+							{
+								m_IsHit = true;
+
+								if (enemies[idx]->GetIsFacingRight() == true)
+								{
+									m_VelocityX *= -1.f;
+									m_VelocityX -= 300.f;
+
+								}
+
+								else
+								{
+									m_VelocityX *= -1.f;
+									m_VelocityX += 300.f;
+								}
+
+								m_VelocityY += 100;
+
+								m_IsMarioOn = false;
 
 								break;
 							}
 						}
 					}
-
-					//checks if enemy can be eaten and if the tongue hits him it eats him
-					if (enemies[idx]->GetIsEdible() == true)
-					{
-						if (utils::IsOverlapping(enemies[idx]->GetHitBox(), m_Tongue) == true)
-						{
-							enemies[idx]->EnemyDeath();
-							m_IsMouthFull = true;
-							m_IsTonguing = false;
-
-							break;
-						}
-					}
-
-					//checks if egg hit the enemy
-					if (!m_Eggs.empty())
-					{
-						if (m_Eggs.back()->GetIsThrown() == true)
-						{
-							if (utils::IsOverlapping(m_Eggs.back()->GetHitBox(), enemies[idx]->GetHitBox()) == true)
-							{
-								enemies[idx]->EnemyDeath();
-								m_Eggs.pop_back();
-								break;
-							}
-						}
-					}
-
-					//checks if enemy his hitting yoshi
-
-					if (utils::IsOverlapping(m_Hitbox, enemies[idx]->GetHitBox()) == true)
-					{
-						m_IsHit = true;
-
-						if (enemies[idx]->GetIsFacingRight() == true)
-						{
-							m_VelocityX *= -1.f;
-							m_VelocityX += 300.f;
-
-						}
-
-						else
-						{
-							m_VelocityX *= -1.f;
-							m_VelocityX -= 300.f;
-						}
-
-						m_VelocityY += 200;
-
-						m_IsMarioOn = false;
-
-						break;
-					}
+					
 				}
 					
-				
 			}
 		}
 
@@ -1346,4 +1382,20 @@ void Yoshi::HitCheck(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEnti
 			}
 		}
 	}
+}
+
+void Yoshi::AddFlower()
+{
+	m_Flowers += 1;
+}
+
+void Yoshi::AddCoin()
+{
+	m_Coins += 1;
+}
+
+void Yoshi::EmptyMouth()
+{
+	m_IsMouthFull = false;
+	m_IsEnemySpitOut = false;
 }

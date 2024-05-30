@@ -85,7 +85,7 @@ void Game::Update(const float elapsedSec )
 			m_Mario->Animate(elapsedSec);
 
 			//Enemy Functions
-			m_EnemyManager->Update(m_Level01->GetLevelVertices(), elapsedSec,m_YoshiPlyr->GetPosition());
+			m_EnemyManager->Update(m_Level01->GetLevelVertices(), elapsedSec,m_YoshiPlyr, m_Level01->GetLevelEntities());
 		}
 		
 	
@@ -97,18 +97,6 @@ void Game::Update(const float elapsedSec )
 	{
 		std::cout << "X Position" << m_YoshiPlyr->GetPosition().x << "\n" << "Y Position" <<m_YoshiPlyr->GetPosition().y ;
 	}
-		
-	
-	// Check keyboard state
-	//const Uint8 *pStates = SDL_GetKeyboardState( nullptr );
-	//if ( pStates[SDL_SCANCODE_RIGHT] )
-	//{
-	//	std::cout << "Right arrow key is down\n";
-	//}
-	//if ( pStates[SDL_SCANCODE_LEFT] && pStates[SDL_SCANCODE_UP])
-	//{
-	//	std::cout << "Left and up arrow keys are down\n";
-	//}
 }
 
 void Game::Draw( ) const
@@ -121,14 +109,14 @@ void Game::Draw( ) const
 
 		glPushMatrix();
 
-		glTranslatef(-m_GameCam->GetCamPos().x / 2, -m_GameCam->GetCamPos().y / 2, 0);          //parallax scrolling
+		glTranslatef(-m_GameCam->GetCamPos().x / 1.4f, -m_GameCam->GetCamPos().y / 1.4f, 0);          //parallax scrolling
 		m_Level01->DrawBackground();
 
 		glPopMatrix();
 
 		glPushMatrix();
 
-		glScalef(1.959676875, 1.9868859, 0);
+		glScalef(1.959676875f, 1.9868859f, 0);
 		glTranslatef(0, -430, 0);
 		m_Level01->DrawLvl();
 		glPopMatrix();

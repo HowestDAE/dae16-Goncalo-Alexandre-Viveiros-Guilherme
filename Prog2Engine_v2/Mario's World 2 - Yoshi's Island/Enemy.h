@@ -1,6 +1,8 @@
 #pragma once
 #include "Entity.h"
 
+class Yoshi;
+
 class Enemy: public Entity
 {
 public:
@@ -11,11 +13,18 @@ public:
 	bool GetIsEdible() const;
 	bool GetIsSquashable();
 	void EnemyDeath();
-	bool GetIsAlive();
+	void EnemySwallowed();
+	void EnemySpit(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEntities,Yoshi*& yoshiplyr );
+	void SetIsSpat();
+	bool GetIsAlive() const;
+	bool GetIsSwallowed() const;
+	bool GetIsSpat() const;
 
 private:
 	bool m_IsEdible;
 	bool m_IsSquashable;
+	bool m_IsSwallowed{false};
+	bool m_IsSpat{ false };
 
 protected:
 	bool m_IsAlive{ true };
