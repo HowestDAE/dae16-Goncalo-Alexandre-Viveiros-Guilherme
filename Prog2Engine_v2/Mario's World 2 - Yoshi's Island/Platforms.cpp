@@ -5,12 +5,12 @@
 #include "Vector2f.h"
 
 Platforms::Platforms(Point2f position, float txtWidth, float txtHeight, float platformWidth, float platformHeight, const std::string& texturePath, float radius) :
-	m_PlatformTxt{ new Texture{ texturePath } },
-	m_TxtHeight{ txtHeight },
-	m_TxtWidth{ txtWidth },
 	m_Position{ position },
+	m_TxtWidth{ txtWidth },
+	m_TxtHeight{ txtHeight },
 	m_PlatformWidth(platformWidth),
 	m_PlatformHeight(platformHeight),
+	m_PlatformTxt{ new Texture{ texturePath } },
 	m_Radius{ radius }
 {
 
@@ -60,7 +60,7 @@ void Platforms::Update(float elapsedSec,Point2f yoshiPos)
 		if (yoshiPos.x > m_PlatformPos[idx].x - (m_PlatformWidth / 2), (m_PlatformPos[idx].y + m_PlatformHeight) 
 			&& yoshiPos.x < m_PlatformPos[idx].x + (m_PlatformWidth / 2), (m_PlatformPos[idx].y + m_PlatformHeight))
 		{
-			if (yoshiPos.y < m_PlatformPos[idx].y +2 && yoshiPos.y > m_PlatformPos[idx].y - 2)
+			if (yoshiPos.y < m_PlatformPos[idx].y + m_PlatformHeight + 2 && yoshiPos.y > m_PlatformPos[idx].y - m_PlatformHeight - 2)
 			{
 				m_WhichPlatformIsYoshiOn = idx;
 				break;
@@ -76,12 +76,32 @@ std::vector<std::vector<Point2f>> Platforms::GetPlatformVertices()
 	return m_PlatformVertices;
 }
 
-float Platforms::GetAngle()
+float Platforms::GetAngle() const
 {
 	return m_Angle;
 }
 
-Point2f Platforms::GetPlatformPosition()
+Point2f Platforms::GetPlatformPosition() const
 {
 	return m_PlatformPos[m_WhichPlatformIsYoshiOn];
+}
+
+Point2f Platforms::GetCenterPosition() const
+{
+	return m_Position;
+}
+
+int Platforms::GetWhichPlatformIsYoshiOn() const
+{
+	return m_WhichPlatformIsYoshiOn;
+}
+
+float Platforms::GetPlatformHeight() const
+{
+	return m_PlatformHeight;
+}
+
+float Platforms::GetRadius() const
+{
+	return m_Radius;
 }

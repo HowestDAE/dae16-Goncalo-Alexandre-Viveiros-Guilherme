@@ -106,22 +106,7 @@ void Game::Draw( ) const
 	glPushMatrix();
 	{
 		glTranslatef(m_GameCam->GetCamPos().x, m_GameCam->GetCamPos().y, 0);
-
-		glPushMatrix();
-
-		glTranslatef(-m_GameCam->GetCamPos().x / 1.4f, -m_GameCam->GetCamPos().y / 1.4f, 0);          //parallax scrolling
-		m_Level01->DrawBackground();
-
-		glPopMatrix();
-
-		glPushMatrix();
-
-		glScalef(1.959676875f, 1.9868859f, 0);
-		glTranslatef(0, -430, 0);
-		m_Level01->DrawLvl();
-		glPopMatrix();
-
-		m_Level01->DrawOthers();
+		m_Level01->DrawLvl(m_GameCam->GetCamPos());
 		m_Mario->Draw();
 		m_YoshiPlyr->Draw();
 		m_EnemyManager->Draw();

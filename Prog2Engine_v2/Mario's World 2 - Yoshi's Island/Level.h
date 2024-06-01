@@ -20,7 +20,7 @@ public:
 	Level(Level&& rhs) = delete;
 
 
-	void DrawLvl() const;
+	void DrawLvl(Point2f camPos) const;
 	void DrawOthers() const;
 	void DrawBackground() const;
 	void Update(float elapsedSec, bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, const std::vector<Enemy*>& enemies);
@@ -49,8 +49,9 @@ private:
 	Texture* m_BgTexture;
 	Texture* m_BgTexture2;
 	Texture* m_BgTexture3;
+	std::vector<Point2f> m_EventVertices1 {};
+	std::vector<Point2f> m_EventVertices2 {};
 	std::vector< std::vector<Point2f>> m_LvlVertices{};
-	std::vector<std::vector<Point2f>> m_PlatformVertices{};
 	std::vector<Platforms*> m_Platforms;
 	std::vector<Entity*> m_LvlEntities;
 	Texture* m_StairCloudTxt;

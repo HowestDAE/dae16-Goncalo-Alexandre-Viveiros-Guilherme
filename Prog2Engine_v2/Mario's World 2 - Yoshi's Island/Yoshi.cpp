@@ -244,7 +244,10 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 					Point2f{ m_FeetPos.x + 15,m_Position.y + 32 }, hit_info))
 				{
 					m_Position.x = hit_info.intersectPoint.x - m_TxtWidth - 5; //Teleports entity to the point of intersection with a small offset
-					m_IsPushing = true;
+					if (m_IsGrounded == true)
+					{
+						m_IsPushing = true;
+					}
 					m_PushTimer = 0;
 					break;
 				}
@@ -266,7 +269,10 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 					Point2f{ m_FeetPos.x - 19,m_Position.y + 32 }, hit_info))
 				{
 					m_Position.x = hit_info.intersectPoint.x - 20; //Teleports entity to the point of intersection with a small offset
-					m_IsPushing = true;
+					if (m_IsGrounded == true)
+					{
+						m_IsPushing = true;
+					}
 					m_PushTimer = 0;
 					break;
 				}

@@ -74,9 +74,28 @@ Level::~Level()
 
 }
 
-void Level::DrawLvl() const  
+void Level::DrawLvl(Point2f camPos) const  
 {
-	m_LvlTexture->Draw();
+	glPushMatrix();
+	{
+		glPushMatrix();
+		glTranslatef(-camPos.x / 1.4f, -camPos.y / 1.4f, 0);          //parallax scrolling
+		DrawBackground();
+
+		glPopMatrix();
+
+		glPushMatrix();
+
+		glScalef(1.959676875f, 1.9868859f, 0);
+		glTranslatef(0, -430, 0);
+		m_LvlTexture->Draw();
+		glPopMatrix();
+
+		DrawOthers();
+	}
+
+
+	
 }
 
 void Level::DrawOthers() const
@@ -106,7 +125,21 @@ void Level::DrawOthers() const
 
 	if (m_DrawEventSunflower == true)
 	{
-	
+		m_SunflowerCloudTxt->Draw(Rectf(4900, 254, 56*2, 64*2), Rectf(0, 104, 56, 64));
+		m_SunflowerCloudTxt->Draw(Rectf(4900, 254 + (64*2), 56*2, 64*2), Rectf(0, 104, 56, 64));
+		m_SunflowerCloudTxt->Draw(Rectf(4900, 254 + (64*2) * 2, 56*2, 64*2), Rectf(0, 104, 56, 64));
+		m_SunflowerCloudTxt->Draw(Rectf(4900 + 56/2, 254 + (64*2) * 3 -2, 32*2, 32*2), Rectf(0, 32, 32, 32));
+
+		utils::SetColor(Color4f(1, 1, 1, 1));
+		utils::DrawLine(4900, 290, 4960, 290, 1);
+		utils::DrawLine(4900, 290 + (64 * 2), 4960, 290 + (64 * 2), 1);
+		utils::DrawLine(4900, 290 + (64 * 2)*2, 4960, 290 + (64 * 2)*2, 1);
+
+
+		utils::DrawLine(4960, 355, 5020, 355, 1);
+		utils::DrawLine(4960, 355 + (64 * 2), 5020, 355 +(64 * 2), 1);
+		utils::DrawLine(4960, 355 + (64 * 2) * 2, 5020, 355 + (64 * 2)*2, 1);
+
 	}
 
 	
@@ -121,7 +154,7 @@ void Level::DrawBackground() const
 		glScalef(90, 2, 0);
 		m_BgTexture3->Draw();
 		glPopMatrix();
-		glScalef(1.8, 1.8,0);
+		glScalef(1.8f, 1.8f,0);
 		m_BgTexture->Draw(Point2f{ 0,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidht,m_BgFrameHeight });
 		m_BgTexture->Draw(Point2f{ m_BgFrameWidht,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidht,m_BgFrameHeight });
 		m_BgTexture->Draw(Point2f{ m_BgFrameWidht*2,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidht,m_BgFrameHeight });
@@ -143,7 +176,11 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 
 			if (yoshiPlyr->GetIsOnMovingPlatform() == true)
 			{
-				yoshiPlyr->SetPosition(m_Platforms[idx]->GetPlatformPosition());
+				yoshiPlyr->SetPosition(m_Platforms[idx]->GetCenterPosition() + Vector2f(cos(m_Platforms[idx]->GetAngle()
+					+ ((M_PI / 2) * m_Platforms[idx]->GetWhichPlatformIsYoshiOn())), 
+					sin(m_Platforms[idx]->GetAngle() + ((M_PI / 2) * idx) + m_Platforms[idx]->GetPlatformHeight()) ) * m_Platforms[idx]->GetRadius());
+					break;
+
 			}
 		}
 	}
@@ -169,12 +206,12 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 				{
 					if (m_LevelNumber == 1)
 					{
-						if (idx == 0)
+						if (wingedClouds->GetTypeOfCloud() == WingedClouds::Type::StairCloud)
 						{
-							std::vector<Point2f> stairs{ 0 };
-							stairs.push_back(Point2f(2300, 495));
-							stairs.push_back(Point2f(2000, 790));
-							m_LvlVertices.push_back(stairs);
+							//m_EventVertices1.push_back(Point2f(2300, 495));
+							//m_EventVertices1.push_back(Point2f(2000, 790));
+							m_LvlVertices.push_back(std::vector<Point2f>{Point2f(2300, 495), Point2f(2000, 790)});
+
 							m_LevelPause = true;
 							m_DrawEventStairs = true;
 							m_LvlEntities[idx] = nullptr;
@@ -183,10 +220,15 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 							break;
 						}
 
-						if (idx == 2)
+						if (wingedClouds->GetTypeOfCloud() == WingedClouds::Type::SunflowerCloud)
 						{
-							//TODO spawn sunflower
-							std::vector<Point2f> sunflower{ 0 };
+							m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4900, 290), Point2f(4960, 290) });
+							m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4900, 290 + (64 * 2)), Point2f(4960, 290 + (64 * 2))});
+							m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4900, 290 + (64 * 2) * 2), Point2f(4960, 290 + (64 * 2) * 2)});
+							m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4960, 355), Point2f(5020, 355)});
+							m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4960, 355 + (64 * 2)), Point2f(5020, 355 + (64 * 2))});
+							m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4960, 355 + (64 * 2) * 2), Point2f(5020, 355 + (64 * 2) * 2)});
+						
 							m_DrawEventSunflower = true;
 							m_LvlEntities[idx] = nullptr;
 							delete m_LvlEntities[idx];

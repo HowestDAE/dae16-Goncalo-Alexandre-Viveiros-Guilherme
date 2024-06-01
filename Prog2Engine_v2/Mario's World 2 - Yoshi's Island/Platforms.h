@@ -14,8 +14,13 @@ public:
 	void Draw() const;
 	void Update(float elapsedSec, Point2f yoshiPos);
 	std::vector<std::vector<Point2f>> GetPlatformVertices();
-	float GetAngle();
-	Point2f GetPlatformPosition();
+	float GetAngle() const;
+	Point2f GetPlatformPosition() const;
+	Point2f GetCenterPosition() const;
+	int GetWhichPlatformIsYoshiOn() const;
+	float GetPlatformHeight() const;
+	float GetRadius() const;
+
 
 private:
 	Point2f m_Position;
