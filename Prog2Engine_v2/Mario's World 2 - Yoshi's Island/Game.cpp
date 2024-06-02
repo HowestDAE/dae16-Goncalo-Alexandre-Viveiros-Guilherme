@@ -62,7 +62,6 @@ void Game::Update(const float elapsedSec )
 			//Level Functions
 			m_Level01->WarpPipesUpdate(true, m_YoshiPlyr, Point2f(2708, 348), 16, 16, Point2f(740, -515), m_GameCam);
 			m_Level01->LevelEndUpdate(m_YoshiPlyr->GetPosition());
-			m_Level01->Animate(elapsedSec);
 
 			//Yoshis functions
 			if (noclip == false)
@@ -73,7 +72,6 @@ void Game::Update(const float elapsedSec )
 			{
 				m_YoshiPlyr->Debug();
 			}
-			m_YoshiPlyr->Animate(elapsedSec);
 			m_YoshiPlyr->HitCheck(m_EnemyManager->GetEnemyVector(), m_Level01->GetLevelEntities(), m_Mario->GetHitBox());
 			m_YoshiPlyr->KeysDown();
 
@@ -82,7 +80,6 @@ void Game::Update(const float elapsedSec )
 
 			//Mario's functions
 			m_Mario->Update(m_Level01->GetLevelVertices(), elapsedSec);
-			m_Mario->Animate(elapsedSec);
 
 			//Enemy Functions
 			m_EnemyManager->Update(m_Level01->GetLevelVertices(), elapsedSec,m_YoshiPlyr, m_Level01->GetLevelEntities());

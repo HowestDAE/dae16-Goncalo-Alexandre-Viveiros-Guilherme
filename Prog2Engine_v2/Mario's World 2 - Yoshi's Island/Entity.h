@@ -14,6 +14,7 @@ public:
 
 	virtual void Draw() const;
 	virtual void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
+	virtual void Animate(float elapsedSec);
 	void SetPosition(Point2f newPosition);
 	Rectf GetHitBox() const;
 	Point2f GetPosition() const;

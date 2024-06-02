@@ -4,7 +4,7 @@
 class ShyGuy final :public Enemy
 {
 public:
-	explicit ShyGuy(Point2f startPos);
+	explicit ShyGuy(Point2f startPos,float patrolRange);
 	~ShyGuy() override = default;
 
 
@@ -14,7 +14,7 @@ public:
 private:
 	float m_PatrolClock{ 0 };
 	int m_PatrolCycle{ 0 };
+	float m_PatrolRange{ 0 };
 	Point2f m_StartPos;
-	float lastYPosition{};
 };
 

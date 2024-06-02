@@ -16,7 +16,7 @@ public:
 	~WingedClouds() override = default;
 
 	void Update();
-	void Animate(float elapsedSec);
+	void Animate(float elapsedSec) override;
 	void SetIsHit();
 	bool GetIsHit() const;
 	Type GetTypeOfCloud() const;

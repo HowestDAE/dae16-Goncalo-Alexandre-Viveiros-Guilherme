@@ -168,6 +168,10 @@ void Entity::Update(const std::vector< std::vector<Point2f>>& platforms, const f
 
 }
 
+void Entity::Animate(float elapsedSec)
+{
+}
+
 void Entity::SetPosition(Point2f newPosition)
 {
 	m_Position = newPosition;

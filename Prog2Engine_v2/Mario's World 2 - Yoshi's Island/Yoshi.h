@@ -16,7 +16,6 @@ public:
 
 	void Draw()const override;
 	void Update(const std::vector< std::vector<Point2f>>& platforms, const std::vector< std::vector<Point2f>>& movingPlatforms,float elapsedSec);
-	void Animate(float elapsedSec);
 	void KeysDown();
 	void KeysUp(const SDL_KeyboardEvent& e);
 	void Debug();
@@ -82,5 +81,7 @@ private:
 
 	AnimState m_CurrentState{};
 	AnimState m_LastState{};
+
+	void Animate(float elapsedSec) override;
 };
 

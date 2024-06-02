@@ -375,7 +375,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 	}
 
 	//Stops movement once it falls below a certain range
-	if (m_VelocityX < 20 && m_VelocityX > 0 || m_VelocityX > -20 && m_VelocityX < 0)
+	if (m_VelocityX < 10 && m_VelocityX > 0 || m_VelocityX > -10 && m_VelocityX < 0)
 	{
 		m_VelocityX = 0;
 	}
@@ -620,6 +620,8 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 	//Update Hitbox
 
 	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
+
+	Animate(elapsedSec);
 }
 
 
@@ -1042,14 +1044,14 @@ void Yoshi::KeysDown()
 	{
 		if (m_VelocityX > -280)
 		{
-			m_VelocityX -= 28;
+			m_VelocityX -= 11;
 		}
 	}
 	if (pKeyStates[SDL_SCANCODE_RIGHT])
 	{
 		if (m_VelocityX < 280)
 		{
-			m_VelocityX += 28;
+			m_VelocityX += 11;
 		}
 	}
 	if (pKeyStates[SDL_SCANCODE_UP])

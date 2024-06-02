@@ -9,24 +9,30 @@ public:
 	Enemy(bool isEdible,bool isSquashable, const std::string& texturePath, float txtHeight, float txtWidth, Point2f position);
 	~Enemy() override = default;
 
-	void virtual Animate(float elapsedSec);
+	void Animate(float elapsedSec) override;
 	bool GetIsEdible() const;
-	bool GetIsSquashable();
+	bool GetIsSquashable() const;
 	void EnemyDeath();
 	void EnemySwallowed();
 	void EnemySpit(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEntities,Yoshi*& yoshiplyr );
 	void SetIsSpat();
+	void SetIsOnScreenFalse();
+	void SetIsOnScreenTrue();
 	bool GetIsAlive() const;
 	bool GetIsSwallowed() const;
 	bool GetIsSpat() const;
+	bool GetIsOnScreen() const;
+	
 
 private:
 	bool m_IsEdible;
 	bool m_IsSquashable;
 	bool m_IsSwallowed{false};
 	bool m_IsSpat{ false };
+	bool m_IsOnScreen{ false };
 
 protected:
 	bool m_IsAlive{ true };
 };
+
 

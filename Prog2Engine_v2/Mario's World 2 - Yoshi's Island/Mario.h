@@ -8,9 +8,9 @@ public:
 	explicit Mario(Yoshi* &plyrYoshi);
 	~Mario() override;
 
-	void Draw() const;
-	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
-	void Animate(float elapsedSec);
+	void Draw() const override;
+	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec) override;
+
 
 private:
 	Yoshi* m_Yoshi;
@@ -19,5 +19,7 @@ private:
 	float m_TxtWidth2;
 	float m_TxtHeight2;
 	float m_Time{0};
+
+	void Animate(float elapsedSec) override;
 };
 

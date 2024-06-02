@@ -24,14 +24,13 @@ public:
 	void DrawOthers() const;
 	void DrawBackground() const;
 	void Update(float elapsedSec, bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, const std::vector<Enemy*>& enemies);
-	void Animate(float elapsedSec) const;
-	void WarpPipesUpdate(bool isDownPipe, Yoshi* &yoshiPlyr, Point2f pipePosition, float pipeWidth, float pipeHeight, Point2f pipeWarpDestination, Camera* &plyrCamera);
+	static void WarpPipesUpdate(bool isDownPipe, Yoshi* &yoshiPlyr, Point2f pipePosition, float pipeWidth, float pipeHeight, Point2f pipeWarpDestination, Camera* &plyrCamera);
 	void LevelEndUpdate(Point2f yoshiPos);
 	float GetLevelStart() const;
 	bool GetLevelPause() const;
 	Point2f GetLevelEnd() const;
 	std::vector<std::vector<Point2f>> GetLevelVertices();
-	std::vector<std::vector<Point2f>> GetPlatformVertices();
+	std::vector<std::vector<Point2f>> GetPlatformVertices() const;
 	std::vector<Entity*>& GetLevelEntities();
 
 
@@ -43,7 +42,7 @@ private:
 	float m_LevelStart;
 	Point2f m_LevelEnd;
 	float m_BgFrameStart{8};
-	float m_BgFrameWidht{512};
+	float m_BgFrameWidth{512};
 	float m_BgFrameHeight{1024};
 	Texture* m_LvlTexture;
 	Texture* m_BgTexture;
@@ -56,5 +55,7 @@ private:
 	std::vector<Entity*> m_LvlEntities;
 	Texture* m_StairCloudTxt;
 	Texture* m_SunflowerCloudTxt;
+
+	void Animate(float elapsedSec) const;
 };
 

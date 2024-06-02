@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "ShyGuy.h"
 
-ShyGuy::ShyGuy(const Point2f startPos):Enemy(true,true,"EnemiesVaried2.png",19,21,startPos),m_StartPos(startPos)
+ShyGuy::ShyGuy(const Point2f startPos,float patrolRange):Enemy(true,true,"EnemiesVaried2.png",19,21,startPos),
+m_PatrolRange(patrolRange),
+m_StartPos(startPos)
 {
 }
 
@@ -22,7 +24,7 @@ void ShyGuy::Update(const std::vector<std::vector<Point2f>>& platforms, const fl
 		{
 			m_VelocityX = 30;
 
-			if (m_Position.x >= m_StartPos.x + 100)
+			if (m_Position.x >= m_StartPos.x + m_PatrolRange)
 			{
 				m_PatrolCycle = 1;
 				m_PatrolClock = 0;
@@ -33,7 +35,7 @@ void ShyGuy::Update(const std::vector<std::vector<Point2f>>& platforms, const fl
 		{
 			m_VelocityX = -30;
 
-			if (m_Position.x <= m_StartPos.x - 100)
+			if (m_Position.x <= m_StartPos.x - m_PatrolRange)
 			{
 				m_PatrolCycle = 0;
 				m_PatrolClock = 0;

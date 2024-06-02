@@ -10,6 +10,7 @@ public:
 	~Boulder() override = default;
 	void Hitcheck(const std::vector<Enemy*>& enemies) const;
 	void AddVelocity(bool isYoshiFacingRight);
+	void Animate(float elapsedSec) override;
 
 };
 

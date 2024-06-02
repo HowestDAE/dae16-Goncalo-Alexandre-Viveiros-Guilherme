@@ -116,6 +116,8 @@ void Mario::Update(const std::vector< std::vector<Point2f>>& platforms, const fl
 	m_Position.y += m_VelocityY * elapsedSec;
 	//Adds Entity's horizontal speed to his position
 	m_Position.x += m_VelocityX * elapsedSec;
+
+	Animate(elapsedSec);
 }
 
 void Mario::Animate(float elapsedSec)

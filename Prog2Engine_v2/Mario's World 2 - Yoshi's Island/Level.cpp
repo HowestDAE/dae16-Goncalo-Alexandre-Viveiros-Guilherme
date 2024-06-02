@@ -15,11 +15,11 @@
 
 Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTxt1, const std::string& backgroundTxt3, float levelStart, Point2f levelEnd,int levelNumber):
 	m_LevelNumber(levelNumber),
-	m_LvlTexture{ new Texture {imagePathLvlTxt} },
-	m_BgTexture(new Texture{ backgroundTxt1 }),
-	m_BgTexture3(new Texture{ backgroundTxt3 }),
 	m_LevelStart(levelStart),
-	m_LevelEnd(levelEnd)
+	m_LevelEnd(levelEnd),
+	m_LvlTexture{new Texture{imagePathLvlTxt}},
+	m_BgTexture(new Texture{backgroundTxt1}),
+	m_BgTexture3(new Texture{backgroundTxt3})
 {
 
 	if (m_LevelNumber == 1)
@@ -155,11 +155,11 @@ void Level::DrawBackground() const
 		m_BgTexture3->Draw();
 		glPopMatrix();
 		glScalef(1.8f, 1.8f,0);
-		m_BgTexture->Draw(Point2f{ 0,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidht,m_BgFrameHeight });
-		m_BgTexture->Draw(Point2f{ m_BgFrameWidht,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidht,m_BgFrameHeight });
-		m_BgTexture->Draw(Point2f{ m_BgFrameWidht*2,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidht,m_BgFrameHeight });
-		m_BgTexture->Draw(Point2f{ m_BgFrameWidht*3,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidht,m_BgFrameHeight });
-		m_BgTexture->Draw(Point2f{ m_BgFrameWidht*4,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidht,m_BgFrameHeight });
+		m_BgTexture->Draw(Point2f{ 0,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidth,m_BgFrameHeight });
+		m_BgTexture->Draw(Point2f{ m_BgFrameWidth,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidth,m_BgFrameHeight });
+		m_BgTexture->Draw(Point2f{ m_BgFrameWidth*2,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidth,m_BgFrameHeight });
+		m_BgTexture->Draw(Point2f{ m_BgFrameWidth*3,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidth,m_BgFrameHeight });
+		m_BgTexture->Draw(Point2f{ m_BgFrameWidth*4,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidth,m_BgFrameHeight });
 	}
 	glPopMatrix();
 
@@ -252,7 +252,7 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 	}
 
 
-	
+	Animate(elapsedSec);
 
 }
 
@@ -260,12 +260,9 @@ void Level::Animate(float elapsedSec) const
 {
 	for (int idx = 0; idx < m_LvlEntities.size(); idx++)
 	{
-		if (const auto wingedClouds = dynamic_cast<::WingedClouds*>(m_LvlEntities[idx]))
+		if (m_LvlEntities[idx] != nullptr)
 		{
-			if (wingedClouds != nullptr)
-			{
-				wingedClouds->Animate(elapsedSec);
-			}
+			m_LvlEntities[idx]->Animate(elapsedSec);
 		}
 	}
 }
@@ -330,7 +327,7 @@ std::vector<std::vector<Point2f>> Level::GetLevelVertices()
 	return m_LvlVertices;
 }
 
-std::vector<std::vector<Point2f>> Level::GetPlatformVertices()
+std::vector<std::vector<Point2f>> Level::GetPlatformVertices() const
 {
 	std::vector<std::vector<Point2f>> temp;
 	for (int idx{0};idx < m_Platforms.size(); idx++)

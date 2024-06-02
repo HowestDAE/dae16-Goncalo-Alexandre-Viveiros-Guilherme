@@ -42,3 +42,17 @@ void Boulder::AddVelocity(bool isYoshiFacingRight)
 		}
 	}
 }
+
+void Boulder::Animate(float elapsedSec)
+{
+	if (m_VelocityX > 0)
+	{
+		m_AngleDeg += 1 * elapsedSec;
+	}
+
+
+	if (m_VelocityX < 0)
+	{
+		m_AngleDeg -= 1 * elapsedSec;
+	}
+}

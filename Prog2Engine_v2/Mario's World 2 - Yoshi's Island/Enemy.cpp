@@ -20,7 +20,7 @@ bool Enemy::GetIsEdible() const
 	return m_IsEdible;
 }
 
-bool Enemy::GetIsSquashable()
+bool Enemy::GetIsSquashable() const
 {
 	return m_IsSquashable;
 }
@@ -79,6 +79,16 @@ void Enemy::SetIsSpat()
 	m_IsSpat = true;
 }
 
+void Enemy::SetIsOnScreenFalse()
+{
+	m_IsOnScreen = false;
+}
+
+void Enemy::SetIsOnScreenTrue()
+{
+	m_IsOnScreen = true;
+}
+
 bool Enemy::GetIsAlive() const
 {
 	return m_IsAlive;
@@ -94,3 +104,7 @@ bool Enemy::GetIsSpat() const
 	return m_IsSpat;
 }
 
+bool Enemy::GetIsOnScreen() const
+{
+	return m_IsOnScreen;
+}
