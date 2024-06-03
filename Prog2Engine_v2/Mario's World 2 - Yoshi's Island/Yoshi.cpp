@@ -8,6 +8,8 @@
 #include "WingedClouds.h"
 #include "Flowers.h"
 #include "Boulder.h"
+#include "Coin.h"
+#include "SoundManager.h"
 
 Yoshi::Yoshi(Point2f startPos):
 Entity("Yoshi_SpriteSheet.png",32,30,startPos),
@@ -92,7 +94,7 @@ void Yoshi::Draw() const
 
 }
 
-void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std::vector< std::vector<Point2f>>& movingPlatforms, const float elapsedSec)
+void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std::vector< std::vector<Point2f>>& movingPlatforms, SoundManager*& soundManager, const float elapsedSec)
 {
 	//updates Yoshis Feet position
 	if (m_IsFacingRight == true)
@@ -401,14 +403,14 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 	{
 		m_HitTimer += elapsedSec;
 
-		for (int idx{ 0 }; idx < 11; idx += 1)
+		for (int idx{ 0 }; idx < 11; idx++)
 		{
 			if (m_HitTimer > 0.1)
 			{
 				m_HitTimer = 0;
 			}
 
-			if (idx > 10)
+			if (idx > 9)
 			{
 				m_IsHit = false;
 			}
@@ -428,6 +430,8 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 	{
 		if (m_IsGrounded == true)
 		{
+			m_PlayJumpSFX = true;
+
 			m_IsJumpDone = false;
 
 			m_FlightTime = 0;
@@ -454,26 +458,26 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 
 		if (m_IsJumpDone == true)
 		{
-			
+
 			m_FlightTime += elapsedSec;
-		
+
 			if (m_FlightTime < 0.8)
 			{
 				m_CurrentState = AnimState::Hovering;
 				m_VelocityY *= -1.f;
-		
+
 				if (m_FlightTime > 0.75)
 				{
 					m_VelocityY *= -1.f;
 					m_VelocityY += 120.f;
 				}
-				}
-			
-			
+			}
+
+
 		}
-	
-		
+
 	}
+
 
 	
 
@@ -482,6 +486,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 #pragma region Tongue
 	if (m_IsTonguing == true)
 	{
+
 		m_Tongue.center.y = m_Position.y + m_TxtHeight;
 
 		if (m_IsFacingRight == true)
@@ -622,6 +627,23 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
 
 	Animate(elapsedSec);
+	Sound(soundManager);
+}
+
+void Yoshi::Sound(SoundManager*& soundManager) 
+{
+	if (m_PlayJumpSFX == true)
+	{
+		soundManager->PlaySFX(SoundManager::YoshiSFX::JumpSFX);
+
+		m_PlayJumpSFX = false;
+	}
+	if (m_PlayTongueSFX == true)
+	{
+		soundManager->PlaySFX(SoundManager::YoshiSFX::TongueSFX);
+
+		m_PlayTongueSFX = false;
+	}
 }
 
 
@@ -1044,7 +1066,7 @@ void Yoshi::KeysDown()
 	{
 		if (m_VelocityX > -280)
 		{
-			m_VelocityX -= 11;
+			m_VelocityX -= 11 ;
 		}
 	}
 	if (pKeyStates[SDL_SCANCODE_RIGHT])
@@ -1062,7 +1084,10 @@ void Yoshi::KeysDown()
 	{
 		if (m_IsMouthFull == true)
 		{
-			m_Eggs.push_back(new Egg(m_Position));
+			if (m_Eggs.size() < 6)
+			{
+				m_Eggs.push_back(new Egg(m_Position));
+			}
 
 			m_IsMouthFull = false;
 
@@ -1081,6 +1106,8 @@ void Yoshi::KeysDown()
 	{
 		if (m_IsTongueReady == true)
 		{
+			m_PlayTongueSFX = true;
+
 			if (m_IsMouthFull == false)
 			{
 				m_IsTonguing = true;
@@ -1355,6 +1382,22 @@ void Yoshi::HitCheck(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEnti
 					m_Flowers += 1;
 					break;
 				}
+			}
+
+			if (auto coins = dynamic_cast<::Coin*>(lvlEntities[idx]))
+			{
+				if (coins->GetIsRedCoin() == true)
+				{
+					m_RedCoins += 1;
+				}
+				else
+				{
+					m_Coins += 1;
+				}
+				lvlEntities[idx] = nullptr;
+				delete lvlEntities[idx];
+
+				break;
 			}
 		}
 		

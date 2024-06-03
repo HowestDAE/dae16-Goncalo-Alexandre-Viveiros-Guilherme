@@ -6,14 +6,16 @@
 #include "Texture.h"
 #include "Camera.h"
 #include "Flowers.h"
+#include "Coin.h"
 #include "Boulder.h"
 #include "Platforms.h"
+#include "SoundManager.h"
 #include "SVGParser.h"
 #include "utils.h"
 #include "Yoshi.h"
 #include "WingedClouds.h"
 
-Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTxt1, const std::string& backgroundTxt3, float levelStart, Point2f levelEnd,int levelNumber):
+Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTxt1, const std::string& backgroundTxt3,float levelStart, Point2f levelEnd,int levelNumber):
 	m_LevelNumber(levelNumber),
 	m_LevelStart(levelStart),
 	m_LevelEnd(levelEnd),
@@ -28,7 +30,7 @@ Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTx
 		SVGParser::GetVerticesFromSvgFile("ex4.svg", m_LvlVertices);
 
 		//Add platforms for Lvl 1
-		m_Platforms.push_back(new Platforms(Point2f(3620, 400), 48 ,16, 48 * 2, 16 * 2, "Platforms.png", 90));
+		m_Platforms.push_back(new Platforms(Point2f(3620, 400), 48 ,16, 48, 16 * 2, "Platforms.png", 90));
 		m_Platforms.push_back(new Platforms(Point2f(4930, 774), 48, 16, 48, 16 * 2, "Platforms.png", 90));
 
 		
@@ -52,6 +54,10 @@ Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTx
 
 		//Adds Boulders
 		m_LvlEntities.push_back(new Boulder(Point2f(1315, -758)));
+		m_LvlEntities.push_back(new Boulder(Point2f(5200, 857)));
+
+		//Adds Coins
+		CoinManager(40, 40, 0, 3, Point2f(130, 280));
 	}
 	
 }
@@ -166,7 +172,7 @@ void Level::DrawBackground() const
 }
 
 
-void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, const std::vector<Enemy*>& enemies)
+void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, const std::vector<Enemy*>& enemies, SoundManager*& soundManager)
 {
 	if (isPlayerPauseTrue == false)
 	{
@@ -254,6 +260,48 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 
 	Animate(elapsedSec);
 
+	if (m_IsBGMusicOn == false)
+	{
+		Sound(soundManager);
+
+		m_IsBGMusicOn = true;
+	}
+	
+}
+
+void Level::Sound(SoundManager*& soundManager)
+{
+	soundManager->PlayBGMusic(SoundManager::LvlMusic::Level1);
+}
+
+void Level::CoinManager(int coinRowSize, int coinColumnSize, int numberOfRedCoin, int spacing,Point2f position)
+{
+	const int numberOfCoinsInRow = coinRowSize / (12 + spacing);
+
+	const int numberOfCoinsInColumn = coinColumnSize / (16 + spacing);
+
+	const int numberOfCoins = numberOfCoinsInColumn + numberOfCoinsInRow;
+
+	if (numberOfCoinsInRow > 0)
+	{
+		if (numberOfCoinsInColumn > 0)
+		{
+			for (int idx = 0; idx < numberOfCoinsInColumn; idx++)
+			{
+				for (int idx2 = 0; idx2 < numberOfCoinsInRow; idx2++)
+				{
+					m_LvlEntities.push_back(new Coin(false, Point2f(position.x + (12 * 2 + spacing) * idx2, position.y + (16 * 2 + spacing) * idx)));
+				}
+			}
+			
+		}
+	}
+
+	else
+	{
+		std::cout << "The values provided cant make any coins";
+	}
+	
 }
 
 void Level::Animate(float elapsedSec) const
@@ -267,7 +315,7 @@ void Level::Animate(float elapsedSec) const
 	}
 }
 
-void Level::WarpPipesUpdate(bool isDownPipe, Yoshi* &yoshiPlyr, Point2f pipePosition, float pipeWidth, float pipeHeight, Point2f pipeWarpDestination,Camera* &plyrCamera)
+void Level::WarpPipesUpdate(bool isDownPipe, Yoshi* &yoshiPlyr, Point2f pipePosition, int pipeWidth, int pipeHeight, Point2f pipeWarpDestination, Camera* &plyrCamera)
 {
 	if (utils::IsOverlapping(yoshiPlyr->GetHitBox(), Rectf(pipePosition.x, pipePosition.y, pipeWidth, pipeHeight)) == true)
 	{

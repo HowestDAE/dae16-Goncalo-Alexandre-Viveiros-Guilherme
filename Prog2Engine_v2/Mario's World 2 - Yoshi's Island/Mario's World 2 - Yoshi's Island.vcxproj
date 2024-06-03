@@ -148,6 +148,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Coin.cpp" />
     <ClCompile Include="Egg.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
@@ -164,12 +165,14 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="PogoShyGuy.cpp" />
     <ClCompile Include="Boulder.cpp" />
     <ClCompile Include="ShyGuy.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="WalkingTulip.cpp" />
     <ClCompile Include="WingedClouds.cpp" />
     <ClCompile Include="Yoshi.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Coin.h" />
     <ClInclude Include="Egg.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyManager.h" />
@@ -186,6 +189,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="resource.h" />
     <ClInclude Include="Boulder.h" />
     <ClInclude Include="ShyGuy.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="WalkingTulip.h" />
     <ClInclude Include="WingedClouds.h" />
     <ClInclude Include="Yoshi.h" />

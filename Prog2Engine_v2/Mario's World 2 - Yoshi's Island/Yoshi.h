@@ -2,6 +2,7 @@
 #include <vector>
 #include "Entity.h"
 
+class SoundManager;
 class Boulder;
 class Flower;
 class WingedClouds;
@@ -15,7 +16,8 @@ public:
 	~Yoshi() override;
 
 	void Draw()const override;
-	void Update(const std::vector< std::vector<Point2f>>& platforms, const std::vector< std::vector<Point2f>>& movingPlatforms,float elapsedSec);
+	void Update(const std::vector< std::vector<Point2f>>& platforms, const std::vector< std::vector<Point2f>>& movingPlatforms, SoundManager*& soundManager,float elapsedSec);
+	void Sound(SoundManager*& soundManager);
 	void KeysDown();
 	void KeysUp(const SDL_KeyboardEvent& e);
 	void Debug();
@@ -41,6 +43,7 @@ private:
 	bool m_IsEnemySpitOut{ false };
 	int m_Flowers{ 0 };
 	int m_Coins{ 0 };
+	int m_RedCoins{ 0 };
 	int m_MarioTimer;
 	float m_FlightTime{ 0 };
 	float m_Countdown{ 0 };
@@ -61,6 +64,10 @@ private:
 	bool m_IsOnMovingPlatform{ false };
 	bool m_IsPushing{ false };
 	bool m_IsTongueReady{ true };
+
+
+	bool m_PlayJumpSFX{ false };
+	bool m_PlayTongueSFX{ false };
 
 	enum class AnimState {
 		Idle,

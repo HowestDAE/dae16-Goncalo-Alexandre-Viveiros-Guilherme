@@ -3,6 +3,7 @@
 #include <vector>
 
 
+
 class FlyingShyGuy;
 class PogoShyGuy;
 class WalkingTulip;
@@ -16,6 +17,7 @@ class Camera;
 class Texture;
 class Level;
 class Mario;
+class SoundManager;
 class Game final : public BaseGame
 {
 public:
@@ -43,6 +45,7 @@ private:
 	Mario* m_Mario;
 	Camera* m_GameCam;
 	EnemyManager* m_EnemyManager;
+	SoundManager* m_SoundManager;
 	bool debugging {false};
 	bool noclip{ false };
 	// FUNCTIONS

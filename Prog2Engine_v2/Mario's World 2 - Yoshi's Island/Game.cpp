@@ -12,7 +12,7 @@
 #include "PogoShyGuy.h"
 #include "ShyGuy.h"
 #include "WalkingTulip.h"
-
+#include "SoundManager.h"
 
 Game::Game( const Window& window ) 
 	:BaseGame{ window }
@@ -32,6 +32,7 @@ void Game::Initialize( )
 	m_Mario = new Mario(m_YoshiPlyr);
 	m_GameCam = new Camera(Point2f(0, 0), m_YoshiPlyr->GetPosition());
 	m_EnemyManager = new EnemyManager();
+	m_SoundManager = new SoundManager();
 
 	m_EnemyManager->SpawnEnemies(1);
 }
@@ -49,7 +50,7 @@ void Game::Update(const float elapsedSec )
 {
 
 	//Levels Functions
-	m_Level01->Update(elapsedSec,m_YoshiPlyr->GetPlayerPause(),m_YoshiPlyr,m_EnemyManager->GetEnemyVector());
+	m_Level01->Update(elapsedSec,m_YoshiPlyr->GetPlayerPause(),m_YoshiPlyr,m_EnemyManager->GetEnemyVector(),m_SoundManager);
 
 
 	//std::cout << 1 / elapsedSec << "\n";
@@ -66,7 +67,7 @@ void Game::Update(const float elapsedSec )
 			//Yoshis functions
 			if (noclip == false)
 			{
-				m_YoshiPlyr->Update(m_Level01->GetLevelVertices(), m_Level01->GetPlatformVertices(), elapsedSec);
+				m_YoshiPlyr->Update(m_Level01->GetLevelVertices(), m_Level01->GetPlatformVertices(), m_SoundManager,elapsedSec);
 			}
 			else
 			{
@@ -82,7 +83,7 @@ void Game::Update(const float elapsedSec )
 			m_Mario->Update(m_Level01->GetLevelVertices(), elapsedSec);
 
 			//Enemy Functions
-			m_EnemyManager->Update(m_Level01->GetLevelVertices(), elapsedSec,m_YoshiPlyr, m_Level01->GetLevelEntities());
+			m_EnemyManager->Update(m_Level01->GetLevelVertices(), elapsedSec,m_YoshiPlyr, m_Level01->GetLevelEntities(),m_SoundManager);
 		}
 		
 	

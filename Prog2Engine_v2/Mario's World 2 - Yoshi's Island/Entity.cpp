@@ -23,21 +23,32 @@ void Entity::Draw() const
 
 	glPushMatrix();
 	{
+		utils::SetColor(Color4f(0, 1, 0, 1));
+		utils::DrawPoint(m_Position, 3);
 
-		glTranslatef(m_Position.x + m_TxtWidth , m_Position.y, 0);
-		glRotatef(m_AngleDeg, m_AngX, m_AngY, m_AngZ); 
+		// Translate to the origin of the entity
+		glTranslatef(m_Position.x + m_TxtWidth, m_Position.y + m_TxtHeight, 0);
+
+		// Apply rotation around the middle of the entity
+		glRotatef(m_AngleDeg, m_AngX, m_AngY, m_AngZ);
+
+		// Apply scaling based on the facing direction
 		if (m_IsFacingRight == false) {
 			glScalef(m_ScaleX, m_ScaleY, m_ScaleZ);
 		}
-
-		else if (m_IsFacingRight == true) 
-		{
+		else {
 			glScalef(-m_ScaleX, m_ScaleY, m_ScaleZ);
 		}
+
+		// Translate back to the original position
+		glTranslatef(-m_TxtWidth + m_TxtWidth, -m_TxtHeight, 0);
+
 
 		// Draw Entity
 		m_EntityTxt->Draw(Rectf(-m_TxtWidth, 0, float(m_TxtWidth * 2), float(m_TxtHeight * 2)),
 			Rectf(m_XTxtPos, m_YTxtPos, m_TxtWidth, m_TxtHeight));
+
+	
 	}
 	glPopMatrix();
 
