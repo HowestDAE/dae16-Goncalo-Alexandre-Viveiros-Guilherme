@@ -356,8 +356,14 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 			m_IsOnMovingPlatform = false;
 
 		}
-		
 
+		if (m_IsStandingOnEntity == true)
+		{
+			m_VelocityY = 0;
+			m_Position.y = m_LvlEntityTop;
+			m_IsGrounded = true;
+			m_TerminalVlcityTimer = 0;
+		}
 	}
 
 #pragma endregion
@@ -645,7 +651,6 @@ void Yoshi::Sound(SoundManager*& soundManager)
 		m_PlayTongueSFX = false;
 	}
 }
-
 
 void Yoshi::Animate(const float elapsedSec)
 {
@@ -1040,6 +1045,45 @@ void Yoshi::Animate(const float elapsedSec)
 		m_LastState = m_CurrentState;
 	}
 
+	if (m_CurrentState == AnimState::AimIdle )
+	{
+		if (m_LastState != m_CurrentState)
+		{
+			m_XTxtPos = 2;
+		}
+
+		m_TxtWidth = 29;
+		m_TxtHeight = 35;
+		m_YTxtPos = 1061;
+		m_FrameTime += elapsedSec;
+
+		if (m_FrameTime > 0.2)
+		{
+			m_XTxtPos += m_TxtWidth;
+			m_FrameTime = 0;
+		}
+
+		if (m_XTxtPos > 29 * 7 + 2)
+		{
+			m_CurrentState = AnimState::Idle;
+
+			m_IsLayingEgg = false;
+		}
+
+		m_LastState = m_CurrentState;
+
+	}
+
+	if (m_CurrentState == AnimState::AimWalking)
+	{
+
+
+	}
+
+	if (m_CurrentState == AnimState::AimFluttering)
+	{
+		
+	}
 
 	for (int idx = 0; idx < m_Eggs.size(); idx++)
 	{
@@ -1090,7 +1134,6 @@ void Yoshi::KeysDown()
 			}
 
 			m_IsMouthFull = false;
-
 			m_IsLayingEgg = true;
 		}
 
@@ -1250,7 +1293,7 @@ bool Yoshi::GetIsOnMovingPlatform() const
 	return m_IsOnMovingPlatform;
 }
 
-void Yoshi::HitCheck(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEntities, Rectf marioHitbox)
+void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEntities, Rectf marioHitbox)
 {
 	if (!enemies.empty())
 	{
@@ -1376,8 +1419,8 @@ void Yoshi::HitCheck(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEnti
 			{
 				if (utils::IsOverlapping(m_Hitbox, flowers->GetHitBox()) == true)
 				{
-					lvlEntities[idx] = nullptr;
 					delete lvlEntities[idx];
+					lvlEntities[idx] = nullptr;
 
 					m_Flowers += 1;
 					break;
@@ -1386,18 +1429,22 @@ void Yoshi::HitCheck(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEnti
 
 			if (auto coins = dynamic_cast<::Coin*>(lvlEntities[idx]))
 			{
-				if (coins->GetIsRedCoin() == true)
+				if (utils::IsOverlapping(m_Hitbox, coins->GetHitBox()) == true)
 				{
-					m_RedCoins += 1;
+					if (coins->GetIsRedCoin() == true)
+					{
+						m_RedCoins += 1;
+					}
+					else
+					{
+						m_Coins += 1;
+					}
+					delete lvlEntities[idx];
+					lvlEntities[idx] = nullptr;
+					break;
 				}
-				else
-				{
-					m_Coins += 1;
-				}
-				lvlEntities[idx] = nullptr;
-				delete lvlEntities[idx];
 
-				break;
+				
 			}
 		}
 		
@@ -1411,26 +1458,32 @@ void Yoshi::HitCheck(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEnti
 			{
 				if (utils::IsOverlapping(m_Hitbox, boulder->GetHitBox()) == true)
 				{
-					if (m_Position.y  > boulder->GetPosition().y + 30)
+					if (m_Position.y  > boulder->GetPosition().y + 30 && m_Position.y <  boulder->GetPosition().y +32)
 					{
-						m_VelocityY = 0;
-						m_IsGrounded = true;
+						m_IsStandingOnEntity = true;
+						m_LvlEntityTop = boulder->GetHitBox().bottom + boulder->GetHitBox().height + 1;
 						break;
 					}
+
 					if (m_Position.x < boulder->GetPosition().x)
 					{
 						boulder->AddVelocity(m_IsFacingRight);
+						m_VelocityX /= 5;
 						m_IsPushing = true;
+						m_PushTimer = 0;
 						break;
 					}
 					if (m_Position.x > boulder->GetPosition().x)
 					{
 						boulder->AddVelocity(m_IsFacingRight);
+						m_VelocityX /= 5;
 						m_IsPushing = true;
+						m_PushTimer = 0;
 						break;
 					}
 				}
 			}
+			m_IsStandingOnEntity = false;
 		}
 	}
 }
@@ -1443,7 +1496,7 @@ void Yoshi::AddFlower()
 void Yoshi::AddCoin()
 {
 	m_Coins += 1;
-}
+} 
 
 void Yoshi::EmptyMouth()
 {

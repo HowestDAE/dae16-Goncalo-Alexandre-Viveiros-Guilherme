@@ -3,8 +3,21 @@
 
 #include "Enemy.h"
 
-Boulder::Boulder(Point2f startPos):Entity("Boulder.png",32,32,startPos)
+Boulder::Boulder(Point2f startPos):Entity("Boulder.png",32,32,startPos),
+m_LastYPosition{startPos.y}
 {
+}
+
+void Boulder::Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
+{
+	Entity::Update(platforms, elapsedSec);
+
+	if (m_LastYPosition + 1 < m_Position.y || m_LastYPosition - 1  > m_Position.y)
+	{
+		m_VelocityX += 1;
+
+		m_LastYPosition = m_Position.y;
+	}
 }
 
 void Boulder::Hitcheck(const std::vector<Enemy*>& enemies) const

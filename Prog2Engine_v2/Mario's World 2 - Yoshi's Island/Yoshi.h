@@ -29,7 +29,7 @@ public:
 	bool GetPlayerPause() const;
 	bool GetIsEnemySpatOut()const;
 	bool GetIsOnMovingPlatform() const;
-	void HitCheck(std::vector<Enemy*>&, std::vector<Entity*> & lvlEntities, Rectf marioHitbox);
+	void HitCheck(const std::vector<Enemy*>&, std::vector<Entity*> & lvlEntities, Rectf marioHitbox);
 	void AddFlower();
 	void AddCoin();
 	void EmptyMouth();
@@ -51,6 +51,7 @@ private:
 	float m_JumpTimer{0};
 	float m_PushTimer{ 0 };
 	float m_ControlsTimer{ 0 };
+	float m_LvlEntityTop{ 0 };
 	Circlef m_Tongue;
 	bool m_IsMouthFull{false};
 	std::vector <Egg*> m_Eggs;
@@ -64,6 +65,8 @@ private:
 	bool m_IsOnMovingPlatform{ false };
 	bool m_IsPushing{ false };
 	bool m_IsTongueReady{ true };
+	bool m_IsStandingOnEntity{ false };
+	
 
 
 	bool m_PlayJumpSFX{ false };

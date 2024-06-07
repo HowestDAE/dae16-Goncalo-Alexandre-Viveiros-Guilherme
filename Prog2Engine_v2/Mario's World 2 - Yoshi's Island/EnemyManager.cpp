@@ -91,7 +91,7 @@ void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, f
 
 	for (int idx{ 0 }; idx < m_Enemies.size(); idx++)
 	{
-		if (m_Enemies[idx]->GetPosition().x > yoshiplyr->GetPosition().x - 300 && m_Enemies[idx]->GetPosition().x < yoshiplyr->GetPosition().x + 800)
+		if (m_Enemies[idx]->GetPosition().x > yoshiplyr->GetPosition().x - 650 && m_Enemies[idx]->GetPosition().x < yoshiplyr->GetPosition().x + 650)
 		{
 			if (m_Enemies[idx]->GetPosition().y > yoshiplyr->GetPosition().y - 400 && m_Enemies[idx]->GetPosition().y < yoshiplyr->GetPosition().y + 400)
 			{

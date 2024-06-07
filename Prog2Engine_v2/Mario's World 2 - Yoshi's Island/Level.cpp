@@ -54,10 +54,10 @@ Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTx
 
 		//Adds Boulders
 		m_LvlEntities.push_back(new Boulder(Point2f(1315, -758)));
-		m_LvlEntities.push_back(new Boulder(Point2f(5200, 857)));
+		m_LvlEntities.push_back(new Boulder(Point2f(5343, 858)));
 
 		//Adds Coins
-		CoinManager(40, 40, 0, 3, Point2f(130, 280));
+		CoinManager(40, 40, 0, 3, Point2f(1374, 289));
 	}
 	
 }
@@ -220,8 +220,8 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 
 							m_LevelPause = true;
 							m_DrawEventStairs = true;
-							m_LvlEntities[idx] = nullptr;
 							delete m_LvlEntities[idx];
+							m_LvlEntities[idx] = nullptr;
 							m_LevelPause = false;
 							break;
 						}
@@ -236,8 +236,8 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 							m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4960, 355 + (64 * 2) * 2), Point2f(5020, 355 + (64 * 2) * 2)});
 						
 							m_DrawEventSunflower = true;
-							m_LvlEntities[idx] = nullptr;
 							delete m_LvlEntities[idx];
+							m_LvlEntities[idx] = nullptr;
 							break;
 						}
 					}
@@ -246,15 +246,18 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 					{
 						m_LvlEntities.push_back(wingedClouds->GetFlower());
 
-						m_LvlEntities[idx] = nullptr;
 						delete m_LvlEntities[idx];
+						m_LvlEntities[idx] = nullptr;
 						break;
 					}
 
 				}
 			}
 		}
-		
+		if (auto coins = dynamic_cast<::Coin*> (m_LvlEntities[idx]))
+		{
+			coins->Update();
+		}
 	}
 
 
@@ -294,6 +297,10 @@ void Level::CoinManager(int coinRowSize, int coinColumnSize, int numberOfRedCoin
 				}
 			}
 			
+		}
+		else
+		{
+			std::cout << "The values provided cant make any coins";
 		}
 	}
 

@@ -20,7 +20,7 @@ void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 	{
 		if (yoshiPlyr->GetIsFacingRight() == true)
 		{
-			if (m_CamPosition.x >= -yoshiPlyr->GetPosition().x + 200)
+			if (m_CamPosition.x >= -yoshiPlyr->GetPosition().x + 180)
 			{
 				m_CamPosition.x -= 0.05f * yoshiPlyr->GetVelocity().x / 5;
 				if (yoshiPlyr->GetVelocity().x ==  0)
@@ -32,7 +32,7 @@ void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 
 		else
 		{
-			if (m_CamPosition.x <= -yoshiPlyr->GetPosition().x + 500)
+			if (m_CamPosition.x <= -yoshiPlyr->GetPosition().x + 450)
 			{
 				m_CamPosition.x -= 0.05f * yoshiPlyr->GetVelocity().x / 5;
 				if (yoshiPlyr->GetVelocity().x == 0)
@@ -62,11 +62,11 @@ void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 		
 		if (m_CamPosition.y > -yoshiPlyr->GetPosition().y + 150)
 		{
-			m_CamPosition.y -= 5;
+			m_CamPosition.y -= 1.7f;
 		}
 		if (m_CamPosition.y < -yoshiPlyr->GetPosition().y + 150)
 		{
-			m_CamPosition.y += 5;
+			m_CamPosition.y += 1.7f;
 		}
 	}
 	//If yoshi is falling pans camera towards him
@@ -75,7 +75,7 @@ void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 	
 		if (m_CamPosition.y < -yoshiPlyr->GetPosition().y + 150)
 		{
-			m_CamPosition.y += 5;
+			m_CamPosition.y += 1.7f;
 		}
 	}
 

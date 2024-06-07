@@ -44,6 +44,7 @@ void Game::Cleanup() const
 	delete m_GameCam;
 	delete m_Mario;
 	delete m_EnemyManager;
+	delete m_SoundManager;
 }
 
 void Game::Update(const float elapsedSec )

@@ -9,6 +9,11 @@ m_IsRedCoin(isRedCoin)
 Coin::~Coin()
 = default;
 
+void Coin::Update()
+{
+	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
+}
+
 void Coin::Animate(float elapsedSec)
 {
 	m_FrameTime += elapsedSec;
