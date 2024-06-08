@@ -27,7 +27,7 @@ bool Enemy::GetIsSquashable() const
 
 void Enemy::EnemyDeath()
 {
-	m_IsAlive = false;
+	m_IsActive = false;
 }
 
 void Enemy::EnemySwallowed()
@@ -87,11 +87,6 @@ void Enemy::SetIsOnScreenFalse()
 void Enemy::SetIsOnScreenTrue()
 {
 	m_IsOnScreen = true;
-}
-
-bool Enemy::GetIsAlive() const
-{
-	return m_IsAlive;
 }
 
 bool Enemy::GetIsSwallowed() const

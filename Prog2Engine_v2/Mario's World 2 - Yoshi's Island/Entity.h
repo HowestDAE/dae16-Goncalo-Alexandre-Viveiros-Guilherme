@@ -14,13 +14,18 @@ public:
 
 	virtual void Draw() const;
 	virtual void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
+	virtual void Collision(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
 	virtual void Animate(float elapsedSec);
+	void FlipIsActive();
 	void SetPosition(Point2f newPosition);
+	void AddVelocity(float velocityX,float velocityY);
 	Rectf GetHitBox() const;
 	Point2f GetPosition() const;
 	bool GetIsFacingRight() const;
 	bool GetIsGrounded() const;
+	bool GetIsActive() const;
 	Point2f GetVelocity() const;
+	
 
 protected:
 	Texture* m_EntityTxt;
@@ -33,6 +38,7 @@ protected:
 	float m_YTxtPos{ 0 };
 	bool m_IsGrounded{ false };
 	bool m_IsFacingRight{ true };
+	bool m_IsActive{ true };
 	float m_FrameTime{ 0 };
 	float m_TerminalVlcityTimer{ 0 };
 	Rectf m_Hitbox{ 0, 0, 0, 0 };

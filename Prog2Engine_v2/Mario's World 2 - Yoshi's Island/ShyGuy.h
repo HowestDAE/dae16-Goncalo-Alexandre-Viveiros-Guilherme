@@ -12,7 +12,7 @@ public:
 	void Animate(float elapsedSec) override;
 	
 private:
-	float m_PatrolClock{ 0 };
+	float m_PatrolClock{ 3 };
 	int m_PatrolCycle{ 0 };
 	float m_PatrolRange{ 0 };
 	Point2f m_StartPos;

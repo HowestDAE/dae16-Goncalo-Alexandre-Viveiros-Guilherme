@@ -36,26 +36,6 @@ void Boulder::Hitcheck(const std::vector<Enemy*>& enemies) const
 	
 }
 
-void Boulder::AddVelocity(bool isYoshiFacingRight)
-{
-	if (isYoshiFacingRight == true)
-	{
-		if (m_VelocityX < 80)
-		{
-			m_VelocityX += 2;
-		}
-		
-	}
-
-	else
-	{
-		if (m_VelocityX < 80)
-		{
-			m_VelocityX -= 2;
-		}
-	}
-}
-
 void Boulder::Animate(float elapsedSec)
 {
 	m_AngZ = 1;

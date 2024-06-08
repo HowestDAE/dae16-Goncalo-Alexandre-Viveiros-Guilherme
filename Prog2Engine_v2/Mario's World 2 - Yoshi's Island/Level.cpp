@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+#include "Block.h"
 #include "Texture.h"
 #include "Camera.h"
 #include "Flowers.h"
@@ -10,6 +11,7 @@
 #include "Boulder.h"
 #include "Platforms.h"
 #include "SoundManager.h"
+#include "Star.h"
 #include "SVGParser.h"
 #include "utils.h"
 #include "Yoshi.h"
@@ -57,7 +59,12 @@ Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTx
 		m_LvlEntities.push_back(new Boulder(Point2f(5343, 858)));
 
 		//Adds Coins
-		CoinManager(40, 40, 0, 3, Point2f(1374, 289));
+		CoinManager(40, 40, 0, 3, Point2f(652, 320));
+		CoinManager(100, 40, 0, 3, Point2f(1730, 830));
+		CoinManager(300, 20, 0, 3, Point2f(1031, -556));
+
+		//Add Blocks
+		m_LvlEntities.push_back(new Block(Point2f(1014, -675), Block::BlockType::EggBlock));
 	}
 	
 }
@@ -198,6 +205,7 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 			boulders->Update(m_LvlVertices, elapsedSec);
 			boulders->Hitcheck(enemies);
 		}
+
 	}
 
 	for (int idx = 0; idx < m_LvlEntities.size(); idx++)
@@ -206,8 +214,6 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 		{
 			if (wingedClouds != nullptr)
 			{
-				wingedClouds->Update();
-
 				if (wingedClouds->GetIsHit() == true)
 				{
 					if (m_LevelNumber == 1)
@@ -244,8 +250,21 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 
 					if (wingedClouds->GetTypeOfCloud() == WingedClouds::Type::FlowerCloud)
 					{
-						m_LvlEntities.push_back(wingedClouds->GetFlower());
+						m_LvlEntities.push_back(new Flower(wingedClouds->GetPosition()));
 
+						delete m_LvlEntities[idx];
+						m_LvlEntities[idx] = nullptr;
+						break;
+					}
+
+					if (wingedClouds->GetTypeOfCloud() == WingedClouds::Type::StarCloud)
+					{
+						for (int idx{ 0 }; idx < 5; idx++)
+						{
+							m_LvlEntities.push_back(new Star(wingedClouds->GetPosition()));
+							m_LvlEntities.back()->AddVelocity(rand() % -30 + 60, (rand() % 90));
+						}
+	
 						delete m_LvlEntities[idx];
 						m_LvlEntities[idx] = nullptr;
 						break;
@@ -254,10 +273,12 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 				}
 			}
 		}
-		if (auto coins = dynamic_cast<::Coin*> (m_LvlEntities[idx]))
+		if (m_LvlEntities[idx] != nullptr)
 		{
-			coins->Update();
+			m_LvlEntities[idx]->Update(m_LvlVertices, elapsedSec);
 		}
+		
+		
 	}
 
 

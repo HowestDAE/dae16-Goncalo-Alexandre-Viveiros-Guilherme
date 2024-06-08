@@ -1,21 +1,41 @@
 #include "pch.h"
-#include "Stars.h"
+#include "Star.h"
 
-Stars::Stars(Point2f position):Entity("GeneralSprite.png",17,19,position)
+Star::Star(Point2f position):Entity("GeneralSprites.png",17,19,position)
 {
 }
 
-void Stars::Draw() const
+void Star::Draw() const
 {
 	Entity::Draw();
 }
 
-void Stars::Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
+void Star::Animate(float elapsedSec)
 {
-	//Update Hitbox
+	m_FrameTime += elapsedSec;
 
-	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
+	m_YTxtPos = 74;
 
+	if (m_XTxtPos < 121)
+	{
+		m_XTxtPos = 121;
+	}
+
+	if (m_XTxtPos > 162)
+	{
+		m_XTxtPos = 121;
+	}
+
+	if (m_FrameTime > 0.5)
+	{
+		m_XTxtPos += m_TxtWidth + 5;
+
+		m_FrameTime = 0;
+	}
+}
+
+void Star::Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
+{
 	utils::HitInfo hit_info;
 
 	if (m_TerminalVlcityTimer > 1)
@@ -42,23 +62,38 @@ void Stars::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 	{
 
 
-		//checks collision from the left side of Entity's feet
-		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left,m_Hitbox.bottom + m_TxtHeight * 2 },
-			Point2f{ m_Hitbox.left,m_Hitbox.bottom - 1 }, hit_info))
+		//checks collision from the middle bottom of the star
+		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
+			Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom - 1 }, hit_info))
 		{
-			m_VelocityY = 0;
-			m_Position.y = hit_info.intersectPoint.y;
+			if (m_VelocityX < 0)
+			{
+				m_VelocityX = -hit_info.lambda * 200;
+			}
+			else
+			{
+				m_VelocityX = hit_info.lambda * 200;
+			}
+			m_VelocityY = hit_info.lambda * 200;
 			m_IsGrounded = true;
 			m_TerminalVlcityTimer = 0;
 			break;
 		}
 
-		//checks collision from the right side of Entity's feet
-		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom + m_TxtHeight * 2 },
-			Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom - 1 }, hit_info))
+		//checks collision from the middle top of the star
+		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
+			Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight * 2 }, hit_info))
 		{
-			m_VelocityY = 0;
-			m_Position.y = hit_info.intersectPoint.y;
+			if (m_VelocityX < 0)
+			{
+				m_VelocityX = -hit_info.lambda * 200;
+			}
+			else
+			{
+				m_VelocityX = hit_info.lambda * 200;
+			}
+			m_VelocityY = -hit_info.lambda * 200;
+
 			m_IsGrounded = true;
 			m_TerminalVlcityTimer = 0;
 			break;
@@ -93,14 +128,16 @@ void Stars::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
 			Point2f{ m_Hitbox.left - 2,m_Hitbox.bottom + m_TxtHeight }, hit_info))
 		{
-			m_Position.x = hit_info.intersectPoint.x + 1; //Teleports entity to the point of intersection with a small offset
+			m_VelocityX = hit_info.lambda * 200;
+			m_VelocityY = hit_info.lambda * 200;
 		}
 
 		//right side collision
 		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
 			Point2f{ m_Hitbox.left + m_TxtWidth * 2 + 2,m_Hitbox.bottom + m_TxtHeight }, hit_info))
 		{
-			m_Position.x = hit_info.intersectPoint.x - m_TxtWidth * 2 + 2;
+			m_VelocityX = -hit_info.lambda * 200;
+			m_VelocityY = hit_info.lambda * 200;
 		}
 
 	}
@@ -121,12 +158,4 @@ void Stars::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 	//Adds Entity's horizontal speed to his position
 	m_Position.x += m_VelocityX * elapsedSec;
 
-	//Update Hitbox
-
-	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
-}
-
-void Stars::Animate(float elapsedSec)
-{
-	Entity::Animate(elapsedSec);
-}
+}	

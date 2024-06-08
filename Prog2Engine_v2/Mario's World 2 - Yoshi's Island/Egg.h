@@ -4,20 +4,25 @@
 class Egg final : public Entity
 {
 public:
-	Egg(Point2f Pos);
+	explicit Egg(Point2f position);
 	~Egg() override;
 
-	void Draw() const;
+	void Draw() const override;
 	void Update(Point2f yoshiPos, bool yoshiDirection, int currentEgg, const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
-	void Animate(float elapsedSec);
+	void Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec) override;
+	void Animate(float elapsedSec) override;
+	void PickUpEgg();
+	void DropEgg();
 	bool HoldEgg(Rectf yoshiHitBox, bool isYoshiFacingRight, bool isCalculatingAngle, float elapsedSec);
 	void ThrowEgg();
 	bool GetIsThrown();
 	Rectf GetHitbox();
+	bool GetIsFallen();
 
 private:
 	Texture* m_PointerTxt;
 	Rectf m_PointerRect{0, 0, 16, 16 };
+	bool m_IsFallen{ false };
 	float m_Timer{ 0 };
 	float m_EggTime{ 0 };
 	bool m_IsPointerGoingUp {true};

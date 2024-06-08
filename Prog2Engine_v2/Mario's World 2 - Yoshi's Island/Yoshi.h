@@ -17,10 +17,13 @@ public:
 
 	void Draw()const override;
 	void Update(const std::vector< std::vector<Point2f>>& platforms, const std::vector< std::vector<Point2f>>& movingPlatforms, SoundManager*& soundManager,float elapsedSec);
+	void Collision(const std::vector< std::vector<Point2f>>& platforms, const std::vector< std::vector<Point2f>>& movingPlatforms, float elapsedSec);
 	void Sound(SoundManager*& soundManager);
 	void KeysDown();
 	void KeysUp(const SDL_KeyboardEvent& e);
 	void Debug();
+	void HitCheck(const std::vector<Enemy*>&, std::vector<Entity*>& lvlEntities, Rectf marioHitbox);
+	void EmptyMouth();
 	bool GetIsMarioOn() const;
 	bool GetIsJumping() const;
 	bool GetIsHovering() const;
@@ -29,10 +32,7 @@ public:
 	bool GetPlayerPause() const;
 	bool GetIsEnemySpatOut()const;
 	bool GetIsOnMovingPlatform() const;
-	void HitCheck(const std::vector<Enemy*>&, std::vector<Entity*> & lvlEntities, Rectf marioHitbox);
-	void AddFlower();
-	void AddCoin();
-	void EmptyMouth();
+
 
 private:
 	bool m_IsTonguing{ false };

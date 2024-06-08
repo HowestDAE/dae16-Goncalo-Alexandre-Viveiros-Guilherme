@@ -11,37 +11,47 @@ void ShyGuy::Update(const std::vector<std::vector<Point2f>>& platforms, const fl
 {
 
 	Entity::Update(platforms, elapsedSec);
-	
+
 	
 
 	//makes the shy guy have a small patrol around a limited area from where he was placed
-
 	m_PatrolClock += elapsedSec;
 
-	if (m_PatrolClock > 3)
+	if (m_PatrolRange > 0)
 	{
-		if (m_PatrolCycle == 0)
+		if (m_PatrolClock > 3)
 		{
-			m_VelocityX = 30;
-
-			if (m_Position.x >= m_StartPos.x + m_PatrolRange)
+			if (m_PatrolCycle == 0)
 			{
-				m_PatrolCycle = 1;
-				m_PatrolClock = 0;
+				m_VelocityX = 30;
+
+				if (m_Position.x > m_StartPos.x + m_PatrolRange)
+				{
+					m_PatrolCycle = 1;
+					m_PatrolClock = 0;
+					m_VelocityX = 0;
+					m_XTxtPos = 61;
+				}
 			}
 		}
-		
-		if (m_PatrolCycle == 1)
-		{
-			m_VelocityX = -30;
 
-			if (m_Position.x <= m_StartPos.x - m_PatrolRange)
+		if (m_PatrolClock > 3)
+		{
+			if (m_PatrolCycle == 1)
 			{
-				m_PatrolCycle = 0;
-				m_PatrolClock = 0;
+				m_VelocityX = -30;
+
+				if (m_Position.x < m_StartPos.x - m_PatrolRange)
+				{
+					m_PatrolCycle = 0;
+					m_PatrolClock = 0;
+					m_VelocityX = 0;
+					m_XTxtPos = 61;
+				}
 			}
 		}
 	}
+	
 
 
 }

@@ -2,7 +2,7 @@
 #include "Egg.h"
 #include "Texture.h"
 
-Egg::Egg(const Point2f Pos):Entity("Eggs.png",16,14,Pos)
+Egg::Egg(const Point2f position):Entity("Eggs.png",16,14,position)
 {
 	m_PointerTxt = new Texture{ "Pointer for eggs.png" };
 }
@@ -32,6 +32,7 @@ void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int cu
 
 		if (m_Timer > 0.3)
 		{
+			
 			m_LastYoshiPosX = yoshiPos.x;
 			m_LastYoshiPosY = yoshiPos.y;
 
@@ -51,10 +52,145 @@ void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int cu
 
 	if (m_IsThrown == true)
 	{
-
 		Entity::Update(platforms, elapsedSec);
 	}
-	
+
+
+}
+
+void Egg::Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
+{
+	if (m_IsFallen == false)
+	{
+		utils::HitInfo hit_info;
+
+		if (m_TerminalVlcityTimer > 1)
+		{
+			m_TerminalVlcityTimer = 1;
+		}
+		else
+		{
+			m_TerminalVlcityTimer += elapsedSec;
+		}
+
+
+		if (m_TerminalVlcityTimer > 1)
+		{
+			m_TerminalVlcityTimer = 1;
+		}
+		else
+		{
+			m_TerminalVlcityTimer += elapsedSec;
+		}
+
+		//Floor Collisions
+		for (int idx{ 0 }; idx < platforms.size(); idx++)
+		{
+
+
+			//checks collision from the middle bottom of the egg
+			if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
+				Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom - 1 }, hit_info))
+			{
+				if (m_VelocityX < 0)
+				{
+					m_VelocityX = -hit_info.lambda * 2000;
+				}
+				else
+				{
+					m_VelocityX = hit_info.lambda * 2000;
+				}
+				m_VelocityY = hit_info.lambda * 2000;
+				m_IsGrounded = true;
+				m_TerminalVlcityTimer = 0;
+				break;
+			}
+
+			//checks collision from the middle top of the egg
+			if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
+				Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight * 2 }, hit_info))
+			{
+				if (m_VelocityX < 0)
+				{
+					m_VelocityX = -hit_info.lambda * 2000;
+				}
+				else
+				{
+					m_VelocityX = hit_info.lambda * 2000;
+				}
+				m_VelocityY = -hit_info.lambda * 2000;
+
+				m_IsGrounded = true;
+				m_TerminalVlcityTimer = 0;
+				break;
+			}
+
+			//Gravity
+			if (idx == 0) //to prevent gravity from getting looped 12 times
+			{
+				m_IsGrounded = false;
+
+				if (m_VelocityY > -480.f)
+				{
+					m_VelocityY -= 48.f * m_TerminalVlcityTimer;
+				}
+
+				if (m_VelocityY < -480.f)
+				{
+					m_VelocityY += 48.f;
+				}
+
+			}
+
+
+		}
+
+		//Wall Collision
+		for (int idx{ 0 }; idx < platforms.size(); idx++)
+		{
+			//Wall Collision
+
+		//left side collision
+			if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
+				Point2f{ m_Hitbox.left - 2,m_Hitbox.bottom + m_TxtHeight }, hit_info))
+			{
+				m_VelocityX = hit_info.lambda * 2000;
+				m_VelocityY = hit_info.lambda * 2000;
+			}
+
+			//right side collision
+			if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
+				Point2f{ m_Hitbox.left + m_TxtWidth * 2 + 2,m_Hitbox.bottom + m_TxtHeight }, hit_info))
+			{
+				m_VelocityX = -hit_info.lambda * 2000;
+				m_VelocityY = hit_info.lambda * 2000;
+			}
+
+		}
+
+
+		//checks if entity is facing right or left
+		if (m_VelocityX < 0)
+		{
+			m_IsFacingRight = false;
+		}
+
+		else if (m_VelocityX > 0)
+		{
+			m_IsFacingRight = true;
+		}
+
+		//collision and gravity
+		m_Position.y += m_VelocityY * elapsedSec;
+		//Adds Entity's horizontal speed to his position
+		m_Position.x += m_VelocityX * elapsedSec;
+	}
+
+	else
+	{
+		Entity::Collision(platforms, elapsedSec);
+	}
+
 }
 
 void Egg::Animate(const float elapsedSec)
@@ -88,6 +224,16 @@ void Egg::Animate(const float elapsedSec)
 
 	
 
+}
+
+void Egg::PickUpEgg()
+{
+	m_IsFallen = false;
+}
+
+void Egg::DropEgg()
+{
+	m_IsFallen = true;
 }
 
 bool Egg::HoldEgg(const Rectf yoshiHitBox, const bool isYoshiFacingRight, bool isCalculatingAngle, float elapsedSec)
@@ -155,4 +301,9 @@ bool Egg::GetIsThrown()
 Rectf Egg::GetHitbox()
 {
 	return m_Hitbox;
+}
+
+bool Egg::GetIsFallen()
+{
+	return m_IsFallen;
 }

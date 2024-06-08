@@ -10,10 +10,10 @@ public:
 	~Boulder() override = default;
 	void Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec) override;
 	void Hitcheck(const std::vector<Enemy*>& enemies) const;
-	void AddVelocity(bool isYoshiFacingRight);
 	void Animate(float elapsedSec) override;
 
 private:
 	float m_LastYPosition;
+
 };
 

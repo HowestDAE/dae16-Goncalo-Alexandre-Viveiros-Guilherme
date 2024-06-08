@@ -24,7 +24,7 @@ void EnemyManager::Draw() const
 {
 	for (int idx{ 0 }; idx < m_Enemies.size(); idx++)
 	{
-		if (m_Enemies[idx]->GetIsAlive() == true)
+		if (m_Enemies[idx]->GetIsActive() == true)
 		{
 			if (m_Enemies[idx]->GetIsSwallowed() == false)
 			{
@@ -50,7 +50,7 @@ void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, f
 	//Updates Enemies
 	for (int idx{ 0 }; idx < m_Enemies.size(); idx++)
 	{
-		if (m_Enemies[idx]->GetIsAlive() == true)
+		if (m_Enemies[idx]->GetIsActive() == true)
 		{
 			if (m_Enemies[idx]->GetIsSwallowed() == false)
 			{

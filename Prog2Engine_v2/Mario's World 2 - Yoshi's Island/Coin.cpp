@@ -9,9 +9,9 @@ m_IsRedCoin(isRedCoin)
 Coin::~Coin()
 = default;
 
-void Coin::Update()
+void Coin::Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
 {
-	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
+	
 }
 
 void Coin::Animate(float elapsedSec)

@@ -18,7 +18,6 @@ public:
 	void SetIsSpat();
 	void SetIsOnScreenFalse();
 	void SetIsOnScreenTrue();
-	bool GetIsAlive() const;
 	bool GetIsSwallowed() const;
 	bool GetIsSpat() const;
 	bool GetIsOnScreen() const;
@@ -31,8 +30,6 @@ private:
 	bool m_IsSpat{ false };
 	bool m_IsOnScreen{ false };
 
-protected:
-	bool m_IsAlive{ true };
 };
 
 

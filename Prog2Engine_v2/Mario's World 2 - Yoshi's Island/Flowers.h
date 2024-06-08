@@ -4,9 +4,9 @@
 class Flower final : public Entity
 {
 public:
-	Flower(Point2f position);
+	explicit Flower(Point2f position);
 	~Flower() override = default;
-
+	void Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec) override;
 
 private:
 

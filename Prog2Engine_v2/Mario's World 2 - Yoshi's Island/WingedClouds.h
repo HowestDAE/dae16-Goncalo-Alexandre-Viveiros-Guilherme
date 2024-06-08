@@ -15,17 +15,16 @@ public:
 	WingedClouds(Type typeOfCloud, const std::string& texturePath,Point2f position);
 	~WingedClouds() override = default;
 
-	void Update();
+	void Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec) override;
 	void Animate(float elapsedSec) override;
 	void SetIsHit();
 	bool GetIsHit() const;
 	Type GetTypeOfCloud() const;
-	Flower* GetFlower() const;
 	
 	
 private:
 	Type m_TypeOfCloud;
 	bool m_IsHit;
-	Flower* m_CloudFlower;
+
 };
 
