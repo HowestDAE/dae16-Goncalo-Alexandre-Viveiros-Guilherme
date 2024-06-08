@@ -26,11 +26,58 @@ void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int cu
 {
 	if (m_IsThrown == false)
 	{
+		Collision(platforms,elapsedSec);
+
 		m_IsBeingHeld = false;
 
-		m_Timer += elapsedSec;
+		m_DistanceX = yoshiPos.x - m_Position.x;
+		m_DistanceY = yoshiPos.y - m_Position.y;
 
-		if (m_Timer > 0.3)
+		if (m_DistanceX < 0 && m_DistanceX > -100 || m_DistanceX > 0 && m_DistanceX < 100 )
+		{
+			if (m_Position.x < yoshiPos.x + 20)
+			{
+				m_VelocityX = 60;
+			}
+
+			if (m_Position.x > yoshiPos.x + 20)
+			{
+				m_VelocityX = -60;
+			}
+		}
+
+		else
+		{
+			if (yoshiDirection == true)
+			{
+				m_DistanceX = yoshiPos.x + 20 - (m_TxtWidth * 3) * currentEgg - m_Position.x;
+
+				if (m_Position.x < yoshiPos.x + 20 - (m_TxtWidth * 3) * currentEgg)
+				{
+					m_VelocityX = 10 * m_DistanceX;
+				}
+			}
+
+			else
+			{
+				m_DistanceX = yoshiPos.x + 20 + (m_TxtWidth * 3) * currentEgg - m_Position.x;
+
+				if (m_Position.x > yoshiPos.x + 20 + (m_TxtWidth * 3) * currentEgg)
+				{
+					m_VelocityX = -10 * -m_DistanceX ;
+				}
+			}
+			
+		}
+
+		if (m_Position.y < yoshiPos.y - 30)
+		{
+			m_VelocityY = 30 * m_DistanceY;
+		}
+	
+
+
+		/*if (m_Timer > 0.3)
 		{
 			
 			m_LastYoshiPosX = yoshiPos.x;
@@ -47,40 +94,101 @@ void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int cu
 		{
 			m_Position.x = (m_LastYoshiPosX + m_TxtWidth * 5) + (m_TxtWidth * 2.5f) * currentEgg;
 			m_Position.y = m_LastYoshiPosY;
-		}
+		}*/
 	}
 
-	if (m_IsThrown == true)
-	{
-		Entity::Update(platforms, elapsedSec);
-	}
-
+	//Adds Gravity to position
+	m_Position.y += m_VelocityY * elapsedSec;
+	//Adds Entity's horizontal speed to his position
+	m_Position.x += m_VelocityX * elapsedSec;
+	//Update Hitbox
+	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
 
 }
 
 void Egg::Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
 {
-	if (m_IsFallen == false)
+	if (m_IsThrown == false)
 	{
 		utils::HitInfo hit_info;
 
-		if (m_TerminalVlcityTimer > 1)
+		if (m_TerminalVelocityTimer > 1)
 		{
-			m_TerminalVlcityTimer = 1;
+			m_TerminalVelocityTimer = 1;
 		}
 		else
 		{
-			m_TerminalVlcityTimer += elapsedSec;
+			m_TerminalVelocityTimer += elapsedSec;
 		}
 
 
-		if (m_TerminalVlcityTimer > 1)
+		if (m_TerminalVelocityTimer > 1)
 		{
-			m_TerminalVlcityTimer = 1;
+			m_TerminalVelocityTimer = 1;
 		}
 		else
 		{
-			m_TerminalVlcityTimer += elapsedSec;
+			m_TerminalVelocityTimer += elapsedSec;
+		}
+
+		//Floor Collisions
+		for (int idx{ 0 }; idx < platforms.size(); idx++)
+		{
+
+
+			//checks collision from the middle bottom of the egg
+			if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
+				Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom - 3 }, hit_info))
+			{
+				m_VelocityY = hit_info.lambda * 200;
+				m_IsGrounded = true;
+				m_TerminalVelocityTimer = 0;
+				break;
+			}
+
+			//Gravity
+			if (idx == 0) //to prevent gravity from getting looped 12 times
+			{
+				m_IsGrounded = false;
+
+				if (m_VelocityY > -480.f)
+				{
+					m_VelocityY -= 48.f * m_TerminalVelocityTimer;
+				}
+
+				if (m_VelocityY < -480.f)
+				{
+					m_VelocityY += 48.f;
+				}
+
+			}
+
+
+		}
+
+	}
+
+	else if (m_IsFallen == false)
+	{
+		utils::HitInfo hit_info;
+
+		if (m_TerminalVelocityTimer > 1)
+		{
+			m_TerminalVelocityTimer = 1;
+		}
+		else
+		{
+			m_TerminalVelocityTimer += elapsedSec;
+		}
+
+
+		if (m_TerminalVelocityTimer > 1)
+		{
+			m_TerminalVelocityTimer = 1;
+		}
+		else
+		{
+			m_TerminalVelocityTimer += elapsedSec;
 		}
 
 		//Floor Collisions
@@ -102,7 +210,7 @@ void Egg::Collision(const std::vector<std::vector<Point2f>>& platforms, float el
 				}
 				m_VelocityY = hit_info.lambda * 2000;
 				m_IsGrounded = true;
-				m_TerminalVlcityTimer = 0;
+				m_TerminalVelocityTimer = 0;
 				break;
 			}
 
@@ -121,7 +229,7 @@ void Egg::Collision(const std::vector<std::vector<Point2f>>& platforms, float el
 				m_VelocityY = -hit_info.lambda * 2000;
 
 				m_IsGrounded = true;
-				m_TerminalVlcityTimer = 0;
+				m_TerminalVelocityTimer = 0;
 				break;
 			}
 
@@ -132,7 +240,7 @@ void Egg::Collision(const std::vector<std::vector<Point2f>>& platforms, float el
 
 				if (m_VelocityY > -480.f)
 				{
-					m_VelocityY -= 48.f * m_TerminalVlcityTimer;
+					m_VelocityY -= 48.f * m_TerminalVelocityTimer;
 				}
 
 				if (m_VelocityY < -480.f)

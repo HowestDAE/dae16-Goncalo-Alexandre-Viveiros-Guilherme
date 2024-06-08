@@ -25,7 +25,7 @@ public:
 	void DrawLvl(Point2f camPos) const;
 	void DrawOthers() const;
 	void DrawBackground() const;
-	void Update(float elapsedSec, bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, const std::vector<Enemy*>& enemies, SoundManager*& soundManager);
+	void Update(float elapsedSec, bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, const std::vector<Enemy*>& enemies, SoundManager*& soundManager, Camera*& plyrCamera);
 	void Sound(SoundManager* &soundManager);
 	void CoinManager(int coinRowSize,int coinColumnSize,int numberOfRedCoin,int spacing, Point2f position);
 	static void WarpPipesUpdate(bool isDownPipe, Yoshi* &yoshiPlyr, Point2f pipePosition, int pipeWidth, int pipeHeight, Point2f pipeWarpDestination, Camera* &plyrCamera);

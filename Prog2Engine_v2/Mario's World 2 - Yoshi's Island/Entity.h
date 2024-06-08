@@ -40,7 +40,7 @@ protected:
 	bool m_IsFacingRight{ true };
 	bool m_IsActive{ true };
 	float m_FrameTime{ 0 };
-	float m_TerminalVlcityTimer{ 0 };
+	float m_TerminalVelocityTimer{ 0 };
 	Rectf m_Hitbox{ 0, 0, 0, 0 };
 
 	float m_AngleDeg{0};

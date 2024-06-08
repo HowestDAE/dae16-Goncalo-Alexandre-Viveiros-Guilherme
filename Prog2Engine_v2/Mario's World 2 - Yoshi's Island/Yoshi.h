@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Entity.h"
+#include "UI.h"
 
 class SoundManager;
 class Boulder;
@@ -24,6 +25,7 @@ public:
 	void Debug();
 	void HitCheck(const std::vector<Enemy*>&, std::vector<Entity*>& lvlEntities, Rectf marioHitbox);
 	void EmptyMouth();
+	int GetMarioTimer() const;
 	bool GetIsMarioOn() const;
 	bool GetIsJumping() const;
 	bool GetIsHovering() const;
@@ -32,7 +34,6 @@ public:
 	bool GetPlayerPause() const;
 	bool GetIsEnemySpatOut()const;
 	bool GetIsOnMovingPlatform() const;
-
 
 private:
 	bool m_IsTonguing{ false };

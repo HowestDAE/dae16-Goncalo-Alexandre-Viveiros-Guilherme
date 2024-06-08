@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Entity.h"
 #include "Texture.h"
-#include "utils.h"
 
 Entity::Entity(const std::string& texturePath, const float txtHeight, const float txtWidth, const Point2f position):
  m_EntityTxt{ new Texture {texturePath} },
@@ -88,23 +87,23 @@ void Entity::Collision(const std::vector<std::vector<Point2f>>& platforms, float
 {
 	utils::HitInfo hit_info;
 
-	if (m_TerminalVlcityTimer > 1)
+	if (m_TerminalVelocityTimer > 1)
 	{
-		m_TerminalVlcityTimer = 1;
+		m_TerminalVelocityTimer = 1;
 	}
 	else
 	{
-		m_TerminalVlcityTimer += elapsedSec;
+		m_TerminalVelocityTimer += elapsedSec;
 	}
 
 
-	if (m_TerminalVlcityTimer > 1)
+	if (m_TerminalVelocityTimer > 1)
 	{
-		m_TerminalVlcityTimer = 1;
+		m_TerminalVelocityTimer = 1;
 	}
 	else
 	{
-		m_TerminalVlcityTimer += elapsedSec;
+		m_TerminalVelocityTimer += elapsedSec;
 	}
 
 	//Floor Collisions
@@ -119,7 +118,7 @@ void Entity::Collision(const std::vector<std::vector<Point2f>>& platforms, float
 			m_VelocityY = 0;
 			m_Position.y = hit_info.intersectPoint.y;
 			m_IsGrounded = true;
-			m_TerminalVlcityTimer = 0;
+			m_TerminalVelocityTimer = 0;
 			break;
 		}
 
@@ -130,7 +129,7 @@ void Entity::Collision(const std::vector<std::vector<Point2f>>& platforms, float
 			m_VelocityY = 0;
 			m_Position.y = hit_info.intersectPoint.y;
 			m_IsGrounded = true;
-			m_TerminalVlcityTimer = 0;
+			m_TerminalVelocityTimer = 0;
 			break;
 		}
 
@@ -141,7 +140,7 @@ void Entity::Collision(const std::vector<std::vector<Point2f>>& platforms, float
 
 			if (m_VelocityY > -480.f)
 			{
-				m_VelocityY -= 48.f * m_TerminalVlcityTimer;
+				m_VelocityY -= 48.f * m_TerminalVelocityTimer;
 			}
 
 			if (m_VelocityY < -480.f)
@@ -175,7 +174,7 @@ void Entity::Collision(const std::vector<std::vector<Point2f>>& platforms, float
 
 	}
 
-#pragma region Friction and orientation. Hit timer
+#pragma region Friction and orientation
 
 	//simulates ground friction 
 	if (m_IsGrounded == true)

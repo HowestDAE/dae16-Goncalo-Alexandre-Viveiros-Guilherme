@@ -23,11 +23,12 @@ private:
 	Texture* m_PointerTxt;
 	Rectf m_PointerRect{0, 0, 16, 16 };
 	bool m_IsFallen{ false };
-	float m_Timer{ 0 };
 	float m_EggTime{ 0 };
 	bool m_IsPointerGoingUp {true};
 	float m_LastYoshiPosX{ 0 };
 	float m_LastYoshiPosY{ 0 };
+	float m_DistanceX{ 0 };
+	float m_DistanceY{ 0 };
 	bool m_IsThrown{ false };
 	std::vector<Point2f> Points{1};
 	float m_Angle = 0;

@@ -227,7 +227,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 	{
 		m_Countdown += elapsedSec;
 
-		if (m_MarioTimer != 10)
+		if (m_MarioTimer < 10)
 		{
 			if (m_Countdown >= 1)
 			{
@@ -326,13 +326,13 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 	utils::HitInfo hit_info;
 
 
-	if (m_TerminalVlcityTimer > 1)
+	if (m_TerminalVelocityTimer > 1)
 	{
-		m_TerminalVlcityTimer = 1;
+		m_TerminalVelocityTimer = 1;
 	}
 	else
 	{
-		m_TerminalVlcityTimer += elapsedSec;
+		m_TerminalVelocityTimer += elapsedSec;
 	}
 
 	//Floor Collisions
@@ -351,7 +351,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 					m_VelocityY = 0;
 					m_Position.y = hit_info.intersectPoint.y;
 					m_IsGrounded = true;
-					m_TerminalVlcityTimer = 0;
+					m_TerminalVelocityTimer = 0;
 					break;
 				}
 
@@ -362,7 +362,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 					m_VelocityY = 0;
 					m_Position.y = hit_info.intersectPoint.y;
 					m_IsGrounded = true;
-					m_TerminalVlcityTimer = 0;
+					m_TerminalVelocityTimer = 0;
 					break;
 				}
 
@@ -373,7 +373,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 					m_VelocityY = 0;
 					m_Position.y = hit_info.intersectPoint.y;
 					m_IsGrounded = true;
-					m_TerminalVlcityTimer = 0;
+					m_TerminalVelocityTimer = 0;
 					break;
 				}
 
@@ -392,7 +392,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 				m_VelocityY = 0;
 				m_Position.y = hit_info.intersectPoint.y;
 				m_IsGrounded = true;
-				m_TerminalVlcityTimer = 0;
+				m_TerminalVelocityTimer = 0;
 				break;
 			}
 
@@ -403,7 +403,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 				m_VelocityY = 0;
 				m_Position.y = hit_info.intersectPoint.y;
 				m_IsGrounded = true;
-				m_TerminalVlcityTimer = 0;
+				m_TerminalVelocityTimer = 0;
 				break;
 			}
 
@@ -414,7 +414,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 				m_VelocityY = 0;
 				m_Position.y = hit_info.intersectPoint.y;
 				m_IsGrounded = true;
-				m_TerminalVlcityTimer = 0;
+				m_TerminalVelocityTimer = 0;
 				break;
 			}
 
@@ -433,7 +433,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 
 				if (m_VelocityY > -480.f)
 				{
-					m_VelocityY -= 48.f * m_TerminalVlcityTimer;
+					m_VelocityY -= 48.f * m_TerminalVelocityTimer;
 				}
 
 				if (m_VelocityY < -480.f)
@@ -451,7 +451,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 			m_VelocityY = 0;
 			m_Position.y = m_LvlEntityTop;
 			m_IsGrounded = true;
-			m_TerminalVlcityTimer = 0;
+			m_TerminalVelocityTimer = 0;
 
 			break;
 		}
@@ -547,7 +547,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 				m_VelocityY = 0;
 				m_Position.y = hit_info.intersectPoint.y;
 				m_IsGrounded = true;
-				m_TerminalVlcityTimer = 0;
+				m_TerminalVelocityTimer = 0;
 				if (m_VelocityX == 0)
 				{
 					m_IsOnMovingPlatform = true;
@@ -563,7 +563,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 				m_VelocityY = 0;
 				m_Position.y = hit_info.intersectPoint.y;
 				m_IsGrounded = true;
-				m_TerminalVlcityTimer = 0;
+				m_TerminalVelocityTimer = 0;
 				if (m_VelocityX == 0)
 				{
 					m_IsOnMovingPlatform = true;
@@ -580,7 +580,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 				m_VelocityY = 0;
 				m_Position.y = hit_info.intersectPoint.y;
 				m_IsGrounded = true;
-				m_TerminalVlcityTimer = 0;
+				m_TerminalVelocityTimer = 0;
 				if (m_VelocityX == 0)
 				{
 					m_IsOnMovingPlatform = true;
@@ -1512,6 +1512,11 @@ void Yoshi::EmptyMouth()
 {
 	m_IsMouthFull = false;
 	m_IsEnemySpitOut = false;
+}
+
+int Yoshi::GetMarioTimer() const
+{
+	return m_MarioTimer;
 }
 
 bool Yoshi::GetIsMarioOn() const

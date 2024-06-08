@@ -5,14 +5,10 @@
 #include "Yoshi.h"
 #include "Camera.h"
 #include "EnemyManager.h"
-#include "FlyingShyGuy.h"
 #include "Level.h"
 #include "Mario.h"
-#include "PiranhaPlant.h"
-#include "PogoShyGuy.h"
-#include "ShyGuy.h"
-#include "WalkingTulip.h"
 #include "SoundManager.h"
+#include "UI.h"
 
 Game::Game( const Window& window ) 
 	:BaseGame{ window }
@@ -33,7 +29,7 @@ void Game::Initialize( )
 	m_GameCam = new Camera(Point2f(0, 0), m_YoshiPlyr->GetPosition());
 	m_EnemyManager = new EnemyManager();
 	m_SoundManager = new SoundManager();
-
+	m_UI = new UI("MarioTimer.png", 32, 32, Point2f(130, 280));
 	m_EnemyManager->SpawnEnemies(1);
 }
 
@@ -45,13 +41,14 @@ void Game::Cleanup() const
 	delete m_Mario;
 	delete m_EnemyManager;
 	delete m_SoundManager;
+	delete m_UI;
 }
 
 void Game::Update(const float elapsedSec )
 {
 
 	//Levels Functions
-	m_Level01->Update(elapsedSec,m_YoshiPlyr->GetPlayerPause(),m_YoshiPlyr,m_EnemyManager->GetEnemyVector(),m_SoundManager);
+	m_Level01->Update(elapsedSec,m_YoshiPlyr->GetPlayerPause(),m_YoshiPlyr,m_EnemyManager->GetEnemyVector(),m_SoundManager,m_GameCam);
 
 
 	//std::cout << 1 / elapsedSec << "\n";
@@ -62,13 +59,13 @@ void Game::Update(const float elapsedSec )
 		if (m_YoshiPlyr->GetPlayerPause() == false)
 		{
 			//Level Functions
-			m_Level01->WarpPipesUpdate(true, m_YoshiPlyr, Point2f(2708, 348), 16, 16, Point2f(740, -515), m_GameCam);
 			m_Level01->LevelEndUpdate(m_YoshiPlyr->GetPosition());
 
 			//Yoshis functions
 			if (noclip == false)
 			{
 				m_YoshiPlyr->Update(m_Level01->GetLevelVertices(), m_Level01->GetPlatformVertices(), m_SoundManager,elapsedSec);
+				m_UI->Update(m_YoshiPlyr->GetIsMarioOn(),m_YoshiPlyr->GetMarioTimer());
 			}
 			else
 			{
@@ -109,7 +106,7 @@ void Game::Draw( ) const
 		m_Mario->Draw();
 		m_YoshiPlyr->Draw();
 		m_EnemyManager->Draw();
-
+		m_UI->Draw(m_GameCam->GetCamPos());
 	}
 	glPopMatrix();
 }

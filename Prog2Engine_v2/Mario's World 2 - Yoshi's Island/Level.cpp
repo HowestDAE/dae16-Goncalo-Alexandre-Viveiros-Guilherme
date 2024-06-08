@@ -179,7 +179,7 @@ void Level::DrawBackground() const
 }
 
 
-void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, const std::vector<Enemy*>& enemies, SoundManager*& soundManager)
+void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, const std::vector<Enemy*>& enemies, SoundManager*& soundManager, Camera*& plyrCamera)
 {
 	if (isPlayerPauseTrue == false)
 	{
@@ -281,7 +281,6 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 		
 	}
 
-
 	Animate(elapsedSec);
 
 	if (m_IsBGMusicOn == false)
@@ -290,7 +289,13 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 
 		m_IsBGMusicOn = true;
 	}
-	
+
+	if (m_LevelNumber == 1)
+	{
+		WarpPipesUpdate(true, yoshiPlyr, Point2f(2708, 348), 16, 16, Point2f(740, -515), plyrCamera);
+		WarpPipesUpdate(false, yoshiPlyr, Point2f(2521, -542), 16, 16, Point2f(3121, 230), plyrCamera);
+	}
+
 }
 
 void Level::Sound(SoundManager*& soundManager)

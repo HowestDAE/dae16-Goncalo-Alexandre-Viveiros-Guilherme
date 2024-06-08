@@ -1,23 +1,14 @@
 #pragma once
 #include "BaseGame.h"
-#include <vector>
 
 
-
-class FlyingShyGuy;
-class PogoShyGuy;
-class WalkingTulip;
-class PiranhaPlant;
 class EnemyManager;
-class Platforms;
-class Enemy;
-class ShyGuy;
 class Yoshi;
 class Camera;
-class Texture;
 class Level;
 class Mario;
 class SoundManager;
+class UI;
 class Game final : public BaseGame
 {
 public:
@@ -46,6 +37,7 @@ private:
 	Camera* m_GameCam;
 	EnemyManager* m_EnemyManager;
 	SoundManager* m_SoundManager;
+	UI* m_UI;
 	bool debugging {false};
 	bool noclip{ false };
 	// FUNCTIONS

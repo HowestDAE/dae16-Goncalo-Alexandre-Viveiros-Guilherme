@@ -38,23 +38,23 @@ void Star::Collision(const std::vector<std::vector<Point2f>>& platforms, float e
 {
 	utils::HitInfo hit_info;
 
-	if (m_TerminalVlcityTimer > 1)
+	if (m_TerminalVelocityTimer > 1)
 	{
-		m_TerminalVlcityTimer = 1;
+		m_TerminalVelocityTimer = 1;
 	}
 	else
 	{
-		m_TerminalVlcityTimer += elapsedSec;
+		m_TerminalVelocityTimer += elapsedSec;
 	}
 
 
-	if (m_TerminalVlcityTimer > 1)
+	if (m_TerminalVelocityTimer > 1)
 	{
-		m_TerminalVlcityTimer = 1;
+		m_TerminalVelocityTimer = 1;
 	}
 	else
 	{
-		m_TerminalVlcityTimer += elapsedSec;
+		m_TerminalVelocityTimer += elapsedSec;
 	}
 
 	//Floor Collisions
@@ -76,7 +76,7 @@ void Star::Collision(const std::vector<std::vector<Point2f>>& platforms, float e
 			}
 			m_VelocityY = hit_info.lambda * 200;
 			m_IsGrounded = true;
-			m_TerminalVlcityTimer = 0;
+			m_TerminalVelocityTimer = 0;
 			break;
 		}
 
@@ -95,7 +95,7 @@ void Star::Collision(const std::vector<std::vector<Point2f>>& platforms, float e
 			m_VelocityY = -hit_info.lambda * 200;
 
 			m_IsGrounded = true;
-			m_TerminalVlcityTimer = 0;
+			m_TerminalVelocityTimer = 0;
 			break;
 		}
 
@@ -106,7 +106,7 @@ void Star::Collision(const std::vector<std::vector<Point2f>>& platforms, float e
 
 			if (m_VelocityY > -480.f)
 			{
-				m_VelocityY -= 48.f * m_TerminalVlcityTimer;
+				m_VelocityY -= 48.f * m_TerminalVelocityTimer;
 			}
 
 			if (m_VelocityY < -480.f)
