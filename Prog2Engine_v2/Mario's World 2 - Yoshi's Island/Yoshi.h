@@ -49,6 +49,7 @@ private:
 	float m_FlightTime{ 0 };
 	float m_Countdown{ 0 };
 	float m_HitTimer{ 0 };
+	float m_HitPhases{ 0 };
 	float m_JumpTimer{0};
 	float m_PushTimer{ 0 };
 	float m_ControlsTimer{ 0 };

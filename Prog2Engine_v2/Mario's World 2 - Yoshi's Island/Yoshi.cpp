@@ -283,6 +283,68 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 
 #pragma endregion
 
+#pragma region Friction and orientation. Hit timer
+
+	//simulates ground friction 
+	if (m_IsGrounded == true)
+	{
+		m_VelocityX -= (m_VelocityX * 5) * elapsedSec;
+	}
+
+	//simulates air friction
+	else
+	{
+		m_VelocityX -= (m_VelocityX / 8) * elapsedSec;
+	}
+
+	//Stops movement once it falls below a certain range
+	if (m_VelocityX < 10 && m_VelocityX > 0 || m_VelocityX > -10 && m_VelocityX < 0)
+	{
+		m_VelocityX = 0;
+	}
+
+
+	//Check if Entity is facing right
+	if (m_IsHit == false)
+	{
+		if (m_IsHoldingEgg == false)
+		{
+			if (m_VelocityX < 0)
+			{
+				m_IsFacingRight = false;
+			}
+
+			else if (m_VelocityX > 0)
+			{
+				m_IsFacingRight = true;
+			}
+		}
+	}
+	else
+	{
+		m_HitTimer += elapsedSec;
+
+		if (m_HitTimer > 0.1)
+		{
+			m_HitTimer = 0;
+			m_HitPhases += 1;
+		}
+
+		if (m_HitPhases > 9)
+		{
+			m_IsHit = false;
+			m_HitPhases = 0;
+		}
+
+
+
+
+	}
+
+
+#pragma endregion
+
+
 	//updates Yoshis Feet position
 	if (m_IsFacingRight == true)
 	{
@@ -303,6 +365,8 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 			m_ControlsTimer = 0;
 		}
 	}
+
+
 
 	//collision and gravity
 	m_Position.y += m_VelocityY * elapsedSec;
@@ -598,67 +662,6 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 #pragma endregion
 
 
-#pragma region Friction and orientation. Hit timer
-
-	//simulates ground friction 
-	if (m_IsGrounded == true)
-	{
-		m_VelocityX -= (m_VelocityX * 5) * elapsedSec;
-	}
-
-	//simulates air friction
-	else
-	{
-		m_VelocityX -= (m_VelocityX / 8) * elapsedSec;
-	}
-
-	//Stops movement once it falls below a certain range
-	if (m_VelocityX < 10 && m_VelocityX > 0 || m_VelocityX > -10 && m_VelocityX < 0)
-	{
-		m_VelocityX = 0;
-	}
-
-
-	//Check if Entity is facing right
-	if (m_IsHit == false)
-	{
-		if (m_IsHoldingEgg == false)
-		{
-			if (m_VelocityX < 0)
-			{
-				m_IsFacingRight = false;
-			}
-
-			else if (m_VelocityX > 0)
-			{
-				m_IsFacingRight = true;
-			}
-		}
-	}
-	else
-	{
-		m_HitTimer += elapsedSec;
-
-		for (int idx{ 0 }; idx < 11; idx++)
-		{
-			if (m_HitTimer > 0.1)
-			{
-				m_HitTimer = 0;
-			}
-
-			if (idx > 9)
-			{
-				m_IsHit = false;
-			}
-		}
-
-
-
-
-	}
-
-
-#pragma endregion
 }
 
 void Yoshi::Sound(SoundManager*& soundManager) 
@@ -1131,74 +1134,78 @@ void Yoshi::Animate(const float elapsedSec)
 void Yoshi::KeysDown()
 {
 	const Uint8* pKeyStates = SDL_GetKeyboardState(nullptr);
-	if (pKeyStates[SDL_SCANCODE_LEFT])
+	if (m_HitPhases == 0 || m_HitPhases > 5)
 	{
-		if (m_VelocityX > -280)
+		if (pKeyStates[SDL_SCANCODE_LEFT])
 		{
-			m_VelocityX -= 11 ;
-		}
-	}
-	if (pKeyStates[SDL_SCANCODE_RIGHT])
-	{
-		if (m_VelocityX < 280)
-		{
-			m_VelocityX += 11;
-		}
-	}
-	if (pKeyStates[SDL_SCANCODE_UP])
-	{
-		m_IsLookingUp = true;
-	}
-	if (pKeyStates[SDL_SCANCODE_DOWN])
-	{
-		if (m_IsMouthFull == true)
-		{
-			if (m_Eggs.size() < 6)
+			if (m_VelocityX > -280)
 			{
-				m_Eggs.push_back(new Egg(m_Position));
-			}
-
-			m_IsMouthFull = false;
-			m_IsLayingEgg = true;
-		}
-
-		m_IsCrouching = true;
-	}
-	if (pKeyStates[SDL_SCANCODE_Z])
-	{
-		m_IsYoshiJumping = true;
-		m_CurrentState = AnimState::Jumping;
-
-	}
-	if (pKeyStates[SDL_SCANCODE_X])
-	{
-		if (m_IsTongueReady == true)
-		{
-			m_PlayTongueSFX = true;
-
-			if (m_IsMouthFull == false)
-			{
-				m_IsTonguing = true;
-				m_IsTongueReady = false;
-			}
-
-			else
-			{
-				m_IsEnemySpitOut = true;
-				m_IsTongueReady = false;
+				m_VelocityX -= 11;
 			}
 		}
-		
+		if (pKeyStates[SDL_SCANCODE_RIGHT])
+		{
+			if (m_VelocityX < 280)
+			{
+				m_VelocityX += 11;
+			}
+		}
+		if (pKeyStates[SDL_SCANCODE_UP])
+		{
+			m_IsLookingUp = true;
+		}
+		if (pKeyStates[SDL_SCANCODE_DOWN])
+		{
+			if (m_IsMouthFull == true)
+			{
+				if (m_Eggs.size() < 6)
+				{
+					m_Eggs.push_back(new Egg(m_Position));
+				}
+
+				m_IsMouthFull = false;
+				m_IsLayingEgg = true;
+			}
+
+			m_IsCrouching = true;
+		}
+		if (pKeyStates[SDL_SCANCODE_Z])
+		{
+			m_IsYoshiJumping = true;
+			m_CurrentState = AnimState::Jumping;
+
+		}
+		if (pKeyStates[SDL_SCANCODE_X])
+		{
+			if (m_IsTongueReady == true)
+			{
+				m_PlayTongueSFX = true;
+
+				if (m_IsMouthFull == false)
+				{
+					m_IsTonguing = true;
+					m_IsTongueReady = false;
+				}
+
+				else
+				{
+					m_IsEnemySpitOut = true;
+					m_IsTongueReady = false;
+				}
+			}
+
+		}
+		//TODO debug keys remove later
+		if (pKeyStates[SDL_SCANCODE_SPACE])
+		{
+			m_Position.y += 5;
+		}
+		if (pKeyStates[SDL_SCANCODE_RSHIFT])
+		{
+			m_Position.y -= 5;
+		}
 	}
-	//TODO debug keys remove later
-	if (pKeyStates[SDL_SCANCODE_SPACE])
-	{
-		m_Position.y += 5;
-	}
-	if (pKeyStates[SDL_SCANCODE_RSHIFT])
-	{
-		m_Position.y -= 5;
-	}
+	
 }
 
 void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
@@ -1330,20 +1337,37 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 							{
 								m_IsHit = true;
 
-								if (enemies[idx]->GetIsFacingRight() == true)
+								if (m_IsFacingRight == true)
 								{
-									m_VelocityX *= -1.f;
-									m_VelocityX -= 300.f;
-
+									if (enemies[idx]->GetPosition().x > m_Position.x)
+									{
+										m_VelocityX *= -1;
+										m_VelocityX -= 300;
+									}
+									else
+									{
+										m_VelocityX *= 2;
+										m_VelocityX += 300;
+									}
 								}
 
 								else
 								{
-									m_VelocityX *= -1.f;
-									m_VelocityX += 300.f;
+									if (enemies[idx]->GetPosition().x > m_Position.x)
+									{
+										m_VelocityX *= 2;
+										m_VelocityX -= 300;
+									}
+
+									else
+									{
+										m_VelocityX *= -1;
+										m_VelocityX += 300;
+									}
+									
 								}
 
-								m_VelocityY += 100;
+								m_VelocityY += 400;
 
 								m_IsMarioOn = false;
 
@@ -1355,15 +1379,20 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 				}
 
 			}
+		
 		}
 
-		if (m_IsMarioOn == false)
+		if (m_IsHit == false)
 		{
-			if (utils::IsOverlapping(m_Hitbox, marioHitbox) == true)
+			if (m_IsMarioOn == false)
 			{
-				m_IsMarioOn = true;
+				if (utils::IsOverlapping(m_Hitbox, marioHitbox) == true)
+				{
+					m_IsMarioOn = true;
+				}
 			}
 		}
+		
 	}
 
 	if (!lvlEntities.empty())
