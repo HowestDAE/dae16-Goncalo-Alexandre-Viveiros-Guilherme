@@ -148,13 +148,13 @@ Enemy,Yoshi,Mario,Eggs. Enemy also has a child which is the Shy Guy.
     - [x] object composition (optional)
 - [x] week 02 topics applied
 - [x] week 03 topics applied
-- [ ] week 04 topics applied
+- [X] week 04 topics applied
 - [x] week 05 topics applied
-- [ ] week 06 topics applied
-- [ ] week 07 topics applied
-- [ ] week 08 topics applied
-- [ ] week 09 topics applied (optional)
-- [ ] week 10 topics applied (optional)
+- [X ] week 06 topics applied
+- [X ] week 07 topics applied
+- [ X] week 08 topics applied
+- [ X] week 09 topics applied (optional)
+- [ X] week 10 topics applied (optional)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
