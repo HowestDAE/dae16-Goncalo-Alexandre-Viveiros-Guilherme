@@ -16,7 +16,7 @@ Camera::Camera(const Point2f camPos):
 
 void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 {
-	if (m_CamPosition.y > 0)
+	if (m_CamPosition.y > 100)
 	{
 
 		if (m_CamPosition.x < -2025)
@@ -82,7 +82,7 @@ void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 
 		if (yoshiPlyr->GetIsHit() == true)
 		{
-			CenterCamera(Point2f(yoshiPlyr->GetPosition().x - 300, yoshiPlyr->GetPosition().y - 250));
+			CenterCamera(Point2f(yoshiPlyr->GetPosition().x - 300, yoshiPlyr->GetPosition().y - 200));
 		}
 	}
 	

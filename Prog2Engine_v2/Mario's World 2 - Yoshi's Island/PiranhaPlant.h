@@ -12,6 +12,7 @@ public:
 
 	void Draw()const override;
 	void Update(float elapsedSec,Point2f yoshiPos, SoundManager*& soundManager);
+	void Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec) override;
 	void Sound(SoundManager*& soundManager);
 	void Animate(float elapsedSec) override;
 	void Reset() override;

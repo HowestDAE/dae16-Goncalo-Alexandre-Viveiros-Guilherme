@@ -78,9 +78,9 @@ void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, f
 			}
 
 
-			if (m_Enemies[idx]->GetIsSpat() == true)
+			if (m_Enemies[idx]->GetIsSpat() == true || m_Enemies[idx]->GetIsRolling() == true || m_Enemies[idx]->GetIsThrown() == true)
 			{
-				m_Enemies[idx]->EnemySpit(m_Enemies,lvlEntities,yoshiplyr);
+				m_Enemies[idx]->EnemySpit(m_Enemies,lvlEntities,yoshiplyr,elapsedSec);
 			}
 		}
 
@@ -150,24 +150,23 @@ void EnemyManager::SpawnEnemies(int levelNumber)
 		m_Enemies.push_back(new WalkingTulip(Point2f(2335, 349)));
 		m_Enemies.push_back(new ShyGuy(Point2f(2249, 443), 5));
 		m_Enemies.push_back(new PiranhaPlant(Point2f(2535, 252),false));
-		m_Enemies.push_back(new PiranhaPlant(Point2f(2535, 310),true)); //TODO ADD FLIPPED
-		m_Enemies.push_back(new FlyingShyGuy(Point2f(865, 1663), Point2f(900, 1443), false)); //TODO check if non cyclic works
+		m_Enemies.push_back(new PiranhaPlant(Point2f(2535, 400),true)); 
+		m_Enemies.push_back(new FlyingShyGuy(Point2f(865, 1563), Point2f(900, 1443), false)); 
 		m_Enemies.push_back(new ShyGuy(Point2f(2889, 513), 100));
 		m_Enemies.push_back(new FlyingShyGuy(Point2f(1240, -650), Point2f(1300, -650), true));
 		m_Enemies.push_back(new ShyGuy(Point2f(1443, -758), 100));
 		m_Enemies.push_back(new ShyGuy(Point2f(1879,-758), 100));
 		m_Enemies.push_back(new FlyingShyGuy(Point2f(1800, -650), Point2f(1900, -650), true));
 		m_Enemies.push_back(new PiranhaPlant(Point2f(3328, 480),false));
-		m_Enemies.push_back(new PiranhaPlant(Point2f(3395, 338),false));
-		m_Enemies.push_back(new PiranhaPlant(Point2f(3747, 406),false));
-		//TODO add shy guy pipe spawn
+		m_Enemies.push_back(new PiranhaPlant(Point2f(3410, 388),true));
+		m_Enemies.push_back(new PiranhaPlant(Point2f(3780, 400),true));
 		m_Enemies.push_back(new WalkingTulip(Point2f(4774, 254)));
 		m_Enemies.push_back(new WalkingTulip(Point2f(5025, 255)));
 		m_Enemies.push_back(new PiranhaPlant(Point2f(5052, 568), false));
 		m_Enemies.push_back(new ShyGuy(Point2f(5437, 818), 100));
 		m_Enemies.push_back(new ShyGuy(Point2f(5554, 765), 100));
 		m_Enemies.push_back(new PiranhaPlant(Point2f(5764, 729), false));
-		m_Enemies.push_back(new PiranhaPlant(Point2f(5764, 890),true)); //TODO ADD FLIPPED
+		m_Enemies.push_back(new PiranhaPlant(Point2f(5764, 870),true)); 
 		m_Enemies.push_back(new PogoShyGuy(Point2f(6271, 700)));
 		m_Enemies.push_back(new PogoShyGuy(Point2f(6395, 672)));
 		m_Enemies.push_back(new ShyGuy(Point2f(6612, 672), 100));

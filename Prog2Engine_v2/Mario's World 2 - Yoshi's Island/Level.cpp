@@ -317,30 +317,25 @@ void Level::Update(float elapsedSec, Yoshi*& yoshiPlyr, const std::vector<Enemy*
 
 void Level::Sound(SoundManager*& soundManager)
 {
-	if (m_StateManager->GetState() != StateManager::States::Pause)
-	{
-		if (m_IsBGMusicOn == false)
-		{
-			soundManager->PlayBGMusic(SoundManager::LvlMusic::Level1);
-
-			m_IsBGMusicOn = true;
-		}
-
-		if (m_PreviousState == StateManager::States::Pause)
-		{
-			soundManager->ResumeBGMusic();
-		}
-		
 	
+	if (m_IsBGMusicOn == false)
+	{
+		soundManager->PlayBGMusic(SoundManager::LvlMusic::Level1);
+
+		m_IsBGMusicOn = true;
 	}
 
-	else 
+	if (m_PreviousState != StateManager::States::Gameplay)
 	{
-		soundManager->PauseBGMusic();
-
-		m_PreviousState = StateManager::States::Pause;
+		soundManager->ResumeBGMusic();
 	}
-	
+
+	m_PreviousState = m_StateManager->GetState();
+}
+
+void Level::PauseMusic(SoundManager*& soundManager)
+{
+	soundManager->PauseBGMusic();
 }
 
 void Level::CoinManager(int coinRowSize, int coinColumnSize, int numberOfRedCoin, int spacingX,int spacingY,Point2f position)

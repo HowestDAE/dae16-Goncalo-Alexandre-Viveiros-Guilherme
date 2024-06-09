@@ -2,20 +2,17 @@
 #include "FlyingShyGuy.h"
 
 FlyingShyGuy::FlyingShyGuy(Point2f position, Point2f endPoint, bool isCyclic):
-Enemy(true,true,"EnemiesVaried.png",27,16,position),
+Enemy(false,true,"EnemiesVaried.png",27,16,position),
 m_IsCyclic(isCyclic),
 m_EndPoint(endPoint)
 {
 	m_StartPoint = m_Position;
 }
 
-FlyingShyGuy::~FlyingShyGuy()
-{
-}
-
 void FlyingShyGuy::Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
 {
 	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
+
 
 	if (m_IsCyclic == true)
 	{

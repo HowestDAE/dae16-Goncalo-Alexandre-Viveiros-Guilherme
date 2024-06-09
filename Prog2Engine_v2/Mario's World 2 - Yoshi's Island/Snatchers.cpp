@@ -16,29 +16,29 @@ void Snatchers::Snatch(Mario*& babyMarioPointer)
 	{
 		if (m_Position.x < babyMarioPointer->GetPosition().x)
 		{
-			m_VelocityX = 180;
+			m_VelocityX = 280;
 		}
 
 		if (m_Position.x > babyMarioPointer->GetPosition().x)
 		{
-			m_VelocityX = -180;
+			m_VelocityX = -280;
 		}
 
 		if (m_Position.y < babyMarioPointer->GetPosition().y)
 		{
-			m_VelocityY = 180;
+			m_VelocityY = 280;
 		}
 
 		if (m_Position.y > babyMarioPointer->GetPosition().y)
 		{
-			m_VelocityY = -180;
+			m_VelocityY = -280;
 		}
 	}
 
 	else
 	{
-		m_VelocityY = 90;
-		m_VelocityX = 50;
+		m_VelocityY = 130;
+		m_VelocityX = 90;
 	}
 
 	if (distancex < 10)

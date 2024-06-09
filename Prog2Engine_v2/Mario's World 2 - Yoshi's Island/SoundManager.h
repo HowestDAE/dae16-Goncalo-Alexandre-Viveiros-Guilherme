@@ -15,7 +15,8 @@ public:
 	{
 		Null,
 		JumpSFX,
-		TongueSFX
+		TongueSFX,
+		MarioCry
 	};
 
 	enum class ObjectSFX
@@ -51,6 +52,7 @@ private:
 
 	SoundEffect m_YoshiJumpSFX{"YISFX/Jump.wav"};
 	SoundEffect m_YoshiTongueSFX{"YISFX/Tongue.wav"};
+	SoundEffect m_MarioCrySFX{"YISFX/MarioCry.wav"};
 	SoundEffect m_PiranhaPlantSFX{"YISFX/Piranha.wav"};
 	SoundStream m_BGMusicLvl1{"YISFX/FlowerGarden.wav"};
 };

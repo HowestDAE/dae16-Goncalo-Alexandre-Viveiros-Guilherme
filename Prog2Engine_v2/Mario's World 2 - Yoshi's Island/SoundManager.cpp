@@ -22,6 +22,11 @@ void SoundManager::PlaySFX(YoshiSFX yoshiSfx)
 	{
 		m_YoshiTongueSFX.Play(0);
 	}
+
+	else if (m_YoshiSFX == YoshiSFX::MarioCry)
+	{
+		m_MarioCrySFX.Play(0);
+	}
 }
 
 void SoundManager::PlaySFX(ObjectSFX objectSfx)

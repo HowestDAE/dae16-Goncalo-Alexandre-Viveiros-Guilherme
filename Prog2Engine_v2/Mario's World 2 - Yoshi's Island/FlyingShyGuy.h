@@ -5,7 +5,7 @@ class FlyingShyGuy final :public Enemy
 {
 public:
 	FlyingShyGuy(Point2f pos,Point2f endPoint,bool isCyclic);
-	~FlyingShyGuy() override;
+	~FlyingShyGuy() override = default;
 
 
 	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec) override;

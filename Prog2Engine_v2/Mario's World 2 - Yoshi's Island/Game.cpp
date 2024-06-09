@@ -81,7 +81,7 @@ void Game::Update(const float elapsedSec )
 				m_GameCam->Pan(m_YoshiPlyr, m_Level01->GetLevelStart(), m_Level01->GetLevelEnd().x);
 
 				//Mario's functions
-				m_Mario->Update(m_Level01->GetLevelVertices(), elapsedSec);
+				m_Mario->Update(m_Level01->GetLevelVertices(), m_SoundManager,elapsedSec);
 
 				//Enemy Functions
 				m_EnemyManager->Update(m_Level01->GetLevelVertices(), elapsedSec, m_YoshiPlyr, m_Level01->GetLevelEntities(), m_SoundManager, m_Mario);
@@ -91,16 +91,16 @@ void Game::Update(const float elapsedSec )
 
 		//std::cout << 1 / elapsedSec << "\n"; //FPS
 
-		
-		if (m_StateManager->GetState() == StateManager::States::Pause)
-		{
-		}
-
 
 		if (debugging == true)
 		{
 			std::cout << "X Position" << m_YoshiPlyr->GetPosition().x << "\n" << "Y Position" << m_YoshiPlyr->GetPosition().y;
 		}
+	}
+
+	if (m_StateManager->GetState() != StateManager::States::Gameplay)
+	{
+		m_Level01->PauseMusic(m_SoundManager);
 	}
 
 	m_StateManager->Update(m_YoshiPlyr->GetCoinsAmount(), m_YoshiPlyr->GetRedCoinsAmount(), m_YoshiPlyr->GetFlowersAmount(), m_YoshiPlyr->GetStarsAmount(),m_EnemyManager->GetHasYoshiLost());
@@ -158,6 +158,11 @@ void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 		if (m_StateManager->GetState() == StateManager::States::LevelSelector)
 		{
 			m_StateManager->SetState(StateManager::States::Gameplay);
+		}
+
+		if (m_StateManager->GetState() == StateManager::States::ResultsMenu)
+		{
+			m_StateManager->SetState(StateManager::States::LevelSelector);
 		}
 
 		if (m_StateManager->GetState() == StateManager::States::DeathMenu)

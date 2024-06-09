@@ -157,15 +157,15 @@ void Entity::Collision(const std::vector<std::vector<Point2f>>& platforms, float
 		//Wall Collision
 
 	//left side collision
-		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
-			Point2f{ m_Hitbox.left - 2,m_Hitbox.bottom + m_TxtHeight }, hit_info))
+		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight*2 },
+			Point2f{ m_Hitbox.left - 2,m_Hitbox.bottom + m_TxtHeight*2 }, hit_info))
 		{
 			m_Position.x = hit_info.intersectPoint.x + 1; //Teleports entity to the point of intersection with a small offset
 		}
 
 		//right side collision
-		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
-			Point2f{ m_Hitbox.left + m_TxtWidth * 2 + 2,m_Hitbox.bottom + m_TxtHeight }, hit_info))
+		if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight*2 },
+			Point2f{ m_Hitbox.left + m_TxtWidth * 2 + 2,m_Hitbox.bottom + m_TxtHeight*2 }, hit_info))
 		{
 			m_Position.x = hit_info.intersectPoint.x - m_TxtWidth * 2 + 2;
 		}

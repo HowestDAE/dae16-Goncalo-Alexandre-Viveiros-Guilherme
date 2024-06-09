@@ -261,11 +261,13 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 		{
 			if (m_Eggs.back()->GetPosition().x > m_Position.x + 700 || m_Eggs.back()->GetPosition().x < m_Position.x - 700)
 			{
+				delete m_Eggs.back();
 				m_Eggs.pop_back();
 			}
 
 			else if (m_Eggs.back()->GetPosition().y > m_Position.y + 700 || m_Eggs.back()->GetPosition().y < m_Position.y - 700)
 			{
+				delete m_Eggs.back();
 				m_Eggs.pop_back();
 			}
 
@@ -275,9 +277,13 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 
 	if (m_IsHoldingEgg == true)
 	{
-		m_Eggs.back()->HoldEgg(m_Hitbox, m_IsFacingRight,m_IsCalculatingAngle,elapsedSec);
-		if (m_IsCrouching == true) { m_IsHoldingEgg = false; }
-		if (m_IsTonguing == true) { m_IsHoldingEgg = false; }
+		if (!m_Eggs.empty())
+		{
+			m_Eggs.back()->HoldEgg(m_Hitbox, m_IsFacingRight, m_IsCalculatingAngle, elapsedSec);
+			if (m_IsCrouching == true) { m_IsHoldingEgg = false; }
+			if (m_IsTonguing == true) { m_IsHoldingEgg = false; }
+		}
+		
 
 	}
 
@@ -1077,26 +1083,13 @@ void Yoshi::Animate(const float elapsedSec)
 	{
 		if (m_LastState != m_CurrentState)
 		{
-			m_XTxtPos = 2;
+			m_XTxtPos = 99;
 		}
 
-		m_TxtWidth = 29;
-		m_TxtHeight = 35;
-		m_YTxtPos = 1061;
+		m_TxtWidth = 21;
+		m_TxtHeight = 30;
+		m_YTxtPos = 803;
 		m_FrameTime += elapsedSec;
-
-		if (m_FrameTime > 0.2)
-		{
-			m_XTxtPos += m_TxtWidth;
-			m_FrameTime = 0;
-		}
-
-		if (m_XTxtPos > 29 * 7 + 2)
-		{
-			m_CurrentState = AnimState::Idle;
-
-			m_IsLayingEgg = false;
-		}
 
 		m_LastState = m_CurrentState;
 
@@ -1104,8 +1097,28 @@ void Yoshi::Animate(const float elapsedSec)
 
 	if (m_CurrentState == AnimState::AimWalking)
 	{
+		if (m_LastState != m_CurrentState)
+		{
+			m_XTxtPos = 2;
+		}
 
+		m_TxtWidth = 25;
+		m_TxtHeight =31;
+		m_YTxtPos = 835;
+		m_FrameTime += elapsedSec;
 
+		if (m_FrameTime > 0.15)
+		{
+			m_XTxtPos += m_TxtWidth;
+			m_FrameTime = 0;
+		}
+
+		if (m_XTxtPos > m_TxtWidth * 4 + 2 || m_XTxtPos < 2)
+		{
+			m_XTxtPos = 2;
+		}
+
+		m_LastState = m_CurrentState;
 	}
 
 	if (m_CurrentState == AnimState::AimFluttering)
@@ -1138,16 +1151,37 @@ void Yoshi::KeysDown()
 	{
 		if (pKeyStates[SDL_SCANCODE_LEFT])
 		{
-			if (m_VelocityX > -280)
+			if (m_IsHoldingEgg == true)
 			{
-				m_VelocityX -= 11;
+				if (m_VelocityX > -140)
+				{
+					m_VelocityX -= 11;
+				}
 			}
+			else
+			{
+				if (m_VelocityX > -280)
+				{
+					m_VelocityX -= 11;
+				}
+			}
+			
 		}
 		if (pKeyStates[SDL_SCANCODE_RIGHT])
 		{
-			if (m_VelocityX < 280)
+			if (m_IsHoldingEgg == true)
 			{
-				m_VelocityX += 11;
+				if (m_VelocityX < 140)
+				{
+					m_VelocityX += 11;
+				}
+			}
+			else
+			{
+				if (m_VelocityX < 280)
+				{
+					m_VelocityX += 11;
+				}
 			}
 		}
 		if (pKeyStates[SDL_SCANCODE_UP])
@@ -1195,7 +1229,7 @@ void Yoshi::KeysDown()
 			}
 
 		}
-		//TODO debug keys remove later
+		
 		if (pKeyStates[SDL_SCANCODE_SPACE])
 		{
 			m_Position.y += 5;
@@ -1234,27 +1268,23 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 		m_IsTonguing = false;
 		break;
 	case SDLK_c:
-
-		if (m_IsHoldingEgg == false)
+		if (!m_Eggs.empty())
 		{
-			if (m_Eggs.size() > 0)
+			if (m_IsHoldingEgg == true)
 			{
-				if (m_Eggs.back()->GetIsThrown() == false)
+				if (m_Eggs.size() > 0)
 				{
-					m_IsHoldingEgg = true;
+					m_IsHoldingEgg = false;
+					m_Eggs.back()->ThrowEgg();
 				}
-
 			}
-		}
 
-		else if (m_IsHoldingEgg == true)
-		{
-			if (m_Eggs.size() > 0)
+			else
 			{
-				m_IsHoldingEgg = false;
-				m_Eggs.back()->ThrowEgg();
+				m_IsHoldingEgg = true;
 			}
 		}
+		
 		break;
 
 	case SDLK_v:
@@ -1284,7 +1314,7 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 			{
 				if (enemies[idx]->GetIsActive() == true)
 				{
-					if (enemies[idx]->GetIsSpat() == false)
+					if (enemies[idx]->GetIsSpat() == false || enemies[idx]->GetIsRolling() == false || enemies[idx]->GetIsThrown() == false)
 					{
 						if (enemies[idx]->GetIsSwallowed() == false)
 						{
@@ -1322,6 +1352,7 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 									if (utils::IsOverlapping(m_Eggs.back()->GetHitBox(), enemies[idx]->GetHitBox()) == true)
 									{
 										enemies[idx]->EnemyDeath();
+										delete m_Eggs.back();
 										m_Eggs.pop_back();
 										break;
 									}
@@ -1343,7 +1374,7 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 									}
 									else
 									{
-										m_VelocityX *= 2;
+										m_VelocityX *= 0;
 										m_VelocityX += 300;
 									}
 								}
@@ -1352,7 +1383,7 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 								{
 									if (enemies[idx]->GetPosition().x > m_Position.x)
 									{
-										m_VelocityX *= 2;
+										m_VelocityX *= 0;
 										m_VelocityX -= 300;
 									}
 
@@ -1409,6 +1440,7 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 								if (utils::IsOverlapping(m_Eggs.back()->GetHitBox(), wingedClouds->GetHitBox()) == true)
 								{
 									wingedClouds->SetIsHit();
+									delete m_Eggs.back();
 									m_Eggs.pop_back();
 									break;
 								}
@@ -1540,6 +1572,21 @@ void Yoshi::EmptyMouth()
 {
 	m_IsMouthFull = false;
 	m_IsEnemySpitOut = false;
+}
+
+void Yoshi::AddFlower()
+{
+	m_Flowers += 1;
+}
+
+void Yoshi::AddCoin()
+{
+	m_Coins += 1;
+}
+
+void Yoshi::AddRedCoin()
+{
+	m_RedCoins += 1;
 }
 
 int Yoshi::GetMarioTimer() const

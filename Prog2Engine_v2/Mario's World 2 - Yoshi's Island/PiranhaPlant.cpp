@@ -19,7 +19,7 @@ void PiranhaPlant::Draw() const
 
 		if (m_IsFlipped == true)
 		{
-			glScalef(m_ScaleX, m_ScaleY, m_ScaleZ);
+			glScalef(m_ScaleX, -m_ScaleY, m_ScaleZ);
 		}
 		
 
@@ -47,12 +47,27 @@ void PiranhaPlant::Draw() const
 		glRotatef(m_AngleDeg, m_AngX, m_AngY, m_AngZ);
 
 		// Apply scaling based on the facing direction
-		if (m_IsFacingRight == false) {
-			glScalef(m_ScaleX, m_ScaleY, m_ScaleZ);
+		if (m_IsFlipped == false)
+		{
+			if (m_IsFacingRight == false) {
+				glScalef(m_ScaleX, m_ScaleY, m_ScaleZ);
+			}
+
+			else {
+				glScalef(-m_ScaleX, m_ScaleY, m_ScaleZ);
+			}
 		}
-		else {
-			glScalef(-m_ScaleX, m_ScaleY, m_ScaleZ);
+		else
+		{
+			if (m_IsFacingRight == false) {
+				glScalef(m_ScaleX, -m_ScaleY, m_ScaleZ);
+			}
+
+			else {
+				glScalef(-m_ScaleX, -m_ScaleY, m_ScaleZ);
+			}
 		}
+		
 
 
 		// Draw Entity
@@ -67,22 +82,55 @@ void PiranhaPlant::Draw() const
 
 void PiranhaPlant::Update(float elapsedSec,Point2f yoshiPos, SoundManager*& soundManager)
 {
-	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
-
-	Vector2f toPlayer = yoshiPos - m_Position;
-	float angleToPlayer = atan2f(toPlayer.y, toPlayer.x);
-	m_AngleDeg = angleToPlayer * 180 /M_PI; // Set the Elf's angle to face the player
-	m_AngleDeg += 270;
-	m_AngZ = 1;
-
-	if (yoshiPos.x > m_Position.x)
+	if (m_IsFlipped == false)
 	{
-		m_ScaleX = -1;
+		m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
 	}
 	else
 	{
-		m_ScaleX = 1;
+		
+	}m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), -float(m_TxtHeight * 2));
+
+	if (yoshiPos.y >= m_Position.y)
+	{
+		Vector2f toPlayer = yoshiPos - m_Position;
+		float angleToPlayer = atan2f(toPlayer.y, toPlayer.x);
+		m_AngleDeg = angleToPlayer * 180 / M_PI;
+		m_AngleDeg += 270;
+		m_AngZ = 1;
+
+		if (yoshiPos.x > m_Position.x)
+		{
+			m_ScaleX = -1;
+		}
+		else
+		{
+			m_ScaleX = 1;
+		}
 	}
+
+	if (m_IsFlipped == true)
+	{
+		if (yoshiPos.y <= m_Position.y)
+		{
+			Vector2f toPlayer = yoshiPos - m_Position;
+			float angleToPlayer = atan2f(toPlayer.y, toPlayer.x);
+			m_AngleDeg = angleToPlayer * 180 / M_PI;
+			m_AngleDeg += 270;
+			m_AngleDeg += 180;
+			m_AngZ = 1;
+
+			if (yoshiPos.x > m_Position.x)
+			{
+				m_ScaleX = -1;
+			}
+			else
+			{
+				m_ScaleX = 1;
+			}
+		}
+	}
+
 
 	if (m_IsSFXReady == true)
 	{
@@ -102,6 +150,10 @@ void PiranhaPlant::Update(float elapsedSec,Point2f yoshiPos, SoundManager*& soun
 	//{
 	//	m_ScaleY = -1;
 	//}
+}
+
+void PiranhaPlant::Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
+{
 }
 
 void PiranhaPlant::Sound(SoundManager*& soundManager)

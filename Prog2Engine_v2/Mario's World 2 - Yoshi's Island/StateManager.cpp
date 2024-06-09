@@ -8,8 +8,10 @@ StateManager::StateManager() :
 	m_LevelSelTex1(new Texture{ "Map.png" }),
 	m_LevelSelTex2(new Texture{ "LevelSelectorTab.png" }),
 	m_PauseScreenBG(new Texture{ "PauseMenu.png" }),
-	m_PauseScreenIcons(new Texture{"PauseIcons.png"}),
-	m_DeathScreen(new Texture{"DeathScreen.png"})
+	m_PauseScreenIcons(new Texture{ "PauseIcons.png" }),
+	m_DeathScreen(new Texture{ "DeathScreen.png" }),
+	m_ResultsScreen(new Texture{ "ResultsScreen.png" }),
+	m_LettersForResults(new Texture{"LettersForResults.png"})
 {
 }
 
@@ -20,6 +22,8 @@ StateManager::~StateManager()
 	delete m_PauseScreenBG;
 	delete m_PauseScreenIcons;
 	delete m_DeathScreen;
+	delete m_ResultsScreen;
+	delete m_LettersForResults;
 }
 
 StateManager::States StateManager::GetState()
@@ -134,6 +138,101 @@ void StateManager::Draw() const
 	glPopMatrix();
 		//Draws the Pointer
 		m_DeathScreen->Draw(Point2f{ float(m_PointerPosX), 250 }, Rectf{ 254, 93 ,16,25 });
+	}
+
+
+	if (m_CurrentState == States::ResultsMenu)
+	{
+		//Draws Results Screen bg
+		m_ResultsScreen->Draw();
+
+		glPushMatrix();
+		{
+			glScalef(2, 2, 1);
+		//Draws Stars
+		const int firstDigitStars = m_Stars / 10;
+		const int secondDigitStars = m_Stars % 10;
+
+		if (firstDigitStars > 0)
+		{
+			m_LettersForResults->Draw(Point2f{ 160,155 }, Rectf{ float(9 * firstDigitStars),15,9,15 });
+		}
+		m_LettersForResults->Draw(Point2f{ 160 + 9,155 }, Rectf{ float(9 * secondDigitStars),15,9,15 });
+
+
+		//Draws Stars Points
+
+		if (firstDigitStars > 0)
+		{
+			m_LettersForResults->Draw(Point2f{ 225,150 }, Rectf{ float(9 * firstDigitStars),15,9,15 });
+		}
+		m_LettersForResults->Draw(Point2f{ 225 + 9,150 }, Rectf{ float(9 * secondDigitStars),15,9,15 });
+
+
+		//Draws Red Coins
+		const int firstDigitRedCoins = m_RedCoins / 10;
+		const int secondDigitRedCoins = m_RedCoins % 10;
+
+		if (firstDigitRedCoins > 0)
+		{
+			m_LettersForResults->Draw(Point2f{ 160,125 }, Rectf{ float(9 * firstDigitRedCoins),15,9,15 });
+		}
+		m_LettersForResults->Draw(Point2f{ 160 + 9,125 }, Rectf{ float(9 * secondDigitRedCoins),15,9,15 });
+
+			//Draws Red Coins Points
+
+		if (firstDigitRedCoins > 0)
+		{
+			m_LettersForResults->Draw(Point2f{ 225,120 }, Rectf{ float(9 * firstDigitRedCoins),15,9,15 });
+		}
+		m_LettersForResults->Draw(Point2f{ 225 + 9,120 }, Rectf{ float(9 * secondDigitRedCoins),15,9,15 });
+
+		//Draws Flowers
+		const int firstDigitFlowers = m_Flowers / 10;
+		const int secondDigitFlowers = m_Flowers % 10;
+
+		if (firstDigitFlowers > 0)
+		{
+			m_LettersForResults->Draw(Point2f{ 165,100 }, Rectf{ float(9 * firstDigitFlowers),15,9,15 });
+		}
+		m_LettersForResults->Draw(Point2f{ 165 + 9,100 }, Rectf{ float(9 * secondDigitFlowers),15,9,15 });
+
+		//Draws Flower Points
+		const int flowerPoints = m_Flowers * 10;
+
+		const int firstDigitFlowersPts = flowerPoints / 10;
+		const int secondDigitFlowersPts = flowerPoints % 10;
+
+		if (firstDigitFlowersPts > 0)
+		{
+			m_LettersForResults->Draw(Point2f{ 225,95 }, Rectf{ float(9 * firstDigitFlowersPts),15,9,15 });
+		}
+		m_LettersForResults->Draw(Point2f{ 225 + 9,95 }, Rectf{ float(9 * secondDigitFlowersPts),15,9,15 });
+
+
+		//Draws Total points
+
+		const int totalPoints = flowerPoints + m_RedCoins + m_Stars;
+
+		const int firstDigitTotalPts = totalPoints / 10;
+		const int secondDigitTotalPts = totalPoints % 10;
+
+		if (firstDigitTotalPts > 0)
+		{
+			m_LettersForResults->Draw(Point2f{ 210,190 }, Rectf{ float(9 * firstDigitTotalPts),15,9,15 });
+		}
+		m_LettersForResults->Draw(Point2f{ 210 + 9,190 }, Rectf{ float(9 * secondDigitTotalPts),15,9,15 });
+
+
+		if (firstDigitTotalPts > 0)
+		{
+			m_LettersForResults->Draw(Point2f{ 220,55 }, Rectf{ float(9 * firstDigitTotalPts),15,9,15 });
+		}
+	     m_LettersForResults->Draw(Point2f{ 220 + 9,55 }, Rectf{ float(9 * secondDigitTotalPts),15,9,15 });
+
+
+		}
+		glPopMatrix();
 	}
 
 }

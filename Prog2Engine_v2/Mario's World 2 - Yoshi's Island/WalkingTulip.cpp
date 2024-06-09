@@ -7,6 +7,7 @@ WalkingTulip::WalkingTulip(Point2f position):Enemy(true,true,"EnemiesVaried.png"
 
 void WalkingTulip::Animate(float elapsedSec)
 {
+
 	m_FrameTime += elapsedSec;
 
 	m_YTxtPos = 34;
@@ -16,7 +17,7 @@ void WalkingTulip::Animate(float elapsedSec)
 		m_XTxtPos = 334;
 	}
 
-	if (m_FrameTime > 0.1)
+	if (m_FrameTime > 0.2)
 	{
 		m_XTxtPos += m_TxtWidth + 10;
 
@@ -27,7 +28,9 @@ void WalkingTulip::Animate(float elapsedSec)
 void WalkingTulip::Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
 {
 	Enemy::Update(platforms, elapsedSec);
-
-	m_VelocityX = -30;
-	m_VelocityY = 30;
+	if (m_IsThrown == false || m_IsRolling == false)
+	{
+		m_VelocityX = -30;
+		
+	}
 }

@@ -9,6 +9,7 @@ Egg::Egg(const Point2f position):Entity("Eggs.png",16,14,position)
 
 Egg::~Egg()
 {
+	Entity::~Entity();
 	delete m_PointerTxt;
 }
 
@@ -24,6 +25,10 @@ void Egg::Draw() const
 
 void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int currentEgg, const std::vector< std::vector<Point2f>>& platforms, const float elapsedSec)
 {
+	if (m_EggBounces >= 3)
+	{
+		m_IsActive = false;
+	}
 	if (m_IsThrown == false)
 	{
 		Collision(platforms,elapsedSec);
@@ -97,6 +102,10 @@ void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int cu
 		}*/
 	}
 
+	else
+	{
+		Collision(platforms, elapsedSec);
+	}
 	//Adds Gravity to position
 	m_Position.y += m_VelocityY * elapsedSec;
 	//Adds Entity's horizontal speed to his position
@@ -178,7 +187,7 @@ void Egg::Collision(const std::vector<std::vector<Point2f>>& platforms, float el
 
 	}
 
-	else if (m_IsFallen == false)
+	if (m_IsThrown == true)
 	{
 		utils::HitInfo hit_info;
 
@@ -212,15 +221,16 @@ void Egg::Collision(const std::vector<std::vector<Point2f>>& platforms, float el
 			{
 				if (m_VelocityX < 0)
 				{
-					m_VelocityX = -hit_info.lambda * 2000;
+					m_VelocityX = -hit_info.lambda * 1000;
 				}
 				else
 				{
-					m_VelocityX = hit_info.lambda * 2000;
+					m_VelocityX = hit_info.lambda * 1000;
 				}
-				m_VelocityY = hit_info.lambda * 2000;
+				m_VelocityY = hit_info.lambda * 1000;
 				m_IsGrounded = true;
 				m_TerminalVelocityTimer = 0;
+				m_EggBounces += 1;
 				break;
 			}
 
@@ -230,16 +240,17 @@ void Egg::Collision(const std::vector<std::vector<Point2f>>& platforms, float el
 			{
 				if (m_VelocityX < 0)
 				{
-					m_VelocityX = -hit_info.lambda * 2000;
+					m_VelocityX = -hit_info.lambda * 1000;
 				}
 				else
 				{
-					m_VelocityX = hit_info.lambda * 2000;
+					m_VelocityX = hit_info.lambda * 1000;
 				}
-				m_VelocityY = -hit_info.lambda * 2000;
+				m_VelocityY = -hit_info.lambda * 1000;
 
 				m_IsGrounded = false;
 				m_TerminalVelocityTimer = 0;
+				m_EggBounces += 1;
 				break;
 			}
 
@@ -304,10 +315,11 @@ void Egg::Collision(const std::vector<std::vector<Point2f>>& platforms, float el
 		m_Position.x += m_VelocityX * elapsedSec;
 	}
 
-	else
+	if (m_IsFallen == true)
 	{
 		Entity::Collision(platforms, elapsedSec);
 	}
+
 
 }
 

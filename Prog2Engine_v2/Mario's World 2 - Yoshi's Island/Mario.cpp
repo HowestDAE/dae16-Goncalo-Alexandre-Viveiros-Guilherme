@@ -1,15 +1,12 @@
 #include "pch.h"
 #include "Mario.h"
 
+#include "SoundManager.h"
 #include "Texture.h"
 #include "Yoshi.h"
 
 Mario::Mario(Yoshi* &plyrYoshi) :Entity("Mario_SpriteSheet.png", 14, 16, plyrYoshi->GetPosition()), m_Yoshi(plyrYoshi),
 m_XTxtPos2(m_XTxtPos), m_YTxtPos2(m_YTxtPos2), m_TxtWidth2(m_TxtWidth), m_TxtHeight2(m_TxtHeight)
-{
-}
-
-Mario::~Mario()
 {
 }
 
@@ -31,18 +28,31 @@ void Mario::Draw() const
 		// Draw the Entity player
 		m_EntityTxt->Draw(Rectf(-m_TxtWidth, 0, float(m_TxtWidth * 2), float(m_TxtHeight * 2)),
 			Rectf(m_XTxtPos2, m_YTxtPos2, m_TxtWidth2, m_TxtHeight2));
-		m_EntityTxt->Draw(Rectf(-m_TxtWidth + 4, 0 + m_TxtWidth2 + 3 , float(m_TxtWidth * 2), float(m_TxtHeight * 2)),
-			Rectf(m_XTxtPos, m_YTxtPos, m_TxtWidth, m_TxtHeight));
+
+		if (m_IsMarioOnYoshi == true)
+		{
+			m_EntityTxt->Draw(Rectf(-m_TxtWidth + 4, 0 + m_TxtWidth2 + 3, float(m_TxtWidth * 2), float(m_TxtHeight * 2)),
+				Rectf(m_XTxtPos, m_YTxtPos, m_TxtWidth, m_TxtHeight));
+		}
+
+		else
+		{
+			m_EntityTxt->Draw(Rectf(-m_TxtWidth + 4, 0 + m_TxtWidth2 + 3, float(m_TxtWidth * 2), float(m_TxtHeight * 2)),
+				Rectf(3, 27, 16, 21));
+			m_EntityTxt->Draw(Rectf(-32, 0, float(m_TxtWidth * 4), float(m_TxtHeight * 4)), Rectf(87, 37, 32, 32));
+			
+		}
 	}
 	glPopMatrix();
 }
 
-void Mario::Update(const std::vector< std::vector<Point2f>>& platforms, const float elapsedSec)
+void Mario::Update(const std::vector< std::vector<Point2f>>& platforms, SoundManager*& soundManager, const float elapsedSec)
 {
 	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
 
 	if (m_Yoshi->GetIsMarioOn() == true)
 	{
+		m_IsMarioOnYoshi = true;
 		m_IsFacingRight = m_Yoshi->GetIsFacingRight();
 		m_Position = m_Yoshi->GetPosition();
 
@@ -57,23 +67,33 @@ void Mario::Update(const std::vector< std::vector<Point2f>>& platforms, const fl
 		}
 
 		m_Position.y += 15;
+
+		m_Time = 0;
 	}
 
 	else
 	{
+		m_IsMarioOnYoshi = false;
+		if (m_CryTimer > 1)
+		{
+			soundManager->PlaySFX(SoundManager::YoshiSFX::MarioCry);
+			m_CryTimer = 0;
+		}
+		
+		m_CryTimer += elapsedSec;
 		m_Time += elapsedSec;
 
 		if (m_Time < 0.7)
 		{
 			if (m_Yoshi->GetIsFacingRight() == true)
 			{
-				m_VelocityX = -1.5f;
+				m_VelocityX = -3.5f;
 			}
 			else
 			{
-				m_VelocityX = 1.5f;
+				m_VelocityX = 3.5f;
 			}
-			m_VelocityY += 1.5f;
+			m_VelocityY += 3.5f;
 		}
 		else
 		{
@@ -108,6 +128,7 @@ void Mario::Update(const std::vector< std::vector<Point2f>>& platforms, const fl
 			{
 				m_VelocityY = 0.1f * distanceY;
 			}
+
 		}
 	}
 
@@ -119,13 +140,6 @@ void Mario::Update(const std::vector< std::vector<Point2f>>& platforms, const fl
 
 	Animate(elapsedSec);
 
-}
-
-void Mario::Reset()
-{
-	Entity::Reset();
-
-	m_Time = 0;
 }
 
 void Mario::Animate(float elapsedSec)
@@ -144,6 +158,16 @@ void Mario::Animate(float elapsedSec)
 
 
 
+}
+
+
+void Mario::Reset()
+{
+	Entity::Reset();
+
+	m_Time = 0;
+	m_CryTimer = 0;
+	m_IsMarioOnYoshi = true;
 }
 
 

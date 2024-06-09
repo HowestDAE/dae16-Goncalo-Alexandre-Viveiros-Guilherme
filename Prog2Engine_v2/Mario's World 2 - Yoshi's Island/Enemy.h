@@ -14,12 +14,15 @@ public:
 	bool GetIsSquashable() const;
 	void EnemyDeath();
 	void EnemySwallowed();
-	void EnemySpit(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEntities,Yoshi*& yoshiplyr );
+	void EnemySpit(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEntities,Yoshi*& yoshiplyr, float elapsedSec);
+	void Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec) override;
 	void SetIsSpat();
 	void SetIsOnScreenFalse();
 	void SetIsOnScreenTrue();
 	bool GetIsSwallowed() const;
 	bool GetIsSpat() const;
+	bool GetIsRolling()const;
+	bool GetIsThrown()const;
 	bool GetIsOnScreen() const;
 	void Reset() override;
 
@@ -29,10 +32,14 @@ private:
 	bool m_IsSwallowed{false};
 	bool m_IsSpat{ false };
 	bool m_IsOnScreen{ false };
+	float m_ImmunityTimer{ 0 };
 
 	bool m_ResetEdible;
 	bool m_ResetSquashable;
 
+protected:
+	bool m_IsRolling{ false };
+	bool m_IsThrown{ false };
 };
 
 

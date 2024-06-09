@@ -36,12 +36,15 @@ private:
 	Texture* m_PauseScreenBG;
 	Texture* m_PauseScreenIcons;
 	Texture* m_DeathScreen;
+	Texture* m_ResultsScreen;
+	Texture* m_LettersForResults;
+
 
 	int m_Lives{ 3 };
 	int m_Coins{ 0 };
 	int m_RedCoins{ 0 };
 	int m_Flowers{ 0 };
 	int m_Stars{ 0 };
-	int m_PointerPosX{ 0 };
+	int m_PointerPosX{ 200 };
 };
 

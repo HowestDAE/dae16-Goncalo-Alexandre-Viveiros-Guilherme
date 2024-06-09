@@ -25,6 +25,7 @@ private:
 	Rectf m_PointerRect{0, 0, 16, 16 };
 	bool m_IsFallen{ false };
 	float m_EggTime{ 0 };
+	int m_EggBounces{ 0 };
 	bool m_IsPointerGoingUp {true};
 	float m_LastYoshiPosX{ 0 };
 	float m_LastYoshiPosY{ 0 };

@@ -10,47 +10,50 @@ m_StartPos(startPos)
 void ShyGuy::Update(const std::vector<std::vector<Point2f>>& platforms, const float elapsedSec)
 {
 
-	Entity::Update(platforms, elapsedSec);
+	Enemy::Update(platforms, elapsedSec);
 
-	
 
-	//makes the shy guy have a small patrol around a limited area from where he was placed
-	m_PatrolClock += elapsedSec;
-
-	if (m_PatrolRange > 0)
+	if (m_IsThrown == false || m_IsRolling == false)
 	{
-		if (m_PatrolClock > 3)
-		{
-			if (m_PatrolCycle == 0)
-			{
-				m_VelocityX = 30;
+		//makes the shy guy have a small patrol around a limited area from where he was placed
+		m_PatrolClock += elapsedSec;
 
-				if (m_Position.x > m_StartPos.x + m_PatrolRange)
+		if (m_PatrolRange > 0)
+		{
+			if (m_PatrolClock > 3)
+			{
+				if (m_PatrolCycle == 0)
 				{
-					m_PatrolCycle = 1;
-					m_PatrolClock = 0;
-					m_VelocityX = 0;
-					m_XTxtPos = 61;
+					m_VelocityX = 30;
+
+					if (m_Position.x > m_StartPos.x + m_PatrolRange)
+					{
+						m_PatrolCycle = 1;
+						m_PatrolClock = 0;
+						m_VelocityX = 0;
+						m_XTxtPos = 61;
+					}
 				}
 			}
-		}
 
-		if (m_PatrolClock > 3)
-		{
-			if (m_PatrolCycle == 1)
+			if (m_PatrolClock > 3)
 			{
-				m_VelocityX = -30;
-
-				if (m_Position.x < m_StartPos.x - m_PatrolRange)
+				if (m_PatrolCycle == 1)
 				{
-					m_PatrolCycle = 0;
-					m_PatrolClock = 0;
-					m_VelocityX = 0;
-					m_XTxtPos = 61;
+					m_VelocityX = -30;
+
+					if (m_Position.x < m_StartPos.x - m_PatrolRange)
+					{
+						m_PatrolCycle = 0;
+						m_PatrolClock = 0;
+						m_VelocityX = 0;
+						m_XTxtPos = 61;
+					}
 				}
 			}
 		}
 	}
+	
 	
 
 
@@ -68,7 +71,7 @@ void ShyGuy::Animate(float elapsedSec)
 	{
 		m_FrameTime += elapsedSec;
 
-		if (m_FrameTime > 0.1)
+		if (m_FrameTime > 0.3)
 		{
 			m_XTxtPos += m_TxtWidth;
 			m_FrameTime = 0;

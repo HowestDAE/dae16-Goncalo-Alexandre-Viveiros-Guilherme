@@ -25,6 +25,9 @@ public:
 	void Debug();
 	void HitCheck(const std::vector<Enemy*>&, std::vector<Entity*>& lvlEntities, Rectf marioHitbox);
 	void EmptyMouth();
+	void AddFlower();
+	void AddCoin();
+	void AddRedCoin();
 	int GetMarioTimer() const;
 	int GetEggAmount() const;
 	int GetStarsAmount() const;
