@@ -19,6 +19,7 @@ public:
 	Rectf GetHitbox();
 	bool GetIsFallen();
 
+
 private:
 	Texture* m_PointerTxt;
 	Rectf m_PointerRect{0, 0, 16, 16 };

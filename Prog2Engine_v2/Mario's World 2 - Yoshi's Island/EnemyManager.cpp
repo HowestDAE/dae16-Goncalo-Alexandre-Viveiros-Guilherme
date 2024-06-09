@@ -95,7 +95,7 @@ void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, f
 				{
 					if (snatchers->GetIsOnScreen() == false)
 					{
-						//ADD losing
+						m_YoshiLost = true;
 					}
 				}
 			}
@@ -138,6 +138,7 @@ void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, f
 void EnemyManager::SpawnEnemies(int levelNumber)
 {
 	m_LevelNumber = levelNumber;
+	m_ResetLevelNumber = levelNumber;
 	m_Enemies.push_back(new Snatchers (Point2f(0, 2000)));
 	if (levelNumber == 1)
 	{
@@ -228,5 +229,21 @@ void EnemyManager::AddEnemy(Point2f yoshiPos, bool isYoshiFacingRight)
 	}
 
 	m_Enemies.push_back(new ShyGuy(Point2f(yoshiPos.x + operand, yoshiPos.y + 100), 0));
+}
+
+bool EnemyManager::GetHasYoshiLost() const
+{
+	return m_YoshiLost;
+}
+
+void EnemyManager::Reset()
+{
+	for (int idx{0}; idx < m_Enemies.size(); idx++)
+	{
+		m_Enemies[idx]->Reset();
+	}
+	m_SpawnTimer  = 0;
+	m_LevelNumber = m_ResetLevelNumber;
+	m_YoshiLost  =  false;
 }
 

@@ -20,7 +20,7 @@ public:
 	void SetIsHit();
 	bool GetIsHit() const;
 	Type GetTypeOfCloud() const;
-	
+	void Reset() override;
 	
 private:
 	Type m_TypeOfCloud;

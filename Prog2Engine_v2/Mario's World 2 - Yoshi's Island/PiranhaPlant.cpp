@@ -128,3 +128,11 @@ void PiranhaPlant::Animate(float elapsedSec)
 		m_FrameTime = 0;
 	}
 }
+
+void PiranhaPlant::Reset()
+{
+	Enemy::Reset();
+
+	m_IsSFXReady  = false;
+	m_SFXTimer   = 0;
+}

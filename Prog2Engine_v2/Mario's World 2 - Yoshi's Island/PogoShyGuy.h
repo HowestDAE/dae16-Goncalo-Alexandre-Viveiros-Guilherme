@@ -10,6 +10,7 @@ public:
 
 	void Draw() const override;
 	void Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec) override;
+	void Reset() override;
 private:
 	float m_Timer{0};
 };

@@ -61,3 +61,10 @@ void PogoShyGuy::Update(const std::vector<std::vector<Point2f>>& platforms, floa
 
 
 }
+
+void PogoShyGuy::Reset()
+{
+	Enemy::Reset();
+
+	m_Timer = 0;
+}

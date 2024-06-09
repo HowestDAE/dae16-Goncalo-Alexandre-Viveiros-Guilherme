@@ -40,6 +40,8 @@ public:
 	void PlaySFX(ObjectSFX objectSfx);
 	void PlaySFX(EnemySFX enemySfx);
 	void PlayBGMusic(LvlMusic levelNumber);
+	void PauseBGMusic() const;
+	void ResumeBGMusic() const;
 
 private:
 	YoshiSFX m_YoshiSFX{YoshiSFX::Null};

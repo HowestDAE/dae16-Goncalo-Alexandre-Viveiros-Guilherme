@@ -48,3 +48,13 @@ void SoundManager::PlayBGMusic(LvlMusic levelNumber)
 		std::cout << m_BGMusicLvl1.IsLoaded();
 	}
 }
+
+void SoundManager::PauseBGMusic() const
+{
+	m_BGMusicLvl1.Pause();
+}
+
+void SoundManager::ResumeBGMusic() const
+{
+	m_BGMusicLvl1.Resume();
+}

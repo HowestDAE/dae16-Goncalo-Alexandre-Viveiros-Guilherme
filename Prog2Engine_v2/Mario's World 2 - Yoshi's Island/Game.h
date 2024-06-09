@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseGame.h"
 
-
+class StateManager;
 class EnemyManager;
 class Yoshi;
 class Camera;
@@ -29,8 +29,10 @@ public:
 	void ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e ) override;
 	void ProcessMouseDownEvent( const SDL_MouseButtonEvent& e ) override;
 	void ProcessMouseUpEvent( const SDL_MouseButtonEvent& e ) override;
+	void Reset()const;
 
 private:
+	StateManager* m_StateManager;
 	Level* m_Level01;
 	Yoshi* m_YoshiPlyr;
 	Mario* m_Mario;

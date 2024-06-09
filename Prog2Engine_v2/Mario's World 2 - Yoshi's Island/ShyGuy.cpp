@@ -79,6 +79,14 @@ void ShyGuy::Animate(float elapsedSec)
 
 }
 
+void ShyGuy::Reset()
+{
+	Enemy::Reset();
+
+	m_PatrolClock = 3;
+	m_PatrolCycle = 0;
+}
+
 
 
 

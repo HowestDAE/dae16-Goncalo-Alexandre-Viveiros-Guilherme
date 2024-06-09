@@ -8,7 +8,7 @@ class Yoshi;
 class UI final
 {
 public:
-	UI(const std::string& texturePath, float txtHeight, float txtWidth, Point2f position);
+	UI(const std::string& texturePath, float txtHeight, float txtWidth);
 	~UI();
 	UI(const UI& rhs) = delete;
 	UI& operator=(const UI& rhs) = delete;
@@ -16,6 +16,7 @@ public:
 
 	void Draw(Point2f camPos) const;
 	void Update(bool isMarioOn, int marioTimer);
+	void Reset();
 
 private:
 	Texture* m_UITexture;
@@ -23,7 +24,6 @@ private:
 	std::vector <float>  m_TxtWidth;
 	std::vector <float>  m_XTxtPos ;
 	std::vector <float>  m_YTxtPos ;
-	Point2f m_Position;
 	
 	int m_Number{10};
 	int m_FirstDigit{1};

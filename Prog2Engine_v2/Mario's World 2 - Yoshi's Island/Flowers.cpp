@@ -14,3 +14,13 @@ void Flower::Collision(const std::vector<std::vector<Point2f>>& platforms, float
 	
 }
 
+void Flower::Reset()
+{
+	Entity::Reset();
+
+	m_XTxtPos = 1;
+	m_YTxtPos = 100;
+
+	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
+}
+

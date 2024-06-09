@@ -121,6 +121,13 @@ void Mario::Update(const std::vector< std::vector<Point2f>>& platforms, const fl
 
 }
 
+void Mario::Reset()
+{
+	Entity::Reset();
+
+	m_Time = 0;
+}
+
 void Mario::Animate(float elapsedSec)
 {
 

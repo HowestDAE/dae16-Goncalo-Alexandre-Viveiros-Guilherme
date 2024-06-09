@@ -3,10 +3,12 @@
 #include "Yoshi.h"
 
 
-Enemy::Enemy(const bool isEdible, const bool isSquashable, const std::string& texturePath, const float txtHeight, const float txtWidth, const Point2f position):
-Entity(texturePath, txtHeight, txtWidth, position),
-m_IsEdible(isEdible),
-m_IsSquashable(isSquashable)
+Enemy::Enemy(const bool isEdible, const bool isSquashable, const std::string& texturePath, const float txtHeight, const float txtWidth, const Point2f position) :
+	Entity(texturePath, txtHeight, txtWidth, position),
+	m_IsEdible(isEdible),
+	m_IsSquashable(isSquashable),
+	m_ResetEdible(isEdible),
+	m_ResetSquashable(isSquashable)
 {
 
 }
@@ -103,3 +105,15 @@ bool Enemy::GetIsOnScreen() const
 {
 	return m_IsOnScreen;
 }
+
+void Enemy::Reset()
+{
+	Entity::Reset();
+
+	m_IsEdible     = m_ResetEdible;
+	m_IsSquashable = m_ResetSquashable;
+	m_IsSwallowed  = false;
+	m_IsSpat       = false;
+	m_IsOnScreen   = false;
+}
+

@@ -7,6 +7,7 @@ public:
 	explicit Flower(Point2f position);
 	~Flower() override = default;
 	void Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec) override;
+	void Reset() override;
 
 private:
 

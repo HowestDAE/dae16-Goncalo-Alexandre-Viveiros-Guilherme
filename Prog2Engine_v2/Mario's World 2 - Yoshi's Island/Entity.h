@@ -25,11 +25,13 @@ public:
 	bool GetIsGrounded() const;
 	bool GetIsActive() const;
 	Point2f GetVelocity() const;
+	virtual void Reset();
 	
 
 protected:
 	Texture* m_EntityTxt;
 	Point2f m_Position;
+	Point2f m_ResetPosition;
 	float m_TxtHeight;
 	float m_TxtWidth;
 	float m_VelocityY{ 0 };

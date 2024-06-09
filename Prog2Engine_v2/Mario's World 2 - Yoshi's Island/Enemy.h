@@ -21,7 +21,7 @@ public:
 	bool GetIsSwallowed() const;
 	bool GetIsSpat() const;
 	bool GetIsOnScreen() const;
-	
+	void Reset() override;
 
 private:
 	bool m_IsEdible;
@@ -29,6 +29,9 @@ private:
 	bool m_IsSwallowed{false};
 	bool m_IsSpat{ false };
 	bool m_IsOnScreen{ false };
+
+	bool m_ResetEdible;
+	bool m_ResetSquashable;
 
 };
 

@@ -79,3 +79,10 @@ bool Snatchers::GetGrabbedMario()
 {
 	return m_GrabbedMario;
 }
+
+void Snatchers::Reset()
+{
+	Enemy::Reset();
+
+	m_GrabbedMario = false;
+}

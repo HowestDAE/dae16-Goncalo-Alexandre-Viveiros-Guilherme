@@ -1262,9 +1262,6 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 		m_IsCalculatingAngle = !m_IsCalculatingAngle;
 		break;
 
-	case SDLK_ESCAPE:
-		m_PlayerPause = !m_PlayerPause;
-		break;
 	}
 }
 
@@ -1450,6 +1447,8 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 								m_MarioTimer += 1;
 							}
 
+							m_Stars += 1;
+
 							lvlEntities[idx]->FlipIsActive();
 							break;
 						}
@@ -1553,6 +1552,26 @@ int Yoshi::GetEggAmount() const
 	return m_Eggs.size();
 }
 
+int Yoshi::GetStarsAmount() const
+{
+	return m_Stars;
+}
+
+int Yoshi::GetFlowersAmount() const
+{
+	return m_Flowers;
+}
+
+int Yoshi::GetCoinsAmount() const
+{
+	return m_Coins;
+}
+
+int Yoshi::GetRedCoinsAmount() const
+{
+	return m_RedCoins;
+}
+
 bool Yoshi::GetIsMarioOn() const
 {
 	return m_IsMarioOn;
@@ -1585,11 +1604,6 @@ bool Yoshi::GetIsLookingUp() const
 	return m_IsLookingUp;
 }
 
-bool Yoshi::GetPlayerPause() const
-{
-	return m_PlayerPause;
-}
-
 bool Yoshi::GetIsEnemySpatOut() const
 {
 	return m_IsEnemySpitOut;
@@ -1600,4 +1614,47 @@ bool Yoshi::GetIsOnMovingPlatform() const
 	return m_IsOnMovingPlatform;
 }
 
+bool Yoshi::GetIsHit() const
+{
+	return m_IsHit;
+}
 
+void Yoshi::Reset() 
+{
+	Entity::Reset();
+
+	m_IsTonguing          = false;
+	m_IsYoshiJumping      = false;
+	m_IsMarioOn           = true;
+	m_IsLookingUp         = false;
+	m_IsHit               = false;
+	m_IsEnemySpitOut      = false;
+	m_Flowers             = 0 ;
+	m_Coins               = 0 ;
+	m_RedCoins            = 0 ;
+	m_Stars               = 0 ;
+	m_MarioTimer          = 10;
+	m_FlightTime          = 0 ;
+	m_Countdown           = 0 ;
+	m_HitTimer            = 0 ;
+	m_HitPhases           = 0 ;
+	m_JumpTimer           = 0 ;
+	m_PushTimer           = 0 ;
+	m_ControlsTimer       = 0 ;
+	m_LvlEntityTop        = 0 ;
+	m_IsMouthFull         = false;
+	m_Eggs.clear();
+	m_Tongue              = Circlef(m_Position, 8);
+	m_IsJumpDone          = false ;
+	m_IsHoldingEgg        = false ;
+	m_IsCalculatingAngle  = true;
+	m_IsCrouching         = false ;
+	m_IsLayingEgg         = false ;
+	m_IsOnMovingPlatform  = false ;
+	m_IsPushing           = false ;
+	m_IsTongueReady       = true;
+	m_IsStandingOnEntity  = false ;
+	m_PlayJumpSFX         = false ;
+	m_PlayTongueSFX       = false ;
+
+}

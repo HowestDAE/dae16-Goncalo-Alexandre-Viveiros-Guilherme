@@ -7,8 +7,9 @@
 #include "Yoshi.h"
 
 
-Camera::Camera(const Point2f camPos, Point2f yoshiStartPos):
-	m_CamPosition(camPos)
+Camera::Camera(const Point2f camPos):
+	m_CamPosition(camPos),
+	m_ResetCamPosition(camPos)
 {
 
 }
@@ -77,6 +78,12 @@ void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 		{
 			m_CamPosition.x = -7000;
 		}
+
+
+		if (yoshiPlyr->GetIsHit() == true)
+		{
+			CenterCamera(Point2f(yoshiPlyr->GetPosition().x - 300, yoshiPlyr->GetPosition().y - 250));
+		}
 	}
 	
 
@@ -115,6 +122,11 @@ void Camera::CenterCamera(Point2f yoshiPos)
 Point2f Camera::GetCamPos() const
 {
 	return m_CamPosition;
+}
+
+void Camera::Reset()
+{
+	m_CamPosition = m_ResetCamPosition;
 }
 
 

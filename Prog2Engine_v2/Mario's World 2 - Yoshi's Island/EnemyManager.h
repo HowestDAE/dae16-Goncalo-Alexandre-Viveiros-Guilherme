@@ -26,11 +26,14 @@ public:
 	void SpawnZone(int yoshiEggAmount, Point2f yoshiPos, float elapsedSec,Point2f spawnZoneLocation);
 	std::vector<Enemy*>& GetEnemyVector();
 	void AddEnemy(Point2f yoshiPos, bool isYoshiFacingRight);
+	bool GetHasYoshiLost() const;
+	void Reset();
 
 private:
 	std::vector<Enemy*> m_Enemies;
 	float m_SpawnTimer {0};
 	int m_LevelNumber;
-
+	bool m_YoshiLost{ false };
+	int m_ResetLevelNumber;
 };
 

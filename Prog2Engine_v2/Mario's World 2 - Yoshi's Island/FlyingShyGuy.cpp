@@ -75,3 +75,9 @@ void FlyingShyGuy::Animate(float elapsedSec)
 		m_FrameTime = 0;
 	}
 }
+
+void FlyingShyGuy::Reset()
+{
+	Enemy::Reset();
+	m_IsCycleDone = false;
+}

@@ -12,19 +12,22 @@
 #include "Platforms.h"
 #include "SoundManager.h"
 #include "Star.h"
+#include "StateManager.h"
 #include "SVGParser.h"
 #include "utils.h"
 #include "Yoshi.h"
 #include "WingedClouds.h"
 
-Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTxt1,const std::string& backgroundTxt2,const std::string& backgroundTxt3,float levelStart, Point2f levelEnd,int levelNumber):
+Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTxt1,const std::string& backgroundTxt2,
+	const std::string& backgroundTxt3,float levelStart, Point2f levelEnd,int levelNumber, StateManager*& stateManager):
 	m_LevelNumber(levelNumber),
 	m_LevelStart(levelStart),
 	m_LevelEnd(levelEnd),
 	m_LvlTexture{new Texture{imagePathLvlTxt}},
 	m_BgTexture(new Texture{backgroundTxt1}),
 	m_BgTexture2(new Texture{ backgroundTxt2}),
-	m_BgTexture3(new Texture{backgroundTxt3})
+	m_BgTexture3(new Texture{backgroundTxt3}),
+	m_StateManager(stateManager)
 {
 
 	if (m_LevelNumber == 1)
@@ -39,14 +42,14 @@ Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTx
 		
 		//Add Winged Clouds for Lvl 1
 		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::StairCloud, "GeneralSprites.png", Point2f(2256, 483)));
-		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::StarCloud, "GeneralSprites.png", Point2f(4294, 325)) );
-		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::SunflowerCloud, "GeneralSprites.png", Point2f(4940, 294)));
+		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::StarCloud, "GeneralSprites.png", Point2f(4294, 425)) );
+		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::SunflowerCloud, "GeneralSprites.png", Point2f(4940, 350)));
 		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::FlowerCloud, "GeneralSprites.png", Point2f(4450, 743)));
-		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::StarCloud, "GeneralSprites.png", Point2f(6292, 639)));
-		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::StarCloud, "GeneralSprites.png", Point2f(4604, 520))); //TODO make it a invisible secret cloud
+		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::StarCloud, "GeneralSprites.png", Point2f(4560, 540)));
+		m_LvlEntities.push_back(new WingedClouds(WingedClouds::Type::StarCloud, "GeneralSprites.png", Point2f(6262, 849)));
 
 		//Adds the 5 flower locations
-		m_LvlEntities.push_back(new Flower(Point2f(1537,355)));
+		m_LvlEntities.push_back(new Flower(Point2f(1537,455)));
 		m_LvlEntities.push_back(new Flower(Point2f(1598,800)));
 		m_LvlEntities.push_back(new Flower(Point2f(2950,260)));
 		m_LvlEntities.push_back(new Flower(Point2f(3365,252)));
@@ -78,7 +81,7 @@ Level::~Level()
 {
 	delete m_BgTexture;
 	delete m_LvlTexture;
-	//delete m_BgTexture2;
+	delete m_BgTexture2;
 	delete m_BgTexture3;
 	for (int idx = 0; idx  < m_Platforms.size(); idx ++)
 	{
@@ -92,6 +95,8 @@ Level::~Level()
 	delete m_SunflowerCloudTxt;
 
 }
+
+
 
 void Level::DrawLvl(Point2f camPos) const  
 {
@@ -197,9 +202,10 @@ void Level::DrawBackground() const
 }
 
 
-void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, const std::vector<Enemy*>& enemies, SoundManager*& soundManager, Camera*& plyrCamera)
+void Level::Update(float elapsedSec, Yoshi*& yoshiPlyr, const std::vector<Enemy*>& enemies, SoundManager*& soundManager, Camera*& plyrCamera)
 {
-	if (isPlayerPauseTrue == false)
+
+	if (m_StateManager->GetState() != StateManager::States::Pause)
 	{
 		for (int idx = 0; idx < m_Platforms.size(); idx++)
 		{
@@ -214,111 +220,127 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 
 			}
 		}
-	}
 
-	for (int idx = 0; idx < m_LvlEntities.size(); idx++)
-	{
-		if (const auto boulders = dynamic_cast<::Boulder*>(m_LvlEntities[idx]))
+		for (int idx = 0; idx < m_LvlEntities.size(); idx++)
 		{
-			boulders->Update(m_LvlVertices, elapsedSec);
-			boulders->Hitcheck(enemies);
+			if (const auto boulders = dynamic_cast<::Boulder*>(m_LvlEntities[idx]))
+			{
+				boulders->Update(m_LvlVertices, elapsedSec);
+				boulders->Hitcheck(enemies);
+			}
+
 		}
 
-	}
-
-	for (int idx = 0; idx < m_LvlEntities.size(); idx++)
-	{
-		if (auto wingedClouds = dynamic_cast<::WingedClouds*>(m_LvlEntities[idx]))
+		for (int idx = 0; idx < m_LvlEntities.size(); idx++)
 		{
-			if (wingedClouds != nullptr)
+			if (auto wingedClouds = dynamic_cast<::WingedClouds*>(m_LvlEntities[idx]))
 			{
-				if (wingedClouds->GetIsHit() == true)
+				if (wingedClouds->GetIsActive() == true)
 				{
-					if (m_LevelNumber == 1)
+					if (wingedClouds->GetIsHit() == true)
 					{
-						if (wingedClouds->GetTypeOfCloud() == WingedClouds::Type::StairCloud)
+						if (m_LevelNumber == 1)
 						{
-							//m_EventVertices1.push_back(Point2f(2300, 495));
-							//m_EventVertices1.push_back(Point2f(2000, 790));
-							m_LvlVertices.push_back(std::vector<Point2f>{Point2f(2300, 495), Point2f(2000, 790)});
+							if (wingedClouds->GetTypeOfCloud() == WingedClouds::Type::StairCloud)
+							{
+								//m_EventVertices1.push_back(Point2f(2300, 495));
+								//m_EventVertices1.push_back(Point2f(2000, 790));
+								m_LvlVertices.push_back(std::vector<Point2f>{Point2f(2300, 495), Point2f(2000, 790)});
 
-							m_LevelPause = true;
-							m_DrawEventStairs = true;
-							delete m_LvlEntities[idx];
-							m_LvlEntities[idx] = nullptr;
-							m_LevelPause = false;
+								m_StateManager->SetState(StateManager::States::LevelPause);
+								m_DrawEventStairs = true;
+								m_LvlEntities[idx]->FlipIsActive();
+								m_StateManager->SetState(StateManager::States::Gameplay);
+								break;
+							}
+
+							if (wingedClouds->GetTypeOfCloud() == WingedClouds::Type::SunflowerCloud)
+							{
+								m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4900, 290), Point2f(4960, 290) });
+								m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4900, 290 + (64 * 2)), Point2f(4960, 290 + (64 * 2))});
+								m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4900, 290 + (64 * 2) * 2), Point2f(4960, 290 + (64 * 2) * 2)});
+								m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4960, 355), Point2f(5020, 355)});
+								m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4960, 355 + (64 * 2)), Point2f(5020, 355 + (64 * 2))});
+								m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4960, 355 + (64 * 2) * 2), Point2f(5020, 355 + (64 * 2) * 2)});
+
+								m_DrawEventSunflower = true;
+								m_LvlEntities[idx]->FlipIsActive();
+								break;
+							}
+						}
+
+						if (wingedClouds->GetTypeOfCloud() == WingedClouds::Type::FlowerCloud)
+						{
+							m_LvlEntities.push_back(new Flower(wingedClouds->GetPosition()));
+
+							m_LvlEntities[idx]->FlipIsActive();
 							break;
 						}
 
-						if (wingedClouds->GetTypeOfCloud() == WingedClouds::Type::SunflowerCloud)
+						if (wingedClouds->GetTypeOfCloud() == WingedClouds::Type::StarCloud)
 						{
-							m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4900, 290), Point2f(4960, 290) });
-							m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4900, 290 + (64 * 2)), Point2f(4960, 290 + (64 * 2))});
-							m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4900, 290 + (64 * 2) * 2), Point2f(4960, 290 + (64 * 2) * 2)});
-							m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4960, 355), Point2f(5020, 355)});
-							m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4960, 355 + (64 * 2)), Point2f(5020, 355 + (64 * 2))});
-							m_LvlVertices.push_back(std::vector<Point2f>{Point2f(4960, 355 + (64 * 2) * 2), Point2f(5020, 355 + (64 * 2) * 2)});
-						
-							m_DrawEventSunflower = true;
-							delete m_LvlEntities[idx];
-							m_LvlEntities[idx] = nullptr;
+							for (int idx{ 0 }; idx < 5; idx++)
+							{
+								m_LvlEntities.push_back(new Star(wingedClouds->GetPosition()));
+								m_LvlEntities.back()->AddVelocity(rand() % -30 + 60, (rand() % 90));
+							}
+
+							m_LvlEntities[idx]->FlipIsActive();
 							break;
 						}
+
 					}
-
-					if (wingedClouds->GetTypeOfCloud() == WingedClouds::Type::FlowerCloud)
-					{
-						m_LvlEntities.push_back(new Flower(wingedClouds->GetPosition()));
-
-						delete m_LvlEntities[idx];
-						m_LvlEntities[idx] = nullptr;
-						break;
-					}
-
-					if (wingedClouds->GetTypeOfCloud() == WingedClouds::Type::StarCloud)
-					{
-						for (int idx{ 0 }; idx < 5; idx++)
-						{
-							m_LvlEntities.push_back(new Star(wingedClouds->GetPosition()));
-							m_LvlEntities.back()->AddVelocity(rand() % -30 + 60, (rand() % 90));
-						}
-	
-						delete m_LvlEntities[idx];
-						m_LvlEntities[idx] = nullptr;
-						break;
-					}
-
 				}
 			}
+			if (m_LvlEntities[idx]->GetIsActive() == true)
+			{
+				m_LvlEntities[idx]->Update(m_LvlVertices, elapsedSec);
+			}
+
+
 		}
-		if (m_LvlEntities[idx] != nullptr)
+
+		Animate(elapsedSec);
+
+		if (m_LevelNumber == 1)
 		{
-			m_LvlEntities[idx]->Update(m_LvlVertices, elapsedSec);
+			WarpPipesUpdate(true, yoshiPlyr, Point2f(2708, 348), 16, 16, Point2f(740, -515), plyrCamera);
+			WarpPipesUpdate(false, yoshiPlyr, Point2f(2521, -542), 16, 16, Point2f(3121, 260), plyrCamera);
 		}
-		
-		
+
 	}
 
-	Animate(elapsedSec);
+	Sound(soundManager);
 
-	if (m_IsBGMusicOn == false)
-	{
-		Sound(soundManager);
-
-		m_IsBGMusicOn = true;
-	}
-
-	if (m_LevelNumber == 1)
-	{
-		WarpPipesUpdate(true, yoshiPlyr, Point2f(2708, 348), 16, 16, Point2f(740, -515), plyrCamera);
-		WarpPipesUpdate(false, yoshiPlyr, Point2f(2521, -542), 16, 16, Point2f(3121, 260), plyrCamera);
-	}
-
+	
 }
 
 void Level::Sound(SoundManager*& soundManager)
 {
-	soundManager->PlayBGMusic(SoundManager::LvlMusic::Level1);
+	if (m_StateManager->GetState() != StateManager::States::Pause)
+	{
+		if (m_IsBGMusicOn == false)
+		{
+			soundManager->PlayBGMusic(SoundManager::LvlMusic::Level1);
+
+			m_IsBGMusicOn = true;
+		}
+
+		if (m_PreviousState == StateManager::States::Pause)
+		{
+			soundManager->ResumeBGMusic();
+		}
+		
+	
+	}
+
+	else 
+	{
+		soundManager->PauseBGMusic();
+
+		m_PreviousState = StateManager::States::Pause;
+	}
+	
 }
 
 void Level::CoinManager(int coinRowSize, int coinColumnSize, int numberOfRedCoin, int spacingX,int spacingY,Point2f position)
@@ -402,7 +424,7 @@ void Level::LevelEndUpdate(Point2f yoshiPos)
 	{
 		if (yoshiPos.y >= m_LevelEnd.y)
 		{
-			m_LevelPause = true;
+			m_StateManager->SetState(StateManager::States::ResultsMenu);
 			std::cout << "YOU WON!!!!";
 		}
 	}
@@ -411,11 +433,6 @@ void Level::LevelEndUpdate(Point2f yoshiPos)
 float Level::GetLevelStart() const
 {
 	return m_LevelStart;
-}
-
-bool Level::GetLevelPause() const
-{
-	return m_LevelPause;
 }
 
 Point2f Level::GetLevelEnd() const
@@ -448,4 +465,13 @@ std::vector<Entity*>& Level::GetLevelEntities()
 	return m_LvlEntities;
 }
 
-
+void Level::Reset()
+{
+	for (int idx{ 0 }; idx < m_LvlEntities.size(); idx++)
+	{
+		m_LvlEntities[idx]->Reset();
+	}
+	m_DrawEventStairs    = false;
+	m_DrawEventSunflower = false;
+	m_IsBGMusicOn        = false;
+}

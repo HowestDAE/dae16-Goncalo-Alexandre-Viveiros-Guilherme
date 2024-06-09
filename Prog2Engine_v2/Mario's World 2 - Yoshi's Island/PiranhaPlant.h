@@ -14,6 +14,7 @@ public:
 	void Update(float elapsedSec,Point2f yoshiPos, SoundManager*& soundManager);
 	void Sound(SoundManager*& soundManager);
 	void Animate(float elapsedSec) override;
+	void Reset() override;
 private:
 	bool m_IsFlipped;
 	bool m_IsSFXReady {false};

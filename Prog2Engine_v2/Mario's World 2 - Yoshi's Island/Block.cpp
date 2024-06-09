@@ -86,3 +86,11 @@ bool Block::GetIsBlockHit()
 {
 	return m_IsHit;
 }
+
+void Block::Reset()
+{
+	Entity::Reset();
+
+	bool m_IsHit     = false;
+	float m_HitTimer = 0;
+}

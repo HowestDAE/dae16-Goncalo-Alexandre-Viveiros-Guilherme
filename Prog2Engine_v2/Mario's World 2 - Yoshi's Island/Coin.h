@@ -13,6 +13,5 @@ public:
 private:
 	bool m_IsRedCoin;
 
-
 };
 

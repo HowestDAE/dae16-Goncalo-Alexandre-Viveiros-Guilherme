@@ -57,3 +57,11 @@ void Boulder::Animate(float elapsedSec)
 		m_AngleDeg += 100 * elapsedSec;
 	}
 }
+
+void Boulder::Reset()
+{
+	Entity::Reset();
+
+	m_LastYPosition = m_Position.y;
+
+}

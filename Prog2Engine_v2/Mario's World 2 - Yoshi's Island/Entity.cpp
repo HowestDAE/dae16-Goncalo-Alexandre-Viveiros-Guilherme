@@ -2,11 +2,12 @@
 #include "Entity.h"
 #include "Texture.h"
 
-Entity::Entity(const std::string& texturePath, const float txtHeight, const float txtWidth, const Point2f position):
- m_EntityTxt{ new Texture {texturePath} },
- m_Position{position},
- m_TxtHeight{txtHeight},
- m_TxtWidth{txtWidth}
+Entity::Entity(const std::string& texturePath, const float txtHeight, const float txtWidth, const Point2f position) :
+	m_EntityTxt{ new Texture {texturePath} },
+	m_Position{ position },
+	m_TxtHeight{ txtHeight },
+	m_TxtWidth{ txtWidth },
+	m_ResetPosition(position)
 {
 
 }
@@ -23,9 +24,6 @@ void Entity::Draw() const
 	{
 		glPushMatrix();
 		{
-			utils::SetColor(Color4f(0, 1, 0, 1));
-			utils::DrawPoint(m_Position, 3);
-
 			// Translate to the origin of the entity
 			glTranslatef(m_Position.x + m_TxtWidth, m_Position.y + m_TxtHeight, 0);
 
@@ -260,4 +258,28 @@ bool Entity::GetIsActive() const
 Point2f Entity::GetVelocity() const
 {
 	return Point2f(m_VelocityX, m_VelocityY);
+}
+
+void Entity::Reset()
+{
+	m_Position = m_ResetPosition;
+
+	m_VelocityY              = 0 ;
+	m_VelocityX              = 0 ;
+	m_XTxtPos                = 0 ;
+	m_YTxtPos                = 0 ;
+	m_IsGrounded             = false;
+	m_IsFacingRight          = true ;
+	m_IsActive               = true ;
+	m_FrameTime              = 0 ;
+	m_TerminalVelocityTimer  = 0 ;
+	m_Hitbox                 = Rectf (0, 0, 0, 0) ;
+						   
+	m_AngleDeg               = 0 ;
+	m_AngX                   = 0 ;
+	m_AngY                   = 0 ;
+	m_AngZ                   = 0 ;
+	m_ScaleX                 = 1 ;
+	m_ScaleY                 = 1 ;
+	m_ScaleZ                 = 1 ;
 }

@@ -54,4 +54,11 @@ WingedClouds::Type WingedClouds::GetTypeOfCloud() const
 	return m_TypeOfCloud;
 }
 
+void WingedClouds::Reset()
+{
+	Entity::Reset();
+
+	m_IsHit = false;
+}
+
 

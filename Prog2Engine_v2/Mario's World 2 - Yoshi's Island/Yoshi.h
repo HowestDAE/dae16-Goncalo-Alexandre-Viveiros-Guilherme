@@ -27,14 +27,20 @@ public:
 	void EmptyMouth();
 	int GetMarioTimer() const;
 	int GetEggAmount() const;
+	int GetStarsAmount() const;
+	int GetFlowersAmount() const;
+	int GetCoinsAmount() const;
+	int GetRedCoinsAmount() const;
 	bool GetIsMarioOn() const;
 	bool GetIsJumping() const;
 	bool GetIsHovering() const;
 	bool GetIsCrouching() const;
 	bool GetIsLookingUp() const;
-	bool GetPlayerPause() const;
 	bool GetIsEnemySpatOut()const;
 	bool GetIsOnMovingPlatform() const;
+	bool GetIsHit() const;
+	void Reset() override;
+
 
 private:
 	bool m_IsTonguing{ false };
@@ -46,6 +52,7 @@ private:
 	int m_Flowers{ 0 };
 	int m_Coins{ 0 };
 	int m_RedCoins{ 0 };
+	int m_Stars{ 0 };
 	int m_MarioTimer;
 	float m_FlightTime{ 0 };
 	float m_Countdown{ 0 };
@@ -64,7 +71,6 @@ private:
 	bool m_IsCalculatingAngle{ true };
 	bool m_IsCrouching{ false };
 	bool m_IsLayingEgg{ false };
-	bool m_PlayerPause{ false };
 	bool m_IsOnMovingPlatform{ false };
 	bool m_IsPushing{ false };
 	bool m_IsTongueReady{ true };
@@ -94,6 +100,7 @@ private:
 
 	AnimState m_CurrentState{};
 	AnimState m_LastState{};
+
 
 	void Animate(float elapsedSec) override;
 };
