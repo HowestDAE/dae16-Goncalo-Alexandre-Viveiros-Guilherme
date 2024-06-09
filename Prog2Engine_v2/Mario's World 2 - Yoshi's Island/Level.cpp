@@ -17,12 +17,13 @@
 #include "Yoshi.h"
 #include "WingedClouds.h"
 
-Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTxt1, const std::string& backgroundTxt3,float levelStart, Point2f levelEnd,int levelNumber):
+Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTxt1,const std::string& backgroundTxt2,const std::string& backgroundTxt3,float levelStart, Point2f levelEnd,int levelNumber):
 	m_LevelNumber(levelNumber),
 	m_LevelStart(levelStart),
 	m_LevelEnd(levelEnd),
 	m_LvlTexture{new Texture{imagePathLvlTxt}},
 	m_BgTexture(new Texture{backgroundTxt1}),
+	m_BgTexture2(new Texture{ backgroundTxt2}),
 	m_BgTexture3(new Texture{backgroundTxt3})
 {
 
@@ -59,9 +60,14 @@ Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTx
 		m_LvlEntities.push_back(new Boulder(Point2f(5343, 858)));
 
 		//Adds Coins
-		CoinManager(40, 40, 0, 3, Point2f(652, 320));
-		CoinManager(100, 40, 0, 3, Point2f(1730, 830));
-		CoinManager(300, 20, 0, 3, Point2f(1031, -556));
+		CoinManager(40, 40, 0, 3, 3,Point2f(652, 320));
+		CoinManager(100, 40, 6, 3,3 ,Point2f(1730, 830));
+		CoinManager(1200, 20, 7, 50,3, Point2f(1031, -556));
+		for (int idx = 0; idx < 13; idx++)
+		{
+			m_LvlEntities.push_back(new Coin(false, Point2f(1985 + 30 * idx, 800 - 25 * idx)));
+		}
+	
 
 		//Add Blocks
 		m_LvlEntities.push_back(new Block(Point2f(1014, -675), Block::BlockType::EggBlock));
@@ -95,6 +101,17 @@ void Level::DrawLvl(Point2f camPos) const
 		glTranslatef(-camPos.x / 1.4f, -camPos.y / 1.4f, 0);          //parallax scrolling
 		DrawBackground();
 
+		glPopMatrix();
+
+		glPushMatrix();
+		glScalef(62.f, 1, 0);
+		m_BgTexture3->Draw(Point2f{ 0, -800 });
+		glPopMatrix();
+
+		glPushMatrix();
+		glTranslatef(-camPos.x / 1.3f, 0, 0);
+		glScalef(1.8f, 1.8f, 0);
+		m_BgTexture2->Draw(Point2f{ 80, -430});
 		glPopMatrix();
 
 		glPushMatrix();
@@ -169,10 +186,11 @@ void Level::DrawBackground() const
 		glPopMatrix();
 		glScalef(1.8f, 1.8f,0);
 		m_BgTexture->Draw(Point2f{ 0,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidth,m_BgFrameHeight });
-		m_BgTexture->Draw(Point2f{ m_BgFrameWidth,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidth,m_BgFrameHeight });
+		m_BgTexture->Draw(Point2f{ m_BgFrameWidth,0}, Rectf{ m_BgFrameStart,m_BgFrameStart ,m_BgFrameWidth,m_BgFrameHeight });
 		m_BgTexture->Draw(Point2f{ m_BgFrameWidth*2,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidth,m_BgFrameHeight });
 		m_BgTexture->Draw(Point2f{ m_BgFrameWidth*3,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidth,m_BgFrameHeight });
 		m_BgTexture->Draw(Point2f{ m_BgFrameWidth*4,0 }, Rectf{ m_BgFrameStart,m_BgFrameStart,m_BgFrameWidth,m_BgFrameHeight });
+		
 	}
 	glPopMatrix();
 
@@ -293,7 +311,7 @@ void Level::Update(float elapsedSec,bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, c
 	if (m_LevelNumber == 1)
 	{
 		WarpPipesUpdate(true, yoshiPlyr, Point2f(2708, 348), 16, 16, Point2f(740, -515), plyrCamera);
-		WarpPipesUpdate(false, yoshiPlyr, Point2f(2521, -542), 16, 16, Point2f(3121, 230), plyrCamera);
+		WarpPipesUpdate(false, yoshiPlyr, Point2f(2521, -542), 16, 16, Point2f(3121, 260), plyrCamera);
 	}
 
 }
@@ -303,38 +321,41 @@ void Level::Sound(SoundManager*& soundManager)
 	soundManager->PlayBGMusic(SoundManager::LvlMusic::Level1);
 }
 
-void Level::CoinManager(int coinRowSize, int coinColumnSize, int numberOfRedCoin, int spacing,Point2f position)
+void Level::CoinManager(int coinRowSize, int coinColumnSize, int numberOfRedCoin, int spacingX,int spacingY,Point2f position)
 {
-	const int numberOfCoinsInRow = coinRowSize / (12 + spacing);
+	const int numberOfCoinsInRow = coinRowSize / (12 + spacingX);
+	const int numberOfCoinsInColumn = coinColumnSize / (16 + spacingY);
+	const int numberOfCoins = numberOfCoinsInRow * numberOfCoinsInColumn;
 
-	const int numberOfCoinsInColumn = coinColumnSize / (16 + spacing);
+	if (numberOfCoins <= 0 || numberOfRedCoin > numberOfCoins) {
+		std::cout << "The values provided can't make any coins or number of red coins exceeds total coins.\n";
+		return;
+	}
+	// Create a vector to mark red coin positions
+	std::vector<bool> isRedCoin(numberOfCoins, false);
 
-	const int numberOfCoins = numberOfCoinsInColumn + numberOfCoinsInRow;
+	// Randomly mark the specified number of coins as red
+	for (int i = 0; i < numberOfRedCoin; ++i) {
+		int idx;
+		do {idx = std::rand() % numberOfCoins;}
 
-	if (numberOfCoinsInRow > 0)
-	{
-		if (numberOfCoinsInColumn > 0)
-		{
-			for (int idx = 0; idx < numberOfCoinsInColumn; idx++)
-			{
-				for (int idx2 = 0; idx2 < numberOfCoinsInRow; idx2++)
-				{
-					m_LvlEntities.push_back(new Coin(false, Point2f(position.x + (12 * 2 + spacing) * idx2, position.y + (16 * 2 + spacing) * idx)));
-				}
-			}
-			
-		}
-		else
-		{
-			std::cout << "The values provided cant make any coins";
-		}
+		while (isRedCoin[idx]);
+		isRedCoin[idx] = true;
 	}
 
-	else
+	int idxCounter = 0;
+
+	for (int col = 0; col < numberOfCoinsInColumn; ++col) 
 	{
-		std::cout << "The values provided cant make any coins";
+		for (int row = 0; row < numberOfCoinsInRow; ++row) 
+		{
+			bool isRed = isRedCoin[idxCounter];
+			m_LvlEntities.push_back(new Coin(isRed, Point2f(position.x + (12 * 2 + spacingX) * row, position.y + (16 * 2 + spacingY) * col)));
+			++idxCounter;
+		}
+
 	}
-	
+
 }
 
 void Level::Animate(float elapsedSec) const

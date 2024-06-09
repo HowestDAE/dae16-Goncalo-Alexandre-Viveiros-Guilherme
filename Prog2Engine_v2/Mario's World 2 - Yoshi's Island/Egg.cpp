@@ -131,7 +131,7 @@ void Egg::Collision(const std::vector<std::vector<Point2f>>& platforms, float el
 			m_TerminalVelocityTimer += elapsedSec;
 		}
 
-		//Floor Collisions
+		//Floor and ceiling Collision
 		for (int idx{ 0 }; idx < platforms.size(); idx++)
 		{
 
@@ -142,6 +142,16 @@ void Egg::Collision(const std::vector<std::vector<Point2f>>& platforms, float el
 			{
 				m_VelocityY = hit_info.lambda * 200;
 				m_IsGrounded = true;
+				m_TerminalVelocityTimer = 0;
+				break;
+			}
+
+			if (utils::Raycast(platforms[idx], Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight },
+				Point2f{ m_Hitbox.left + m_TxtWidth,m_Hitbox.bottom + m_TxtHeight * 2 }, hit_info))
+			{
+				m_VelocityY *= -1;
+
+				m_IsGrounded = false;
 				m_TerminalVelocityTimer = 0;
 				break;
 			}
@@ -191,7 +201,7 @@ void Egg::Collision(const std::vector<std::vector<Point2f>>& platforms, float el
 			m_TerminalVelocityTimer += elapsedSec;
 		}
 
-		//Floor Collisions
+		//Floor and ceileing Collisions 
 		for (int idx{ 0 }; idx < platforms.size(); idx++)
 		{
 
@@ -228,7 +238,7 @@ void Egg::Collision(const std::vector<std::vector<Point2f>>& platforms, float el
 				}
 				m_VelocityY = -hit_info.lambda * 2000;
 
-				m_IsGrounded = true;
+				m_IsGrounded = false;
 				m_TerminalVelocityTimer = 0;
 				break;
 			}

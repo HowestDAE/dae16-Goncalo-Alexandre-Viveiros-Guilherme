@@ -26,6 +26,7 @@ public:
 	void HitCheck(const std::vector<Enemy*>&, std::vector<Entity*>& lvlEntities, Rectf marioHitbox);
 	void EmptyMouth();
 	int GetMarioTimer() const;
+	int GetEggAmount() const;
 	bool GetIsMarioOn() const;
 	bool GetIsJumping() const;
 	bool GetIsHovering() const;

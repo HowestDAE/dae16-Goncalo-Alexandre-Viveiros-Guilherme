@@ -166,8 +166,10 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClCompile Include="PogoShyGuy.cpp" />
     <ClCompile Include="Boulder.cpp" />
     <ClCompile Include="ShyGuy.cpp" />
+    <ClCompile Include="Snatchers.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Star.cpp" />
+    <ClCompile Include="StateManager.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="WalkingTulip.cpp" />
     <ClCompile Include="WingedClouds.cpp" />
@@ -193,8 +195,10 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="resource.h" />
     <ClInclude Include="Boulder.h" />
     <ClInclude Include="ShyGuy.h" />
+    <ClInclude Include="Snatchers.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Star.h" />
+    <ClInclude Include="StateManager.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="WalkingTulip.h" />
     <ClInclude Include="WingedClouds.h" />

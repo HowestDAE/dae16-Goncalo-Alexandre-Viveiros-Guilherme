@@ -15,7 +15,7 @@ class Texture;
 class Level
 {
 public:
-	Level(const std::string& imagePathLvlTxt, const std::string& backgroundTxt1, const std::string& backgroundTxt3,float levelStart,Point2f levelEnd, int levelNumber);
+	Level(const std::string& imagePathLvlTxt, const std::string& backgroundTxt1, const std::string& backgroundTxt2,const std::string& backgroundTxt3,float levelStart,Point2f levelEnd, int levelNumber);
 	~Level();
 	Level(const Level& rhs) = delete;
 	Level& operator=(const Level& rhs) = delete;
@@ -27,7 +27,7 @@ public:
 	void DrawBackground() const;
 	void Update(float elapsedSec, bool isPlayerPauseTrue, Yoshi*& yoshiPlyr, const std::vector<Enemy*>& enemies, SoundManager*& soundManager, Camera*& plyrCamera);
 	void Sound(SoundManager* &soundManager);
-	void CoinManager(int coinRowSize,int coinColumnSize,int numberOfRedCoin,int spacing, Point2f position);
+	void CoinManager(int coinRowSize,int coinColumnSize,int numberOfRedCoin, int spacingX, int spacingY, Point2f position);
 	static void WarpPipesUpdate(bool isDownPipe, Yoshi* &yoshiPlyr, Point2f pipePosition, int pipeWidth, int pipeHeight, Point2f pipeWarpDestination, Camera* &plyrCamera);
 	void LevelEndUpdate(Point2f yoshiPos);
 	float GetLevelStart() const;

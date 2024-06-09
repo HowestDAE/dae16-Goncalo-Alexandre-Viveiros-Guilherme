@@ -3,9 +3,11 @@
 
 #include "Entity.h"
 #include "FlyingShyGuy.h"
+#include "Mario.h"
 #include "PiranhaPlant.h"
 #include "PogoShyGuy.h"
 #include "ShyGuy.h"
+#include "Snatchers.h"
 #include "WalkingTulip.h"
 #include "Yoshi.h"
 
@@ -44,7 +46,7 @@ void EnemyManager::Draw() const
 	
 }
 
-void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec,Yoshi*& yoshiplyr, std::vector<Entity*>& lvlEntities, SoundManager*& soundManager)
+void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec,Yoshi*& yoshiplyr, std::vector<Entity*>& lvlEntities, SoundManager*& soundManager,Mario*& babyMarioPointer)
 {
 	
 	//Updates Enemies
@@ -82,11 +84,26 @@ void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, f
 			}
 		}
 
-		else
+		if (const auto snatchers = dynamic_cast<::Snatchers*>(m_Enemies[idx]))
 		{
-			
+			if (yoshiplyr->GetMarioTimer() == 0)
+			{
+				snatchers->Snatch(babyMarioPointer);
+				snatchers->Update(platforms,elapsedSec);
+
+				if (snatchers->GetGrabbedMario() == true)
+				{
+					if (snatchers->GetIsOnScreen() == false)
+					{
+						//ADD losing
+					}
+				}
+			}
+			else
+			{
+				snatchers->SetPosition(Point2f(babyMarioPointer->GetPosition().x + 600, babyMarioPointer->GetPosition().y + 500));
+			}
 		}
-		
 	}
 
 	for (int idx{ 0 }; idx < m_Enemies.size(); idx++)
@@ -108,12 +125,20 @@ void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, f
 			m_Enemies[idx]->SetIsOnScreenFalse();
 		}
 	}
+
+	//Spawn Points
+	if (m_LevelNumber == 1)
+	{
+		SpawnZone(yoshiplyr->GetEggAmount(), yoshiplyr->GetPosition(), elapsedSec, Point2f(4284, 285));
+	}
 	
 }
 
 
 void EnemyManager::SpawnEnemies(int levelNumber)
 {
+	m_LevelNumber = levelNumber;
+	m_Enemies.push_back(new Snatchers (Point2f(0, 2000)));
 	if (levelNumber == 1)
 	{
 		m_Enemies.push_back(new ShyGuy(Point2f(912, 255),100));
@@ -153,6 +178,35 @@ void EnemyManager::SpawnEnemies(int levelNumber)
 	}
 
 
+}
+
+void EnemyManager::SpawnZone(int yoshiEggAmount, Point2f yoshiPos, float elapsedSec, Point2f spawnZoneLocation)
+{
+	if (yoshiPos.x + 250 > spawnZoneLocation.x && yoshiPos.x - 250 < spawnZoneLocation.x )
+	{
+		if (yoshiPos.y + 100 > spawnZoneLocation.y && yoshiPos.y - 100 < spawnZoneLocation.y)
+		{
+			if (yoshiEggAmount < 6)
+			{
+				m_SpawnTimer += elapsedSec;
+
+				if (m_SpawnTimer > 5)
+				{
+					m_Enemies.push_back(new ShyGuy(spawnZoneLocation, 100));
+					m_SpawnTimer = 0;
+				}
+			}
+		}
+		else
+		{
+			m_SpawnTimer = 0;
+		}
+	}
+
+	else
+	{
+		m_SpawnTimer = 0;
+	}
 }
 
 std::vector<Enemy*>& EnemyManager::GetEnemyVector()

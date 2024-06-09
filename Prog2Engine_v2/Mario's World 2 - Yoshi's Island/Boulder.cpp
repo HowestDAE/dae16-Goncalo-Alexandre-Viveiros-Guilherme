@@ -14,9 +14,15 @@ void Boulder::Update(const std::vector<std::vector<Point2f>>& platforms, float e
 
 	if (m_LastYPosition + 1 < m_Position.y || m_LastYPosition - 1  > m_Position.y)
 	{
-		m_VelocityX = 200;
+		m_VelocityX += 20 ;
 
 		m_LastYPosition = m_Position.y;
+
+	}
+
+	if (m_VelocityX != 0)
+	{
+		m_VelocityX *= 1.01;
 	}
 }
 

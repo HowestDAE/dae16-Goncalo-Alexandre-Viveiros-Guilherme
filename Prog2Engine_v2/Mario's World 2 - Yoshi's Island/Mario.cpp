@@ -118,16 +118,22 @@ void Mario::Update(const std::vector< std::vector<Point2f>>& platforms, const fl
 	m_Position.x += m_VelocityX * elapsedSec;
 
 	Animate(elapsedSec);
+
 }
 
 void Mario::Animate(float elapsedSec)
 {
-	m_YTxtPos = 203;
-	m_XTxtPos = 0;
-	m_YTxtPos2 = 152;
-	m_XTxtPos2 = 16;
-	m_TxtWidth2 = 14;
-	m_TxtHeight2 = 9;
+
+	if (m_Yoshi->GetIsMarioOn() == true)
+	{
+		m_YTxtPos = 203;
+		m_XTxtPos = 0;
+		m_YTxtPos2 = 152;
+		m_XTxtPos2 = 16;
+		m_TxtWidth2 = 14;
+		m_TxtHeight2 = 9;
+	}
+	
 
 
 

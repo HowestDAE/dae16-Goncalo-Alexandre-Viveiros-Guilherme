@@ -23,7 +23,8 @@ Game::~Game( )
 
 void Game::Initialize( )
 {
-	m_Level01 = new Level ("1-1 Make Eggs Throw Eggs no coins.png","ChocolateMountainsWIP.png","Gradient_BG.png",0,Point2f(7300,633),1 );
+	m_Level01 = new Level ("1-1 Make Eggs Throw Eggs no coins.png","ChocolateMountainsWIP.png","WaterFallCave.png",
+		"Gradient_BG.png",0,Point2f(7300,633),1 );
 	m_YoshiPlyr = new Yoshi(Point2f(130,280));
 	m_Mario = new Mario(m_YoshiPlyr);
 	m_GameCam = new Camera(Point2f(0, 0), m_YoshiPlyr->GetPosition());
@@ -81,7 +82,7 @@ void Game::Update(const float elapsedSec )
 			m_Mario->Update(m_Level01->GetLevelVertices(), elapsedSec);
 
 			//Enemy Functions
-			m_EnemyManager->Update(m_Level01->GetLevelVertices(), elapsedSec,m_YoshiPlyr, m_Level01->GetLevelEntities(),m_SoundManager);
+			m_EnemyManager->Update(m_Level01->GetLevelVertices(), elapsedSec,m_YoshiPlyr, m_Level01->GetLevelEntities(),m_SoundManager,m_Mario);
 		}
 		
 	

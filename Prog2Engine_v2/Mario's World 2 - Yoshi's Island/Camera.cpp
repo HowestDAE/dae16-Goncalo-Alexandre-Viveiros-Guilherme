@@ -15,15 +15,40 @@ Camera::Camera(const Point2f camPos, Point2f yoshiStartPos):
 
 void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 {
+	if (m_CamPosition.y > 0)
+	{
 
+		if (m_CamPosition.x < -2025)
+		{
+			m_CamPosition.x = -2024;
+		}
+
+		if (m_CamPosition.x > -650)
+		{
+			m_CamPosition.x = -650;
+		}
+
+
+		if (m_CamPosition.y > 850 )
+		{
+			m_CamPosition.y = 850;
+		}
+		if (m_CamPosition.y < 850 && m_CamPosition.y > 0)
+		{
+			m_CamPosition.y = 850;
+		}
+
+	}
+	
 	if (m_CamPosition.x <= levelStart || m_CamPosition.x <= -levelEnd)
 	{
+
 		if (yoshiPlyr->GetIsFacingRight() == true)
 		{
 			if (m_CamPosition.x >= -yoshiPlyr->GetPosition().x + 180)
 			{
 				m_CamPosition.x -= 0.05f * yoshiPlyr->GetVelocity().x / 5;
-				if (yoshiPlyr->GetVelocity().x ==  0)
+				if (yoshiPlyr->GetVelocity().x == 0)
 				{
 					m_CamPosition.x -= 0.5f;
 				}
@@ -53,6 +78,7 @@ void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 			m_CamPosition.x = -7000;
 		}
 	}
+	
 
 
 	

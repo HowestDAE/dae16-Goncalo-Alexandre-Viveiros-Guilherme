@@ -1465,7 +1465,7 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 
 							if (m_Position.x < boulder->GetPosition().x || m_Position.x > boulder->GetPosition().x)
 							{
-								m_VelocityX /= 3;
+								m_VelocityX /= 2;
 								m_IsPushing = true;
 								m_PushTimer = 0;
 								boulder->AddVelocity(m_VelocityX / 5, 0);
@@ -1546,6 +1546,11 @@ void Yoshi::EmptyMouth()
 int Yoshi::GetMarioTimer() const
 {
 	return m_MarioTimer;
+}
+
+int Yoshi::GetEggAmount() const
+{
+	return m_Eggs.size();
 }
 
 bool Yoshi::GetIsMarioOn() const
