@@ -116,7 +116,8 @@ Additional screenshots and demos work well in this space.
 * Down Arrow when mouth is full to make an egg
 * Z jump
 * X Tongue to eat
-* C Deletes Egg 
+* C Throws Egg
+* V to stop aiming the Egg
 * R Creates a shy guy from 100, 100
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -144,17 +145,17 @@ Enemy,Yoshi,Mario,Eggs. Enemy also has a child which is the Shy Guy.
 - [x] Accept / set up github project
 - [x] week 01 topics applied
     - [x] const keyword applied proactively (variables, functions,..)
-    - [] static keyword applied proactively (class variables, static functions,..)
+    - [x] static keyword applied proactively (class variables, static functions,..)
     - [x] object composition (optional)
 - [x] week 02 topics applied
 - [x] week 03 topics applied
 - [X] week 04 topics applied
 - [x] week 05 topics applied
-- [X ] week 06 topics applied
-- [X ] week 07 topics applied
-- [ X] week 08 topics applied
-- [ X] week 09 topics applied (optional)
-- [ X] week 10 topics applied (optional)
+- [X] week 06 topics applied
+- [X] week 07 topics applied
+- [X] week 08 topics applied
+- [] week 09 topics applied (optional)
+- [] week 10 topics applied (optional)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
