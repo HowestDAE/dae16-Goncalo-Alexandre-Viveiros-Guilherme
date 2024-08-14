@@ -64,11 +64,11 @@ private:
 	float m_JumpTimer{0};
 	float m_PushTimer{ 0 };
 	float m_ControlsTimer{ 0 };
-	float m_LvlEntityTop{ 0 };
 	Circlef m_Tongue;
 	bool m_IsMouthFull{false};
 	std::vector <Egg*> m_Eggs;
 	Point2f m_FeetPos;
+	bool m_CanYoshiJump{ true };
 	bool m_IsJumpDone{ false };
 	bool m_IsHoldingEgg{ false };
 	bool m_IsCalculatingAngle{ true };

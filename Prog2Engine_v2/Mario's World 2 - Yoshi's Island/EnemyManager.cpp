@@ -58,11 +58,12 @@ void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, f
 			{
 				if (m_Enemies[idx]->GetIsOnScreen() == true)
 				{
-				if (const auto piranhaPlant = dynamic_cast<::PiranhaPlant*>(m_Enemies[idx]))
-				{
-					piranhaPlant->Update(elapsedSec,yoshiplyr->GetPosition(),soundManager);
-				}
-				
+					if (const auto piranhaPlant = dynamic_cast<::PiranhaPlant*>(m_Enemies[idx]))
+					{
+						piranhaPlant->CalculateAngle(yoshiplyr->GetPosition());
+						piranhaPlant->Sound(soundManager);
+					}
+
 					m_Enemies[idx]->Update(platforms, elapsedSec);
 					m_Enemies[idx]->Animate(elapsedSec);
 				}

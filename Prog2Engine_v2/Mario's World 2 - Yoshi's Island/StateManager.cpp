@@ -244,26 +244,85 @@ void StateManager::Update(int coins, int redCoins, int flowers, int stars,bool h
 	m_Flowers = flowers;
 	m_Stars = stars;
 
-	if (m_CurrentState != States::DeathMenu)
+	if (m_CurrentState == States::Gameplay)
 	{
 		if (hasYoshiLost == true)
 		{
+			m_ResetGameplay = true;
 			m_Lives -= 1;
 			m_CurrentState = States::DeathMenu;
 		}
 	}
-	
-	
+
 }
 
-void StateManager::SetPointerPosition(int pointerPosX)
+void StateManager::Keys(const SDL_KeyboardEvent& e)
 {
-	m_PointerPosX = pointerPosX;
+	switch (e.keysym.sym)
+	{
+	case SDLK_z:
+		if (m_CurrentState == States::LevelSelector)
+		{
+			m_CurrentState = States::Gameplay;
+		}
+
+		if (m_CurrentState == States::ResultsMenu)
+		{
+			m_CurrentState = States::LevelSelector;
+			m_ResetGameplay = true;
+		}
+
+		if (m_CurrentState == States::DeathMenu)
+		{
+			if (m_PointerPosX == 200)
+			{
+				m_CurrentState = States::Gameplay;
+			}
+
+			if (m_PointerPosX == 310)
+			{
+				m_CurrentState = States::LevelSelector;
+			}
+
+		}
+		break;
+	case SDLK_ESCAPE:
+		if (m_CurrentState == States::Gameplay)
+		{
+			m_CurrentState = States::Pause;
+		}
+		else if (m_CurrentState == States::Pause)
+		{
+			m_CurrentState = States::Gameplay;
+		}
+		break;
+
+	case SDLK_LEFT:
+		if (m_CurrentState == States::DeathMenu)
+		{
+			m_PointerPosX = 200;
+		}
+		break;
+
+	case SDLK_RIGHT:
+		if (m_CurrentState == States::DeathMenu)
+		{
+			m_PointerPosX = 310;
+		}
+		break;
+
+	}
 }
 
-int StateManager::GetPointerPositionX() const
+bool StateManager::GetResetGameplay()
 {
-	return m_PointerPosX;
+	return m_ResetGameplay;
 }
+
+void StateManager::TurnOffResetGameplay()
+{
+	m_ResetGameplay = false;
+}
+
 
 

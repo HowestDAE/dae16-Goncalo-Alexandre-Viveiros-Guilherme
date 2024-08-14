@@ -21,7 +21,7 @@ void Block::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 
 		if(m_HitTimer > 0.08)
 		{
-			m_VelocityY = -975;
+			m_VelocityY = -1000;
 
 			if (m_HitTimer > 0.16)
 			{
@@ -29,6 +29,7 @@ void Block::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 
 				if (m_HitTimer > 0.6)
 				{
+					m_Position = m_ResetPosition;
 					m_HitTimer = 0;
 					m_IsHit = false;
 				}
@@ -43,8 +44,7 @@ void Block::BlockHit(std::vector <Egg*>& eggs)
 	if (m_BlockType == BlockType::EggBlock)
 	{
 		eggs.push_back(new Egg(m_Position));
-		eggs.back()->DropEgg();
-		eggs.back()->AddVelocity(-70, 200);
+		eggs.back()->AddVelocity(-210, 400);
 
 		m_IsHit = true;
 	}

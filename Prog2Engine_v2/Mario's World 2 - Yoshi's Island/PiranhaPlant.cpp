@@ -74,23 +74,35 @@ void PiranhaPlant::Draw() const
 		m_EntityTxt->Draw(Rectf(-m_TxtWidth, 0, float(m_TxtWidth * 2), float(m_TxtHeight * 2)),
 			Rectf(m_XTxtPos, m_YTxtPos, m_TxtWidth, m_TxtHeight));
 
-
-
 	}
 	glPopMatrix();
+
 }
 
-void PiranhaPlant::Update(float elapsedSec,Point2f yoshiPos, SoundManager*& soundManager)
+void PiranhaPlant::Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec)
 {
+
+	Entity::Update(platforms,elapsedSec);
+
 	if (m_IsFlipped == false)
 	{
 		m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
 	}
 	else
 	{
-		
-	}m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), -float(m_TxtHeight * 2));
+		m_Hitbox = Rectf(m_Position.x, m_Position.y - (m_TxtHeight2 + m_TxtHeight) , float(m_TxtWidth * 2), float(m_TxtHeight * 2));
+	}
 
+	m_SFXTimer += elapsedSec;
+
+	//if (m_IsFlipped == true)
+	//{
+	//	m_ScaleY = -1;
+	//}
+}
+
+void PiranhaPlant::CalculateAngle(Point2f yoshiPos)
+{
 	if (yoshiPos.y >= m_Position.y)
 	{
 		Vector2f toPlayer = yoshiPos - m_Position;
@@ -129,12 +141,33 @@ void PiranhaPlant::Update(float elapsedSec,Point2f yoshiPos, SoundManager*& soun
 				m_ScaleX = 1;
 			}
 		}
+
+		else
+		{
+			
+			m_AngZ = 1;
+
+			if (yoshiPos.x > m_Position.x)
+			{
+				m_AngleDeg = 60;
+			}
+			else
+			{
+				m_AngleDeg = -60;
+			}
+		}
 	}
+}
 
+void PiranhaPlant::Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
+{
+}
 
+void PiranhaPlant::Sound(SoundManager*& soundManager)
+{
 	if (m_IsSFXReady == true)
 	{
-		Sound(soundManager);
+		soundManager->PlaySFX(SoundManager::EnemySFX::PiranhaPlantSFX);
 		m_IsSFXReady = false;
 	}
 
@@ -144,21 +177,6 @@ void PiranhaPlant::Update(float elapsedSec,Point2f yoshiPos, SoundManager*& soun
 		m_SFXTimer = 0;
 	}
 
-	m_SFXTimer += elapsedSec;
-
-	//if (m_IsFlipped == true)
-	//{
-	//	m_ScaleY = -1;
-	//}
-}
-
-void PiranhaPlant::Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
-{
-}
-
-void PiranhaPlant::Sound(SoundManager*& soundManager)
-{
-	soundManager->PlaySFX(SoundManager::EnemySFX::PiranhaPlantSFX);
 }
 
 void PiranhaPlant::Animate(float elapsedSec)

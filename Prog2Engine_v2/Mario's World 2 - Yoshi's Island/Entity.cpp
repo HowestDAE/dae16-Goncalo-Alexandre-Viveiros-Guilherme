@@ -9,7 +9,7 @@ Entity::Entity(const std::string& texturePath, const float txtHeight, const floa
 	m_TxtWidth{ txtWidth },
 	m_ResetPosition(position)
 {
-
+	
 }
 
 Entity::~Entity()
@@ -60,6 +60,8 @@ void Entity::Draw() const
 	//	Point2f{ m_Hitbox.left,m_Hitbox.bottom - 1 });
 	//utils::DrawLine(Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom + m_TxtHeight },
 	//	Point2f{ m_Hitbox.left + m_TxtWidth * 2,m_Hitbox.bottom - 1 });
+
+	
 }
 
 void Entity::Update(const std::vector< std::vector<Point2f>>& platforms, const float elapsedSec)
@@ -177,13 +179,15 @@ void Entity::Collision(const std::vector<std::vector<Point2f>>& platforms, float
 	//simulates ground friction 
 	if (m_IsGrounded == true)
 	{
-		m_VelocityX -= (m_VelocityX * 5) * elapsedSec;
+		/*m_VelocityX -= m_VelocityX * 5 * elapsedSec;*/
+		m_VelocityX *= 0.995;
 	}
 
 	//simulates air friction
 	else
 	{
-		m_VelocityX -= (m_VelocityX / 8) * elapsedSec;
+		/*m_VelocityX -= m_VelocityX / 8 * elapsedSec;*/
+		m_VelocityX *= 0.99;
 	}
 
 	//Stops movement once it falls below a certain range

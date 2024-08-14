@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Yoshi.h"
 #include <iostream>
-
 #include "Block.h"
 #include "Enemy.h"
 #include "Texture.h"
@@ -114,60 +113,82 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 
 #pragma region Jump
 
-	if (m_IsYoshiJumping == true)
+	if (m_CanYoshiJump == true)
+	{
+		if (m_IsYoshiJumping == true)
+		{
+			if (m_IsGrounded == true)
+			{
+				m_PlayJumpSFX = true;
+
+				m_IsJumpDone = false;
+
+				m_Position.y += 5;
+
+				m_VelocityY = 350.f;
+
+				m_IsGrounded = false;
+
+				m_CurrentState = AnimState::Jumping;
+			}
+			else
+			{
+				if (m_IsJumpDone == FALSE)
+				{
+					m_JumpTimer += elapsedSec;
+					m_CurrentState = AnimState::Jumping;
+					if (m_JumpTimer > 0.25)
+					{
+						m_VelocityY = 0;
+						m_IsJumpDone = true;
+					}
+				}
+				
+			}
+			if (m_VelocityY < 0)
+			{
+				m_IsJumpDone = true;
+			}
+
+			if (m_IsJumpDone == true)
+			{
+				m_JumpTimer = 0;
+
+				m_FlightTime += elapsedSec;
+
+				if (m_FlightTime < 0.8)
+				{
+					m_CurrentState = AnimState::Hovering;
+					m_VelocityY = 2;
+
+					if (m_FlightTime > 0.75)
+					{
+						m_VelocityY = 920.f;
+					}
+				}
+
+				else
+				{
+					m_CanYoshiJump = false;
+				}
+
+
+			}
+
+		}
+	}
+
+	if (m_FlightTime > 0)
 	{
 		if (m_IsGrounded == true)
-		{
-			m_PlayJumpSFX = true;
-
-			m_IsJumpDone = false;
-
+		{ 
 			m_FlightTime = 0;
 
 			m_JumpTimer = 0;
 
-			m_Position.y += 5;
-
-			m_VelocityY += 15.f;
-
+			m_CanYoshiJump = true;
 		}
-		else
-		{
-			m_JumpTimer += elapsedSec;
-			if (m_JumpTimer < 0.15)
-			{
-				m_VelocityY += 15.f;
-			}
-		}
-		if (m_VelocityY < 0)
-		{
-			m_IsJumpDone = true;
-		}
-
-		if (m_IsJumpDone == true)
-		{
-
-			m_FlightTime += elapsedSec;
-
-			if (m_FlightTime < 0.8)
-			{
-				m_CurrentState = AnimState::Hovering;
-				m_VelocityY *= -1.f;
-
-				if (m_FlightTime > 0.75)
-				{
-					m_VelocityY *= -1.f;
-					m_VelocityY += 120.f;
-				}
-			}
-
-
-		}
-
 	}
-
-
-	
 
 #pragma endregion
 
@@ -294,13 +315,15 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 	//simulates ground friction 
 	if (m_IsGrounded == true)
 	{
-		m_VelocityX -= (m_VelocityX * 5) * elapsedSec;
+		/*m_VelocityX -= (m_VelocityX * 5) * elapsedSec;*/
+		m_VelocityX *= 0.97;
 	}
 
 	//simulates air friction
 	else
 	{
-		m_VelocityX -= (m_VelocityX / 8) * elapsedSec;
+		/*m_VelocityX -= (m_VelocityX / 8) * elapsedSec;*/
+		m_VelocityX *= 0.99;
 	}
 
 	//Stops movement once it falls below a certain range
@@ -409,6 +432,14 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 	for (int idx{ 0 }; idx < platforms.size(); idx++)
 	{
 
+		if (m_IsStandingOnEntity == true)
+		{
+			m_VelocityY = 0;
+			m_IsGrounded = true;
+			m_TerminalVelocityTimer = 0;
+			break;
+		}
+
 		//Checks to see if its a brown platform and if so it changes behavior accordingly
 		if (platforms[idx].size() == 2)
 		{
@@ -457,7 +488,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 			//checks collision from the left side of Yoshis feet
 
 			if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x - 13,m_FeetPos.y + 32 },
-				Point2f{ m_FeetPos.x - 13,m_FeetPos.y }, hit_info))
+				Point2f{ m_FeetPos.x - 13,m_FeetPos.y -2 }, hit_info))
 			{
 				m_VelocityY = 0;
 				m_Position.y = hit_info.intersectPoint.y;
@@ -468,7 +499,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 
 			//checks collision from the right side of Yoshis feet
 			if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 13,m_FeetPos.y + 32 },
-				Point2f{ m_FeetPos.x + 13,m_FeetPos.y }, hit_info))
+				Point2f{ m_FeetPos.x + 13,m_FeetPos.y -2 }, hit_info))
 			{
 				m_VelocityY = 0;
 				m_Position.y = hit_info.intersectPoint.y;
@@ -479,7 +510,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 
 			//checks collision from the middle of Yoshis feet
 			if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x ,m_FeetPos.y + 32 },
-				Point2f{ m_FeetPos.x ,m_FeetPos.y }, hit_info))
+				Point2f{ m_FeetPos.x ,m_FeetPos.y - 2 }, hit_info))
 			{
 				m_VelocityY = 0;
 				m_Position.y = hit_info.intersectPoint.y;
@@ -490,42 +521,56 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 
 			//checks head collision for yoshi
 			if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x ,m_FeetPos.y + 32 },
-				Point2f{ m_FeetPos.x ,m_FeetPos.y + 64 }, hit_info))
+				Point2f{ m_FeetPos.x ,m_FeetPos.y + 66 }, hit_info))
 			{
 				m_VelocityY = 0;
 				m_Position.y = hit_info.intersectPoint.y - m_TxtWidth * 2;
 				break;
 			}
+
 			//Gravity
-			if (idx == 0) //to prevent gravity from getting looped 12 times
+			if (m_CanYoshiJump == true)
+			{
+				if (m_IsYoshiJumping == true)
+				{
+					
+				}
+				else
+				{
+					m_IsGrounded = false;
+
+					if (m_VelocityY < -300.f)
+					{
+						m_VelocityY += 30.f;
+					}
+
+					else
+					{
+						m_VelocityY -= 30.f * m_TerminalVelocityTimer;
+					}
+
+					m_CurrentState = AnimState::Jumping; 
+				}
+			}
+			else
 			{
 				m_IsGrounded = false;
 
-				if (m_VelocityY > -480.f)
+				if (m_VelocityY < -300.f)
 				{
-					m_VelocityY -= 48.f * m_TerminalVelocityTimer;
+					m_VelocityY += 30.f;
 				}
 
-				if (m_VelocityY < -480.f)
+				else
 				{
-					m_VelocityY += 48.f;
+					m_VelocityY -= 30.f * m_TerminalVelocityTimer;
 				}
 
+				m_CurrentState = AnimState::Jumping;
 			}
+			
 
 		}
-
-
-		if (m_IsStandingOnEntity == true)
-		{
-			m_VelocityY = 0;
-			m_Position.y = m_LvlEntityTop;
-			m_IsGrounded = true;
-			m_TerminalVelocityTimer = 0;
-
-			break;
-		}
-
 
 	}
 
@@ -605,8 +650,6 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 	for (int idx{ 0 }; idx < movingPlatforms.size(); idx++)
 	{
 		//floor collision
-
-
 		if (m_VelocityY <= 0)
 		{
 
@@ -664,6 +707,10 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 		}
 
 	}
+
+
+
+
 
 #pragma endregion
 
@@ -1206,7 +1253,6 @@ void Yoshi::KeysDown()
 		if (pKeyStates[SDL_SCANCODE_Z])
 		{
 			m_IsYoshiJumping = true;
-			m_CurrentState = AnimState::Jumping;
 
 		}
 		if (pKeyStates[SDL_SCANCODE_X])
@@ -1326,7 +1372,7 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 									if (m_Hitbox.bottom > enemies[idx]->GetHitBox().bottom + enemies[idx]->GetHitBox().height - 3)
 									{
 										enemies[idx]->EnemyDeath();
-										m_VelocityY *= -2.f;
+										m_VelocityY = 2000;
 
 										break;
 									}
@@ -1364,6 +1410,14 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 							if (utils::IsOverlapping(m_Hitbox, enemies[idx]->GetHitBox()) == true)
 							{
 								m_IsHit = true;
+
+
+								//TODO remove this after fixing egg dropping fluing off
+								if (!m_Eggs.empty())
+								{
+									m_Eggs.back()->DropEgg();
+								}
+								
 
 								if (m_IsFacingRight == true)
 								{
@@ -1427,9 +1481,7 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 	{
 		for (int idx{ 0 }; idx < lvlEntities.size(); idx++)
 		{
-			if (lvlEntities[idx] != nullptr)
-			{
-				if (lvlEntities[idx]->GetIsActive() == true)
+			if (lvlEntities[idx]->GetIsActive() == true)
 				{
 					if (const auto wingedClouds = dynamic_cast<::WingedClouds*>(lvlEntities[idx]))
 					{
@@ -1487,19 +1539,9 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 
 						if (const auto boulder = dynamic_cast<::Boulder*>(lvlEntities[idx]))
 						{
-							if (m_Position.y > boulder->GetPosition().y + 30)
+							if (m_Position.y > boulder->GetPosition().y + boulder->GetHitBox().height - 6)
 							{
 								m_IsStandingOnEntity = true;
-								m_LvlEntityTop = boulder->GetHitBox().bottom + boulder->GetHitBox().height + 1;
-								break;
-							}
-
-							if (m_Position.x < boulder->GetPosition().x || m_Position.x > boulder->GetPosition().x)
-							{
-								m_VelocityX /= 2;
-								m_IsPushing = true;
-								m_PushTimer = 0;
-								boulder->AddVelocity(m_VelocityX / 5, 0);
 								break;
 							}
 						}
@@ -1511,7 +1553,6 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 								if (m_Position.y > blocks->GetPosition().y + 30)
 								{
 									m_IsStandingOnEntity = true;
-									m_LvlEntityTop = blocks->GetHitBox().bottom + blocks->GetHitBox().height;
 									break;
 								}
 
@@ -1545,10 +1586,42 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 
 					}
 
+					if (utils::IsOverlapping(m_Hitbox, lvlEntities[idx]->GetHitBox()))
+					{
+						if (const auto boulder = dynamic_cast<::Boulder*>(lvlEntities[idx]))
+						{
+							if (m_Position.x < boulder->GetPosition().x || m_Position.x > boulder->GetPosition().x)
+							{
+								m_VelocityX /= 2;
+								m_IsPushing = true;
+								boulder->AddVelocity(m_VelocityX/12,0);
+
+							
+									if (m_Position.x < boulder->GetPosition().x)
+									{
+										if (m_VelocityX > 0)
+										{
+											m_Position.x = boulder->GetPosition().x - m_TxtWidth * 2 + 1;
+											m_PushTimer = 0;
+										}
+									}
+
+									if (m_Position.x > boulder->GetPosition().x)
+									{
+										if (m_VelocityX < 0)
+										{
+											m_Position.x = boulder->GetPosition().x + boulder->GetHitBox().width - 1;
+											m_PushTimer = 0;
+										}
+										
+									}
+								
+								break;
+							}
+						}
+					}
 					m_IsStandingOnEntity = false;
 				}
-
-			}
 
 		}
 
@@ -1558,10 +1631,14 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 	{
 		if (m_Eggs[idx]->GetIsFallen())
 		{
-			if (utils::IsOverlapping(m_Hitbox,m_Eggs[idx]->GetHitbox()))
+			if (m_IsHit == false)
 			{
-				m_Eggs[idx]->PickUpEgg();
+				if (utils::IsOverlapping(m_Hitbox, m_Eggs[idx]->GetHitbox()))
+				{
+					m_Eggs[idx]->PickUpEgg();
+				}
 			}
+			
 		}
 	}
 	
@@ -1688,8 +1765,11 @@ void Yoshi::Reset()
 	m_JumpTimer           = 0 ;
 	m_PushTimer           = 0 ;
 	m_ControlsTimer       = 0 ;
-	m_LvlEntityTop        = 0 ;
 	m_IsMouthFull         = false;
+	for (int idx = 0; idx < m_Eggs.size(); idx++)
+	{
+		delete m_Eggs[idx];
+	}
 	m_Eggs.clear();
 	m_Tongue              = Circlef(m_Position, 8);
 	m_IsJumpDone          = false ;

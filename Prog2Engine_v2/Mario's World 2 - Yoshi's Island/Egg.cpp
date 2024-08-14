@@ -25,94 +25,97 @@ void Egg::Draw() const
 
 void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int currentEgg, const std::vector< std::vector<Point2f>>& platforms, const float elapsedSec)
 {
-	if (m_EggBounces >= 3)
+	if (m_IsActive == true)
 	{
-		m_IsActive = false;
-	}
-	if (m_IsThrown == false)
-	{
-		Collision(platforms,elapsedSec);
-
-		m_IsBeingHeld = false;
-
-		m_DistanceX = yoshiPos.x - m_Position.x;
-		m_DistanceY = yoshiPos.y - m_Position.y;
-
-		if (m_DistanceX < 0 && m_DistanceX > -100 || m_DistanceX > 0 && m_DistanceX < 100 )
+		if (m_EggBounces >= 3)
 		{
-			if (m_Position.x < yoshiPos.x + 20)
+			m_IsActive = false;
+		}
+		if (m_IsThrown == false)
+		{
+			if (m_IsFallen == false)
 			{
-				m_VelocityX = 60;
+				Collision(platforms, elapsedSec);
+
+				m_IsBeingHeld = false;
+
+				m_DistanceX = yoshiPos.x - m_Position.x;
+				m_DistanceY = yoshiPos.y - m_Position.y;
+
+				if (m_DistanceX < 0 && m_DistanceX > -100 || m_DistanceX > 0 && m_DistanceX < 100)
+				{
+					if (m_Position.x < yoshiPos.x + 20)
+					{
+						m_VelocityX = 60;
+					}
+
+					if (m_Position.x > yoshiPos.x + 20)
+					{
+						m_VelocityX = -60;
+					}
+				}
+
+				else
+				{
+					if (yoshiDirection == true)
+					{
+						m_DistanceX = yoshiPos.x + 20 - (m_TxtWidth * 3) * currentEgg - m_Position.x;
+
+						if (m_Position.x < yoshiPos.x + 20 - (m_TxtWidth * 3) * currentEgg)
+						{
+							m_VelocityX = 10 * m_DistanceX;
+						}
+					}
+
+					else
+					{
+						m_DistanceX = yoshiPos.x + 20 + (m_TxtWidth * 3) * currentEgg - m_Position.x;
+
+						if (m_Position.x > yoshiPos.x + 20 + (m_TxtWidth * 3) * currentEgg)
+						{
+							m_VelocityX = -10 * -m_DistanceX;
+						}
+					}
+
+				}
+
+				if (m_Position.y < yoshiPos.y - 30)
+				{
+					m_VelocityY = 30 * m_DistanceY;
+				}
 			}
 
-			if (m_Position.x > yoshiPos.x + 20)
+			
+		}
+
+		else
+		{
+			Collision(platforms, elapsedSec);
+		}
+		//Adds Gravity to position
+		m_Position.y += m_VelocityY * elapsedSec;
+		//Adds Entity's horizontal speed to his position
+		m_Position.x += m_VelocityX * elapsedSec;
+		//Update Hitbox
+		m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
+
+
+		if (m_IsFallen == true)
+		{
+			m_FallenTimer += elapsedSec;
+
+			if (m_FallenTimer >= 8)
 			{
-				m_VelocityX = -60;
+				FlipIsActive();
 			}
 		}
 
 		else
 		{
-			if (yoshiDirection == true)
-			{
-				m_DistanceX = yoshiPos.x + 20 - (m_TxtWidth * 3) * currentEgg - m_Position.x;
-
-				if (m_Position.x < yoshiPos.x + 20 - (m_TxtWidth * 3) * currentEgg)
-				{
-					m_VelocityX = 10 * m_DistanceX;
-				}
-			}
-
-			else
-			{
-				m_DistanceX = yoshiPos.x + 20 + (m_TxtWidth * 3) * currentEgg - m_Position.x;
-
-				if (m_Position.x > yoshiPos.x + 20 + (m_TxtWidth * 3) * currentEgg)
-				{
-					m_VelocityX = -10 * -m_DistanceX ;
-				}
-			}
-			
+			m_FallenTimer = 0;
 		}
-
-		if (m_Position.y < yoshiPos.y - 30)
-		{
-			m_VelocityY = 30 * m_DistanceY;
-		}
+	}
 	
-
-
-		/*if (m_Timer > 0.3)
-		{
-			
-			m_LastYoshiPosX = yoshiPos.x;
-			m_LastYoshiPosY = yoshiPos.y;
-
-			m_Timer = 0.26f;
-		}
-		if (yoshiDirection == true)
-		{
-			m_Position.x = (m_LastYoshiPosX - m_TxtWidth * 2.f) - (m_TxtWidth * 2.5f) * currentEgg;
-			m_Position.y = m_LastYoshiPosY;
-		}
-		else
-		{
-			m_Position.x = (m_LastYoshiPosX + m_TxtWidth * 5) + (m_TxtWidth * 2.5f) * currentEgg;
-			m_Position.y = m_LastYoshiPosY;
-		}*/
-	}
-
-	else
-	{
-		Collision(platforms, elapsedSec);
-	}
-	//Adds Gravity to position
-	m_Position.y += m_VelocityY * elapsedSec;
-	//Adds Entity's horizontal speed to his position
-	m_Position.x += m_VelocityX * elapsedSec;
-	//Update Hitbox
-	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
-
 }
 
 void Egg::Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)

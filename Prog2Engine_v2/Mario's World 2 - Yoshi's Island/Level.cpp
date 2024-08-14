@@ -145,7 +145,7 @@ void Level::DrawOthers() const
 
 	for (int idx = 0; idx < m_LvlEntities.size(); idx++)
 	{
-		if (m_LvlEntities[idx] != nullptr)
+		if (m_LvlEntities[idx]->GetIsActive() == true)
 		{
 			m_LvlEntities[idx]->Draw();
 		}
@@ -213,10 +213,20 @@ void Level::Update(float elapsedSec, Yoshi*& yoshiPlyr, const std::vector<Enemy*
 
 			if (yoshiPlyr->GetIsOnMovingPlatform() == true)
 			{
-				yoshiPlyr->SetPosition(m_Platforms[idx]->GetCenterPosition() + Vector2f(cos(m_Platforms[idx]->GetAngle()
-					+ ((M_PI / 2) * m_Platforms[idx]->GetWhichPlatformIsYoshiOn())), 
-					sin(m_Platforms[idx]->GetAngle() + ((M_PI / 2) * idx) + m_Platforms[idx]->GetPlatformHeight()) ) * m_Platforms[idx]->GetRadius());
-					break;
+
+				if (yoshiPlyr->GetPosition().x > m_Platforms[idx]->GetCenterPosition().x - m_Platforms[idx]->GetRadius() 
+					&& yoshiPlyr->GetPosition().x < m_Platforms[idx]->GetCenterPosition().x + m_Platforms[idx]->GetRadius())
+				{
+					if (yoshiPlyr->GetPosition().y > m_Platforms[idx]->GetCenterPosition().y - m_Platforms[idx]->GetRadius()
+						&& yoshiPlyr->GetPosition().y < m_Platforms[idx]->GetCenterPosition().y + m_Platforms[idx]->GetRadius())
+					{
+						yoshiPlyr->SetPosition(m_Platforms[idx]->GetCenterPosition() + Vector2f(cos(m_Platforms[idx]->GetAngle()
+							+ ((M_PI / 2) * m_Platforms[idx]->GetWhichPlatformIsYoshiOn())),
+							sin(m_Platforms[idx]->GetAngle() + ((M_PI / 2) * idx) + m_Platforms[idx]->GetPlatformHeight())) * m_Platforms[idx]->GetRadius());
+						break;
+					}
+				}
+				
 
 			}
 		}
@@ -379,7 +389,7 @@ void Level::Animate(float elapsedSec) const
 {
 	for (int idx = 0; idx < m_LvlEntities.size(); idx++)
 	{
-		if (m_LvlEntities[idx] != nullptr)
+		if (m_LvlEntities[idx]->GetIsActive() == true)
 		{
 			m_LvlEntities[idx]->Animate(elapsedSec);
 		}

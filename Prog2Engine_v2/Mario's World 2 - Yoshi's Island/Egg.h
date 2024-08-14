@@ -34,6 +34,7 @@ private:
 	bool m_IsThrown{ false };
 	std::vector<Point2f> Points{1};
 	float m_Angle = 0;
+	float m_FallenTimer{ 0 };
 	bool m_IsBeingHeld{false};
 };
 

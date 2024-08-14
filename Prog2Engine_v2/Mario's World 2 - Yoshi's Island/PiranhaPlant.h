@@ -11,7 +11,8 @@ public:
 	~PiranhaPlant() override = default;
 
 	void Draw()const override;
-	void Update(float elapsedSec,Point2f yoshiPos, SoundManager*& soundManager);
+	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec) override;
+	void CalculateAngle(Point2f yoshiPos);
 	void Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec) override;
 	void Sound(SoundManager*& soundManager);
 	void Animate(float elapsedSec) override;

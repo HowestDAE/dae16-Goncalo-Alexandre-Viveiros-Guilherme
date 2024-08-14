@@ -190,6 +190,10 @@ void Enemy::EnemySpit(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEnt
 				}
 			}
 
+		}
+
+		for (int idx{ 0 }; idx < enemies.size(); idx++)
+		{
 			if (enemies[idx]->GetIsActive() == true)
 			{
 				for (int idx{ 0 }; idx < enemies.size(); idx++)
@@ -200,13 +204,12 @@ void Enemy::EnemySpit(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEnt
 						{
 							enemies[idx]->EnemyDeath();
 							EnemyDeath();
+							break;
 						}
 					}
 
 				}
 			}
-			
-
 		}
 
 	}

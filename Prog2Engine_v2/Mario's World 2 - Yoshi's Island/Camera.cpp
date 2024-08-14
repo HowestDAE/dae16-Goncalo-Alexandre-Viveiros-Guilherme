@@ -49,7 +49,8 @@ void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 			if (m_CamPosition.x >= -yoshiPlyr->GetPosition().x + 180)
 			{
 				m_CamPosition.x -= 0.05f * yoshiPlyr->GetVelocity().x / 5;
-				if (yoshiPlyr->GetVelocity().x == 0)
+
+				if (yoshiPlyr->GetVelocity().x > -2.5)
 				{
 					m_CamPosition.x -= 0.5f;
 				}
@@ -61,7 +62,7 @@ void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 			if (m_CamPosition.x <= -yoshiPlyr->GetPosition().x + 450)
 			{
 				m_CamPosition.x -= 0.05f * yoshiPlyr->GetVelocity().x / 5;
-				if (yoshiPlyr->GetVelocity().x == 0)
+				if (yoshiPlyr->GetVelocity().x < 2.5)
 				{
 					m_CamPosition.x += 0.5f;
 				}

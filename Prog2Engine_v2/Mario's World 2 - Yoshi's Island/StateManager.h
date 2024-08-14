@@ -27,8 +27,10 @@ public:
 	void SetState(States state);
 	void Draw() const;
 	void Update(int coins,int redCoins,int flowers,int stars, bool hasYoshiLost);
-	void SetPointerPosition(int pointerPosX);
-	int GetPointerPositionX() const;
+	void Keys(const SDL_KeyboardEvent& e);
+	bool GetResetGameplay();
+	void TurnOffResetGameplay();
+
 private:
 	States m_CurrentState;
 	Texture* m_LevelSelTex1;
@@ -39,7 +41,7 @@ private:
 	Texture* m_ResultsScreen;
 	Texture* m_LettersForResults;
 
-
+	bool m_ResetGameplay{false};
 	int m_Lives{ 3 };
 	int m_Coins{ 0 };
 	int m_RedCoins{ 0 };

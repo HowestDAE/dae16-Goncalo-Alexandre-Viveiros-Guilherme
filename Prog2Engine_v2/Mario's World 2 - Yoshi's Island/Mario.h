@@ -6,7 +6,7 @@ class Yoshi;
 class Mario final : public Entity
 {
 public:
-	explicit Mario(Yoshi* &plyrYoshi);
+	explicit Mario(Yoshi* plyrYoshi);
 	~Mario() override = default;
 
 	void Draw() const override;

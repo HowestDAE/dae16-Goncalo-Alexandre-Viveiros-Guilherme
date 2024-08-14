@@ -14,6 +14,7 @@ public:
 	void Reset() override;
 
 private:
+	bool m_IsFalling{false};
 	float m_LastYPosition;
 
 };

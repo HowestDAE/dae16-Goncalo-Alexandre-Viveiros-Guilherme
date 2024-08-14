@@ -104,6 +104,12 @@ void Game::Update(const float elapsedSec )
 	}
 
 	m_StateManager->Update(m_YoshiPlyr->GetCoinsAmount(), m_YoshiPlyr->GetRedCoinsAmount(), m_YoshiPlyr->GetFlowersAmount(), m_YoshiPlyr->GetStarsAmount(),m_EnemyManager->GetHasYoshiLost());
+
+	if (m_StateManager->GetResetGameplay() == true)
+	{
+		Reset();
+		m_StateManager->TurnOffResetGameplay();
+	}
 }
 
 void Game::Draw( ) const
@@ -143,6 +149,8 @@ void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 {
 	m_YoshiPlyr->KeysUp(e);
 
+	m_StateManager->Keys(e);
+
 	switch (e.keysym.sym)
 	{
 	case SDLK_r:
@@ -154,59 +162,6 @@ void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 	case SDLK_n:
 		noclip = !noclip;
 		break;
-	case SDLK_z:
-		if (m_StateManager->GetState() == StateManager::States::LevelSelector)
-		{
-			m_StateManager->SetState(StateManager::States::Gameplay);
-		}
-
-		if (m_StateManager->GetState() == StateManager::States::ResultsMenu)
-		{
-			m_StateManager->SetState(StateManager::States::LevelSelector);
-		}
-
-		if (m_StateManager->GetState() == StateManager::States::DeathMenu)
-		{
-			if (m_StateManager->GetPointerPositionX() == 200)
-			{
-				m_StateManager->SetState(StateManager::States::Gameplay);
-				Reset();
-			}
-
-			if (m_StateManager->GetPointerPositionX() == 310)
-			{
-				m_StateManager->SetState(StateManager::States::LevelSelector);
-				Reset();
-				
-			}
-
-		}
-		break;
-	case SDLK_ESCAPE:
-		if (m_StateManager->GetState() == StateManager::States::Gameplay)
-		{
-			m_StateManager->SetState(StateManager::States::Pause);
-		}
-		else if (m_StateManager->GetState() == StateManager::States::Pause)
-		{
-			m_StateManager->SetState(StateManager::States::Gameplay);
-		}
-		break;
-
-	case SDLK_LEFT:
-		if (m_StateManager->GetState() == StateManager::States::DeathMenu)
-		{
-			m_StateManager->SetPointerPosition(200);
-		}
-		break;
-
-	case SDLK_RIGHT:
-		if (m_StateManager->GetState() == StateManager::States::DeathMenu)
-		{
-			m_StateManager->SetPointerPosition(310);
-		}
-		break;
-
 	}
 }
 

@@ -180,9 +180,9 @@ void Texture::CreateFromSurface( SDL_Surface* pSurface )
 	GLenum e = glGetError();
 	if (e != GL_NO_ERROR)
 	{
-		std::cerr << "Texture::CreateFromSurface, error binding textures, Error id = " << e << '\n';
-		std::cerr << "Can happen if a texture is created before performing the initialization code (e.g. a static Texture object).\n";
-		std::cerr << "There might be a white rectangle instead of the image.\n";
+		//std::cerr << "Texture::CreateFromSurface, error binding textures, Error id = " << e << '\n';
+		//std::cerr << "Can happen if a texture is created before performing the initialization code (e.g. a static Texture object).\n";
+		//std::cerr << "There might be a white rectangle instead of the image.\n";
 	}
 
 	// Specify the texture's data.  

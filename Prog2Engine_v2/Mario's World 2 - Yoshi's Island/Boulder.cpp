@@ -6,18 +6,43 @@
 Boulder::Boulder(Point2f startPos):Entity("Boulder.png",32,32,startPos),
 m_LastYPosition{startPos.y}
 {
+
 }
 
 void Boulder::Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
 {
 	Entity::Update(platforms, elapsedSec);
 
-	if (m_LastYPosition + 1 < m_Position.y || m_LastYPosition - 1  > m_Position.y)
+	if ( m_LastYPosition - 1  > m_Position.y)
 	{
-		m_VelocityX += 21 ;
-
+		m_IsFalling = true;
 		m_LastYPosition = m_Position.y;
+	}
 
+	else
+	{
+		m_IsFalling = false;
+	}
+
+	if (m_IsFalling == true)
+	{
+		if (m_VelocityX > 0)
+		{
+			if (m_VelocityX < 300)
+			{
+				m_VelocityX += 30;
+			}
+			
+		}
+
+		else
+		{
+			if (m_VelocityX > -300)
+			{
+				m_VelocityX -= 30;
+			}
+		}
+		
 	}
 
 }
