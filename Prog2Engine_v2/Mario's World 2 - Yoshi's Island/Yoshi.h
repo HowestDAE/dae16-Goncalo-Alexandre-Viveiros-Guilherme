@@ -42,6 +42,8 @@ public:
 	bool GetIsEnemySpatOut()const;
 	bool GetIsOnMovingPlatform() const;
 	bool GetIsHit() const;
+	bool GetIsCollisionOn() const;
+	void FlipIsCollisionOn();
 	void Reset() override;
 
 
@@ -52,6 +54,7 @@ private:
 	bool m_IsLookingUp{ false };
 	bool m_IsHit{ false };
 	bool m_IsEnemySpitOut{ false };
+	bool m_CollisionSwitchOn{true};
 	int m_Flowers{ 0 };
 	int m_Coins{ 0 };
 	int m_RedCoins{ 0 };

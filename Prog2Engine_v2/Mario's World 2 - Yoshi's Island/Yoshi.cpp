@@ -60,23 +60,30 @@ void Yoshi::Draw() const
 	//	Point2f{ m_FeetPos.x + 13,m_FeetPos.y });
 
 	utils::SetColor(Color4f{ 0,1,0,1 });
-	//if (m_IsFacingRight == true)
-	//{
-	//	utils::DrawLine(Point2f{ m_FeetPos.x,m_Position.y + 32 },
-	//		Point2f{ m_FeetPos.x + 15,m_Position.y + 32 });
-	///*	utils::DrawLine(Point2f{ m_FeetPos.x,m_Position.y + 32 },
-	//		Point2f{ m_FeetPos.x - 15,m_Position.y + 32 });*/
-	//	
-	//}
-	//else
-	//{
-	//	utils::DrawLine(Point2f{ m_FeetPos.x,m_Position.y + 32},
-	//		Point2f{ m_FeetPos.x + 15,m_Position.y + 32 });
-	//	utils::DrawLine(Point2f{ m_FeetPos.x,m_Position.y + 32 },
-	//		Point2f{ m_FeetPos.x - 15,m_Position.y + 32 });
-	//}
+	if (m_IsFacingRight == true)
+	{
+		utils::DrawLine(Point2f{ m_FeetPos.x,m_Position.y + 32 },
+			Point2f{ m_FeetPos.x + 13,m_Position.y });
+		utils::DrawLine(Point2f{ m_FeetPos.x,m_Position.y + 32 },
+			Point2f{ m_FeetPos.x - 13,m_Position.y  });
+		
+	}
+	else
+	{
+		utils::DrawLine(Point2f{ m_FeetPos.x,m_Position.y + 32},
+			Point2f{ m_FeetPos.x + 13,m_Position.y});
+		utils::DrawLine(Point2f{ m_FeetPos.x,m_Position.y + 32 },
+			Point2f{ m_FeetPos.x - 13,m_Position.y });
+	}
 
-	//utils::DrawPoint(Point2f(m_FeetPos.x,m_Position.y), 2);
+	utils::DrawPoint(Point2f(m_FeetPos.x,m_Position.y), 4);
+
+
+
+	utils::SetColor(Color4f(1, 0, 0, 1));
+	utils::DrawRect(m_Hitbox);
+	
+	utils::DrawLine(Point2f(m_Hitbox.left + m_Hitbox.width/2,m_Hitbox.bottom),Point2f(m_Hitbox.left + m_Hitbox.width / 2,m_Hitbox.bottom +m_Hitbox.height));
 #pragma endregion
 
 
@@ -108,7 +115,11 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 		m_FeetPos = Point2f{ m_Position.x + 39,m_Position.y - 3 };
 	}
 
-	Collision(platforms, movingPlatforms, elapsedSec);
+	if (m_CollisionSwitchOn == true)
+	{
+		Collision(platforms, movingPlatforms, elapsedSec);
+	}
+	
 
 
 #pragma region Jump
@@ -406,6 +417,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 	//Update Hitbox
 
 	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
+
 
 	Animate(elapsedSec);
 	Sound(soundManager);
@@ -1196,85 +1208,89 @@ void Yoshi::KeysDown()
 	const Uint8* pKeyStates = SDL_GetKeyboardState(nullptr);
 	if (m_HitPhases == 0 || m_HitPhases > 5)
 	{
-		if (pKeyStates[SDL_SCANCODE_LEFT])
+		if (m_IsHit == false)
 		{
-			if (m_IsHoldingEgg == true)
+			if (pKeyStates[SDL_SCANCODE_LEFT])
 			{
-				if (m_VelocityX > -140)
+				if (m_IsHoldingEgg == true)
 				{
-					m_VelocityX -= 11;
+					if (m_VelocityX > -140)
+					{
+						m_VelocityX -= 11;
+					}
 				}
-			}
-			else
-			{
-				if (m_VelocityX > -280)
-				{
-					m_VelocityX -= 11;
-				}
-			}
-			
-		}
-		if (pKeyStates[SDL_SCANCODE_RIGHT])
-		{
-			if (m_IsHoldingEgg == true)
-			{
-				if (m_VelocityX < 140)
-				{
-					m_VelocityX += 11;
-				}
-			}
-			else
-			{
-				if (m_VelocityX < 280)
-				{
-					m_VelocityX += 11;
-				}
-			}
-		}
-		if (pKeyStates[SDL_SCANCODE_UP])
-		{
-			m_IsLookingUp = true;
-		}
-		if (pKeyStates[SDL_SCANCODE_DOWN])
-		{
-			if (m_IsMouthFull == true)
-			{
-				if (m_Eggs.size() < 6)
-				{
-					m_Eggs.push_back(new Egg(m_Position));
-				}
-
-				m_IsMouthFull = false;
-				m_IsLayingEgg = true;
-			}
-
-			m_IsCrouching = true;
-		}
-		if (pKeyStates[SDL_SCANCODE_Z])
-		{
-			m_IsYoshiJumping = true;
-
-		}
-		if (pKeyStates[SDL_SCANCODE_X])
-		{
-			if (m_IsTongueReady == true)
-			{
-				m_PlayTongueSFX = true;
-
-				if (m_IsMouthFull == false)
-				{
-					m_IsTonguing = true;
-					m_IsTongueReady = false;
-				}
-
 				else
 				{
-					m_IsEnemySpitOut = true;
-					m_IsTongueReady = false;
+					if (m_VelocityX > -280)
+					{
+						m_VelocityX -= 11;
+					}
+				}
+
+			}
+			if (pKeyStates[SDL_SCANCODE_RIGHT])
+			{
+				if (m_IsHoldingEgg == true)
+				{
+					if (m_VelocityX < 140)
+					{
+						m_VelocityX += 11;
+					}
+				}
+				else
+				{
+					if (m_VelocityX < 280)
+					{
+						m_VelocityX += 11;
+					}
 				}
 			}
+			if (pKeyStates[SDL_SCANCODE_UP])
+			{
+				m_IsLookingUp = true;
+			}
+			if (pKeyStates[SDL_SCANCODE_DOWN])
+			{
+				if (m_IsMouthFull == true)
+				{
+					if (m_Eggs.size() < 6)
+					{
+						m_Eggs.push_back(new Egg(m_Position));
+					}
 
+					m_IsMouthFull = false;
+					m_IsLayingEgg = true;
+				}
+
+				m_IsCrouching = true;
+			}
+			if (pKeyStates[SDL_SCANCODE_Z])
+			{
+				m_IsYoshiJumping = true;
+
+			}
+			if (pKeyStates[SDL_SCANCODE_X])
+			{
+				if (m_IsTongueReady == true)
+				{
+					m_PlayTongueSFX = true;
+
+					if (m_IsMouthFull == false)
+					{
+						m_IsTonguing = true;
+						m_IsTongueReady = false;
+					}
+
+					else
+					{
+						m_IsEnemySpitOut = true;
+						m_IsTongueReady = false;
+					}
+				}
+
+			}
 		}
+		
 		
 		if (pKeyStates[SDL_SCANCODE_SPACE])
 		{
@@ -1316,19 +1332,23 @@ void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 	case SDLK_c:
 		if (!m_Eggs.empty())
 		{
-			if (m_IsHoldingEgg == true)
+			if (m_Eggs.back()->GetIsFallen() == false)
 			{
-				if (m_Eggs.size() > 0)
+				if (m_IsHoldingEgg == true)
 				{
-					m_IsHoldingEgg = false;
-					m_Eggs.back()->ThrowEgg();
+					if (m_Eggs.size() > 0)
+					{
+						m_IsHoldingEgg = false;
+						m_Eggs.back()->ThrowEgg();
+					}
+				}
+
+				else
+				{
+					m_IsHoldingEgg = true;
 				}
 			}
-
-			else
-			{
-				m_IsHoldingEgg = true;
-			}
+			
 		}
 		
 		break;
@@ -1741,6 +1761,16 @@ bool Yoshi::GetIsOnMovingPlatform() const
 bool Yoshi::GetIsHit() const
 {
 	return m_IsHit;
+}
+
+bool Yoshi::GetIsCollisionOn() const
+{
+	return m_CollisionSwitchOn;
+}
+
+void Yoshi::FlipIsCollisionOn()
+{
+	m_CollisionSwitchOn = !m_CollisionSwitchOn;
 }
 
 void Yoshi::Reset() 

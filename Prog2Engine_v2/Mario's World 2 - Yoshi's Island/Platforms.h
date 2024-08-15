@@ -19,7 +19,9 @@ public:
 	Point2f GetCenterPosition() const;
 	int GetWhichPlatformIsYoshiOn() const;
 	float GetPlatformHeight() const;
+	float GetPlatformWidth() const;
 	float GetRadius() const;
+	float GetYoshiXPosDifference() const;
 
 
 private:
@@ -31,6 +33,7 @@ private:
 	Texture* m_PlatformTxt;
 	float m_Radius;
 	float m_Angle{0};
+	float m_YoshiXPosDifference{ 0 };
 	int m_WhichPlatformIsYoshiOn {0};
 	std::vector<Point2f> m_PlatformPos {4};
 

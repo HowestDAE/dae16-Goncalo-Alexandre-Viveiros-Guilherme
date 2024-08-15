@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "Platforms.h"
+
+#include <iostream>
+
 #include "Texture.h"
 #include "utils.h"
 #include "Vector2f.h"
@@ -35,6 +38,11 @@ void Platforms::Draw() const
 			Rectf(0, 0, m_TxtWidth, m_TxtHeight));
 	}
 
+	for (int idx = 0; idx < m_PlatformPos.size(); idx++)
+	{
+		utils::DrawEllipse(m_PlatformPos[idx], 1, 1, 1);
+	}
+
 	
 }
 
@@ -57,12 +65,15 @@ void Platforms::Update(float elapsedSec,Point2f yoshiPos)
 	}
 	for (int idx = 0; idx < m_PlatformPos.size(); idx++)
 	{
-		if (yoshiPos.x > m_PlatformPos[idx].x - (m_PlatformWidth / 2), (m_PlatformPos[idx].y + m_PlatformHeight) 
-			&& yoshiPos.x < m_PlatformPos[idx].x + (m_PlatformWidth / 2), (m_PlatformPos[idx].y + m_PlatformHeight))
+		if (yoshiPos.x > m_PlatformPos[idx].x - (m_PlatformWidth / 2) - 54 //distance to yoshis right most edge
+			&& yoshiPos.x < m_PlatformPos[idx].x + (m_PlatformWidth / 2))
 		{
-			if (yoshiPos.y < m_PlatformPos[idx].y + m_PlatformHeight + 2 && yoshiPos.y > m_PlatformPos[idx].y - m_PlatformHeight - 2)
+			m_YoshiXPosDifference = m_PlatformPos[idx].x - yoshiPos.x;
+
+			if (yoshiPos.y < m_PlatformPos[idx].y + m_PlatformHeight + 2 && yoshiPos.y > m_PlatformPos[idx].y)
 			{
 				m_WhichPlatformIsYoshiOn = idx;
+				std::cout << idx;
 				break;
 			}
 		}
@@ -101,7 +112,17 @@ float Platforms::GetPlatformHeight() const
 	return m_PlatformHeight;
 }
 
+float Platforms::GetPlatformWidth() const
+{
+	return m_PlatformWidth;
+}
+
 float Platforms::GetRadius() const
 {
 	return m_Radius;
+}
+
+float Platforms::GetYoshiXPosDifference() const
+{
+	return m_YoshiXPosDifference;
 }

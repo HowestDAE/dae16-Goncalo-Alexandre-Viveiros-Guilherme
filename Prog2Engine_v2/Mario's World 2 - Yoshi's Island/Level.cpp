@@ -211,25 +211,32 @@ void Level::Update(float elapsedSec, Yoshi*& yoshiPlyr, const std::vector<Enemy*
 		{
 			m_Platforms[idx]->Update(elapsedSec,yoshiPlyr->GetPosition());
 
-			if (yoshiPlyr->GetIsOnMovingPlatform() == true)
-			{
-
-				if (yoshiPlyr->GetPosition().x > m_Platforms[idx]->GetCenterPosition().x - m_Platforms[idx]->GetRadius() 
-					&& yoshiPlyr->GetPosition().x < m_Platforms[idx]->GetCenterPosition().x + m_Platforms[idx]->GetRadius())
+			
+				if (yoshiPlyr->GetPosition().y > m_Platforms[idx]->GetCenterPosition().y - m_Platforms[idx]->GetRadius() - m_Platforms[idx]->GetPlatformHeight()
+					&& yoshiPlyr->GetPosition().y < m_Platforms[idx]->GetCenterPosition().y + m_Platforms[idx]->GetRadius() + m_Platforms[idx]->GetPlatformHeight())
 				{
-					if (yoshiPlyr->GetPosition().y > m_Platforms[idx]->GetCenterPosition().y - m_Platforms[idx]->GetRadius()
-						&& yoshiPlyr->GetPosition().y < m_Platforms[idx]->GetCenterPosition().y + m_Platforms[idx]->GetRadius())
+					if (yoshiPlyr->GetPosition().x > m_Platforms[idx]->GetCenterPosition().x - m_Platforms[idx]->GetRadius() - m_Platforms[idx]->GetPlatformWidth()
+						&& yoshiPlyr->GetPosition().x < m_Platforms[idx]->GetCenterPosition().x + m_Platforms[idx]->GetRadius() + m_Platforms[idx]->GetPlatformWidth())
 					{
-						yoshiPlyr->SetPosition(m_Platforms[idx]->GetCenterPosition() + Vector2f(cos(m_Platforms[idx]->GetAngle()
-							+ ((M_PI / 2) * m_Platforms[idx]->GetWhichPlatformIsYoshiOn())),
-							sin(m_Platforms[idx]->GetAngle() + ((M_PI / 2) * idx) + m_Platforms[idx]->GetPlatformHeight())) * m_Platforms[idx]->GetRadius());
-						break;
+						if (yoshiPlyr->GetIsOnMovingPlatform() == true)
+						{
+							if (abs(yoshiPlyr->GetVelocity().x) <= 0.1f && yoshiPlyr->GetVelocity().y <= 0.1f)
+							{
+								yoshiPlyr->SetPosition(m_Platforms[idx]->GetCenterPosition() + Vector2f(cos(m_Platforms[idx]->GetAngle() + ((M_PI / 2) * m_Platforms[idx]->GetWhichPlatformIsYoshiOn())),
+									sin(m_Platforms[idx]->GetAngle() + ((M_PI / 2) * m_Platforms[idx]->GetWhichPlatformIsYoshiOn()))) * m_Platforms[idx]->GetRadius());
+
+								yoshiPlyr->SetPosition(Point2f(yoshiPlyr->GetPosition().x - (yoshiPlyr->GetHitBox().width / 2) - m_Platforms[idx]->GetYoshiXPosDifference(),
+									yoshiPlyr->GetPosition().y + m_Platforms[idx]->GetPlatformHeight()));
+								break;
+							}
+						}
+						
 					}
 				}
 				
 
 			}
-		}
+	
 
 		for (int idx = 0; idx < m_LvlEntities.size(); idx++)
 		{
@@ -314,8 +321,17 @@ void Level::Update(float elapsedSec, Yoshi*& yoshiPlyr, const std::vector<Enemy*
 
 		if (m_LevelNumber == 1)
 		{
-			WarpPipesUpdate(true, yoshiPlyr, Point2f(2708, 348), 16, 16, Point2f(740, -515), plyrCamera);
-			WarpPipesUpdate(false, yoshiPlyr, Point2f(2521, -542), 16, 16, Point2f(3121, 260), plyrCamera);
+			if (m_IsUsingPipe == false)
+			{
+				WarpPipesCheck(true, yoshiPlyr, Point2f(2708, 348), 16, 16, Point2f(740, -520));
+
+				WarpPipesCheck(false, yoshiPlyr, Point2f(2521, -542), 16, 16, Point2f(3121, 260));
+			}
+
+			else
+			{
+				WarpPipesUpdate(m_IsActivePipeDirectionDown,yoshiPlyr, m_ActivePipeDestinationPos, plyrCamera, elapsedSec);
+			}
 		}
 
 	}
@@ -396,30 +412,70 @@ void Level::Animate(float elapsedSec) const
 	}
 }
 
-void Level::WarpPipesUpdate(bool isDownPipe, Yoshi* &yoshiPlyr, Point2f pipePosition, int pipeWidth, int pipeHeight, Point2f pipeWarpDestination, Camera* &plyrCamera)
+void Level::WarpPipesCheck(bool isDownPipe, Yoshi*& yoshiPlyr, Point2f pipePosition, int pipeWidth, int pipeHeight, Point2f pipeWarpDestination)
 {
+	
 	if (utils::IsOverlapping(yoshiPlyr->GetHitBox(), Rectf(pipePosition.x, pipePosition.y, pipeWidth, pipeHeight)) == true)
 	{
 		if (isDownPipe == true)
 		{
 			if (yoshiPlyr->GetIsCrouching() == true)
-			{			
-				yoshiPlyr->SetPosition(pipeWarpDestination);
+			{
+				m_IsUsingPipe = true;
 
-				plyrCamera->CenterCamera(yoshiPlyr->GetPosition());
+				if (yoshiPlyr->GetIsCollisionOn() == true)
+				{
+					yoshiPlyr->FlipIsCollisionOn();
+				}
+
 			}
 		}
-
+			
 		else
 		{
 			if (yoshiPlyr->GetIsJumping() == true || yoshiPlyr->GetIsHovering() == true)
 			{			
-				yoshiPlyr->SetPosition(pipeWarpDestination);
+				m_IsUsingPipe = true;
 
-				plyrCamera->CenterCamera(yoshiPlyr->GetPosition());
+				if (yoshiPlyr->GetIsCollisionOn() == true)
+				{
+					yoshiPlyr->FlipIsCollisionOn();
+				}
+
 			}
 		}
+
+		m_ActivePipeDestinationPos = pipeWarpDestination;
+		m_IsActivePipeDirectionDown = isDownPipe;
+		
+		
 	}
+}
+
+void Level::WarpPipesUpdate(bool isDownPipe, Yoshi*& yoshiPlyr, Point2f pipeWarpDestination, Camera*& plyrCamera, float elapsedSec)
+{
+
+	m_PipeTiming += 0.1;
+
+
+	yoshiPlyr->SetPosition(Point2f(yoshiPlyr->GetPosition().x, yoshiPlyr->GetPosition().y - 0.1));
+
+	if (m_PipeTiming > yoshiPlyr->GetHitBox().height)
+	{
+		yoshiPlyr->SetPosition(pipeWarpDestination);
+
+		yoshiPlyr->SetPosition(Point2f(yoshiPlyr->GetPosition().x, yoshiPlyr->GetPosition().y - 0.1));
+		if (m_PipeTiming > yoshiPlyr->GetHitBox().height * 2)
+		{
+			yoshiPlyr->FlipIsCollisionOn();
+			m_PipeTiming = 0;
+			m_IsUsingPipe = false;
+		}
+		plyrCamera->CenterCamera(yoshiPlyr->GetPosition());
+	}
+	
+
+
 
 }
 

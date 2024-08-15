@@ -33,7 +33,8 @@ public:
 	void Sound(SoundManager* &soundManager);
 	void PauseMusic(SoundManager*& soundManager);
 	void CoinManager(int coinRowSize,int coinColumnSize,int numberOfRedCoin, int spacingX, int spacingY, Point2f position);
-	static void WarpPipesUpdate(bool isDownPipe, Yoshi* &yoshiPlyr, Point2f pipePosition, int pipeWidth, int pipeHeight, Point2f pipeWarpDestination, Camera* &plyrCamera);
+	void WarpPipesCheck(bool isDownPipe, Yoshi* &yoshiPlyr, Point2f pipePosition, int pipeWidth, int pipeHeight, Point2f pipeWarpDestination);
+	void WarpPipesUpdate(bool isDownPipe, Yoshi*& yoshiPlyr, Point2f pipeWarpDestination, Camera*& plyrCamera, float elapsedSec);
 	void LevelEndUpdate(Point2f yoshiPos);
 	float GetLevelStart() const;
 	Point2f GetLevelEnd() const;
@@ -48,6 +49,11 @@ private:
 	bool m_IsBGMusicOn{ false };
 	int m_LevelNumber{0};
 	float m_LevelStart;
+	bool m_IsUsingPipe{ false };
+	float m_PipeTiming{ 0 };
+	int m_PipeNumber{ 0 };
+	bool m_IsActivePipeDirectionDown;
+	Point2f m_ActivePipeDestinationPos;
 	Point2f m_LevelEnd;
 	float m_BgFrameStart{8};
 	float m_BgFrameWidth{512};

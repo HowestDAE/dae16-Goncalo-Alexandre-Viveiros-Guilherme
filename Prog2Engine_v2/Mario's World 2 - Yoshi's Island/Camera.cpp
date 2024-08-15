@@ -53,7 +53,13 @@ void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 				if (yoshiPlyr->GetVelocity().x > -2.5)
 				{
 					m_CamPosition.x -= 0.5f;
+
 				}
+			}
+
+			else
+			{
+				m_CamPosition.x += 0.5f;
 			}
 		}
 
@@ -65,9 +71,14 @@ void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 				if (yoshiPlyr->GetVelocity().x < 2.5)
 				{
 					m_CamPosition.x += 0.5f;
+
 				}
 			}
 
+			else
+			{
+				m_CamPosition.x -= 0.5f;
+			}
 		}
 
 		if (m_CamPosition.x > 0)
@@ -85,6 +96,8 @@ void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 		{
 			CenterCamera(Point2f(yoshiPlyr->GetPosition().x - 300, yoshiPlyr->GetPosition().y - 200));
 		}
+
+		
 	}
 	
 
