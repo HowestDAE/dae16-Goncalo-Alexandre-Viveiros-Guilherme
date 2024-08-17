@@ -12,7 +12,7 @@ public:
 	Platforms(Platforms&& rhs) = delete;
 
 	void Draw() const;
-	void Update(float elapsedSec, Point2f yoshiPos);
+	void Update(float elapsedSec, Point2f yoshiPos, Point2f yoshiVelocity);
 	std::vector<std::vector<Point2f>> GetPlatformVertices();
 	float GetAngle() const;
 	Point2f GetPlatformPosition() const;
@@ -35,6 +35,8 @@ private:
 	float m_Angle{0};
 	float m_YoshiXPosDifference{ 0 };
 	int m_WhichPlatformIsYoshiOn {0};
+	bool m_HasYoshiMovedRecently{false};
+	bool m_CalculateNewYoshiPos{ true };
 	std::vector<Point2f> m_PlatformPos {4};
 
 	std::vector< std::vector<Point2f>> m_PlatformVertices{4};

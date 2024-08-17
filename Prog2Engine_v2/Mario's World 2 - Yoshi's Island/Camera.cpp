@@ -107,11 +107,11 @@ void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 	if (yoshiPlyr->GetIsGrounded() == true)   
 	{
 		
-		if (m_CamPosition.y > -yoshiPlyr->GetPosition().y + 150)
+		if (m_CamPosition.y > -yoshiPlyr->GetPosition().y + 120)
 		{
 			m_CamPosition.y -= 1.7f;
 		}
-		if (m_CamPosition.y < -yoshiPlyr->GetPosition().y + 150)
+		if (m_CamPosition.y < -yoshiPlyr->GetPosition().y + 120)
 		{
 			m_CamPosition.y += 1.7f;
 		}
@@ -119,8 +119,7 @@ void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
 	//If yoshi is falling pans camera towards him
 	else
 	{
-	
-		if (m_CamPosition.y < -yoshiPlyr->GetPosition().y + 150)
+		if (m_CamPosition.y < -yoshiPlyr->GetPosition().y + 120)
 		{
 			m_CamPosition.y += 1.7f;
 		}

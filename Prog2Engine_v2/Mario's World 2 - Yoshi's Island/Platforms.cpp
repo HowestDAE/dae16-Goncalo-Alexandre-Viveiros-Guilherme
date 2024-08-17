@@ -46,7 +46,7 @@ void Platforms::Draw() const
 	
 }
 
-void Platforms::Update(float elapsedSec,Point2f yoshiPos)
+void Platforms::Update(float elapsedSec,Point2f yoshiPos,Point2f yoshiVelocity)
 {
 
 	m_Angle += 1 * elapsedSec;
@@ -68,15 +68,38 @@ void Platforms::Update(float elapsedSec,Point2f yoshiPos)
 		if (yoshiPos.x > m_PlatformPos[idx].x - (m_PlatformWidth / 2) - 54 //distance to yoshis right most edge
 			&& yoshiPos.x < m_PlatformPos[idx].x + (m_PlatformWidth / 2))
 		{
-			m_YoshiXPosDifference = m_PlatformPos[idx].x - yoshiPos.x;
 
-			if (yoshiPos.y < m_PlatformPos[idx].y + m_PlatformHeight + 2 && yoshiPos.y > m_PlatformPos[idx].y)
+			if (yoshiPos.y < m_PlatformPos[idx].y + m_PlatformHeight + 1 && yoshiPos.y > m_PlatformPos[idx].y)
 			{
+				if (yoshiVelocity.x >= 0.1 || yoshiVelocity.x <= -0.1)
+				{
+					m_HasYoshiMovedRecently = true;
+				}
+
+				if (m_HasYoshiMovedRecently == true)
+				{
+					if (yoshiVelocity.x <= 0.1f || yoshiVelocity.x <= -0.1)
+					{
+						m_CalculateNewYoshiPos = true;
+						m_HasYoshiMovedRecently = false;
+						
+					}
+				}
+				
 				m_WhichPlatformIsYoshiOn = idx;
-				std::cout << idx;
+				if (m_CalculateNewYoshiPos == true)
+				{
+					m_YoshiXPosDifference = yoshiPos.x - m_PlatformPos[idx].x;
+					std::cout << "NewPos";
+					m_CalculateNewYoshiPos = false;
+				}
+
 				break;
 			}
+
 		}
+
+
 	}
 
 

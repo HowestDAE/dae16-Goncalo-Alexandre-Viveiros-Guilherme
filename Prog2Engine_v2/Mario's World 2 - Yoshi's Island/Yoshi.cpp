@@ -115,7 +115,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 		m_FeetPos = Point2f{ m_Position.x + 39,m_Position.y - 3 };
 	}
 
-	if (m_CollisionSwitchOn == true)
+	if (m_IsUsingPipe == false)
 	{
 		Collision(platforms, movingPlatforms, elapsedSec);
 	}
@@ -421,6 +421,11 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 
 	Animate(elapsedSec);
 	Sound(soundManager);
+
+	if (m_IsGrounded == true)
+	{
+		std::cout << "IsGrounded";
+	}
 }
 
 void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const std::vector<std::vector<Point2f>>& movingPlatforms, const float elapsedSec)
@@ -536,7 +541,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 				Point2f{ m_FeetPos.x ,m_FeetPos.y + 66 }, hit_info))
 			{
 				m_VelocityY = 0;
-				m_Position.y = hit_info.intersectPoint.y - m_TxtWidth * 2;
+				m_Position.y = hit_info.intersectPoint.y - m_TxtHeight * 2;
 				break;
 			}
 
@@ -625,7 +630,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 				if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x - 6,m_Position.y + 32 },
 					Point2f{ m_FeetPos.x + 15,m_Position.y + 32 }, hit_info))
 				{
-					m_Position.x = hit_info.intersectPoint.x - 60; //Teleports entity to the point of intersection with a small offset
+					m_Position.x = hit_info.intersectPoint.x - m_TxtWidth * 2; //Teleports entity to the point of intersection with a small offset
 					break;
 				}
 
@@ -649,6 +654,12 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 
 	//stops pushing after a brief interval
 	if (m_PushTimer > 0.03)
+	{
+		m_IsPushing = false;
+	}
+
+
+	if (m_IsGrounded == false)
 	{
 		m_IsPushing = false;
 	}
@@ -1208,7 +1219,7 @@ void Yoshi::KeysDown()
 	const Uint8* pKeyStates = SDL_GetKeyboardState(nullptr);
 	if (m_HitPhases == 0 || m_HitPhases > 5)
 	{
-		if (m_IsHit == false)
+		if (m_IsHit == false || m_IsUsingPipe == false)
 		{
 			if (pKeyStates[SDL_SCANCODE_LEFT])
 			{
@@ -1306,59 +1317,63 @@ void Yoshi::KeysDown()
 
 void Yoshi::KeysUp(const SDL_KeyboardEvent& e)
 {
-	switch (e.keysym.sym)
+	if (m_IsHit == false || m_IsUsingPipe == false)
 	{
-	case SDLK_LEFT:
-
-		break;
-	case SDLK_RIGHT:
-
-		break;
-	case SDLK_z:
-		m_IsYoshiJumping = false;
-		break;
-	case SDLK_DOWN:
-		m_IsCrouching = false;
-		break;
-	case SDLK_UP:
-
-		m_IsLookingUp = false;
-
-		break;
-
-	case SDLK_x:
-		m_IsTonguing = false;
-		break;
-	case SDLK_c:
-		if (!m_Eggs.empty())
+		switch (e.keysym.sym)
 		{
-			if (m_Eggs.back()->GetIsFallen() == false)
+		case SDLK_LEFT:
+
+			break;
+		case SDLK_RIGHT:
+
+			break;
+		case SDLK_z:
+			m_IsYoshiJumping = false;
+			break;
+		case SDLK_DOWN:
+			m_IsCrouching = false;
+			break;
+		case SDLK_UP:
+
+			m_IsLookingUp = false;
+
+			break;
+
+		case SDLK_x:
+			m_IsTonguing = false;
+			break;
+		case SDLK_c:
+			if (!m_Eggs.empty())
 			{
-				if (m_IsHoldingEgg == true)
+				if (m_Eggs.back()->GetIsFallen() == false)
 				{
-					if (m_Eggs.size() > 0)
+					if (m_IsHoldingEgg == true)
 					{
-						m_IsHoldingEgg = false;
-						m_Eggs.back()->ThrowEgg();
+						if (m_Eggs.size() > 0)
+						{
+							m_IsHoldingEgg = false;
+							m_Eggs.back()->ThrowEgg();
+						}
+					}
+
+					else
+					{
+						m_IsHoldingEgg = true;
 					}
 				}
 
-				else
-				{
-					m_IsHoldingEgg = true;
-				}
 			}
-			
+
+			break;
+
+		case SDLK_v:
+
+			m_IsCalculatingAngle = !m_IsCalculatingAngle;
+			break;
+
 		}
-		
-		break;
-
-	case SDLK_v:
-
-		m_IsCalculatingAngle = !m_IsCalculatingAngle;
-		break;
-
 	}
+	
 }
 
 void Yoshi::Debug() 
@@ -1657,6 +1672,14 @@ void Yoshi::HitCheck(const std::vector<Enemy*>& enemies, std::vector<Entity*>& l
 				{
 					m_Eggs[idx]->PickUpEgg();
 				}
+
+
+				if (abs(m_Eggs[idx]->GetPosition().x - m_Position.x < 100 || m_Eggs[idx]->GetPosition().y - m_Position.y < 100) )
+				{
+					delete m_Eggs.back();
+					m_Eggs.pop_back();
+					break;
+				}
 			}
 			
 		}
@@ -1763,14 +1786,14 @@ bool Yoshi::GetIsHit() const
 	return m_IsHit;
 }
 
-bool Yoshi::GetIsCollisionOn() const
+bool Yoshi::GetIsUsingPipe() const
 {
-	return m_CollisionSwitchOn;
+	return m_IsUsingPipe;
 }
 
-void Yoshi::FlipIsCollisionOn()
+void Yoshi::FlipIsUsingPipe()
 {
-	m_CollisionSwitchOn = !m_CollisionSwitchOn;
+	m_IsUsingPipe = !m_IsUsingPipe;
 }
 
 void Yoshi::Reset() 
