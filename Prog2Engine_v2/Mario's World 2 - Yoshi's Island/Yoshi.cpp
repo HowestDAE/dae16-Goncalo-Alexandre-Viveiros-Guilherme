@@ -1616,21 +1616,25 @@ void Yoshi::HitCheck(const std::vector<Enemy*> enemies, std::vector<Entity*> lvl
 									break;
 								}
 
-								if (m_Position.y + m_TxtWidth * 2 < blocks->GetPosition().y)
+								if (m_Position.y < blocks->GetPosition().y)
 								{
-									if (m_Eggs.size() < 6)
+									if (blocks->GetIsBlockHit() == false)
 									{
-										blocks->BlockHit(m_Eggs);
-										m_VelocityY = 0;
-										m_FlightTime = 1;
-									}
+										if (m_Eggs.size() < 6)
+										{
+											blocks->BlockHit(m_Eggs);
+											m_VelocityY = 0;
+											m_FlightTime = 1;
+										}
 
-									else
-									{
-										m_VelocityY = 0;
-										m_FlightTime = 1;
+										else
+										{
+											m_VelocityY = 0;
+											m_FlightTime = 1;
+										}
+										break;
 									}
-									break;
+									
 								}
 
 								if (m_Position.x < blocks->GetPosition().x || m_Position.x > blocks->GetPosition().x)

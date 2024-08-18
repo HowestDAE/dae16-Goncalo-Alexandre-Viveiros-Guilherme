@@ -494,7 +494,7 @@ void Level::WarpPipesUpdate(bool isDownPipe, Yoshi* yoshiPlyr, Point2f pipeWarpD
 		else
 		{
 			yoshiPlyr->SetPosition(Point2f(yoshiPlyr->GetPosition().x, yoshiPlyr->GetPosition().y + 0.1));
-			m_PipeTiming += 0.01;
+			m_PipeTiming += 0.1;
 		}
 
 		plyrCamera->CenterCamera(yoshiPlyr->GetPosition());
