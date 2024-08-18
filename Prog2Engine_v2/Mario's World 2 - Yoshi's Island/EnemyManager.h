@@ -19,12 +19,13 @@ public:
 	EnemyManager(const EnemyManager& rhs) = delete;
 	EnemyManager& operator=(const EnemyManager& rhs) = delete;
 	EnemyManager(EnemyManager&& rhs) = delete;
+	EnemyManager& operator=(EnemyManager&& rhs) = delete;
 
 	void Draw() const;
-	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec,Yoshi*& yoshiplyr, std::vector<Entity*>& lvlEntities, SoundManager*& soundManager, Mario*& babyMarioPointer);
+	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec,Yoshi* yoshiplyr, std::vector<Entity*> lvlEntities, SoundManager* soundManager, Mario* babyMarioPointer);
 	void SpawnEnemies(int levelNumber);
 	void SpawnZone(int yoshiEggAmount, Point2f yoshiPos, float elapsedSec,Point2f spawnZoneLocation);
-	std::vector<Enemy*>& GetEnemyVector();
+	std::vector<Enemy*> GetEnemyVector();
 	void AddEnemy(Point2f yoshiPos, bool isYoshiFacingRight);
 	bool GetHasYoshiLost() const;
 	void Reset();

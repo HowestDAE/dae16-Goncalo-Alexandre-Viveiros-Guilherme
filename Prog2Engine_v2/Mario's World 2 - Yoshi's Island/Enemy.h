@@ -14,7 +14,7 @@ public:
 	bool GetIsSquashable() const;
 	void EnemyDeath();
 	void EnemySwallowed();
-	void EnemySpit(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEntities,Yoshi*& yoshiplyr, float elapsedSec);
+	void EnemySpit(std::vector<Enemy*> enemies, std::vector<Entity*> lvlEntities,Yoshi* yoshiplyr, float elapsedSec);
 	void Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec) override;
 	void SetIsSpat();
 	void SetIsOnScreenFalse();

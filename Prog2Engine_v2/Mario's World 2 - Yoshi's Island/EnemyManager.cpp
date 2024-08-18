@@ -8,6 +8,7 @@
 #include "PogoShyGuy.h"
 #include "ShyGuy.h"
 #include "Snatchers.h"
+#include "SoundManager.h"
 #include "WalkingTulip.h"
 #include "Yoshi.h"
 
@@ -46,7 +47,7 @@ void EnemyManager::Draw() const
 	
 }
 
-void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec,Yoshi*& yoshiplyr, std::vector<Entity*>& lvlEntities, SoundManager*& soundManager,Mario*& babyMarioPointer)
+void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec,Yoshi* yoshiplyr, std::vector<Entity*> lvlEntities, SoundManager* soundManager,Mario* babyMarioPointer)
 {
 	
 	//Updates Enemies
@@ -210,7 +211,7 @@ void EnemyManager::SpawnZone(int yoshiEggAmount, Point2f yoshiPos, float elapsed
 	}
 }
 
-std::vector<Enemy*>& EnemyManager::GetEnemyVector()
+std::vector<Enemy*> EnemyManager::GetEnemyVector()
 {
 	return m_Enemies;
 }

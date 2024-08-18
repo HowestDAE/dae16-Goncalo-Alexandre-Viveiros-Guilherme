@@ -10,6 +10,7 @@ public:
 	SoundManager(const SoundManager& rhs) = delete;
 	SoundManager& operator=(const SoundManager& rhs) = delete;
 	SoundManager(SoundManager&& rhs) = delete;
+	SoundManager& operator=(SoundManager&& rhs) = delete;
 
 	enum class YoshiSFX
 	{

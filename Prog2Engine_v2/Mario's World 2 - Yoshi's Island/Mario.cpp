@@ -46,7 +46,7 @@ void Mario::Draw() const
 	glPopMatrix();
 }
 
-void Mario::Update(const std::vector< std::vector<Point2f>>& platforms, SoundManager*& soundManager, const float elapsedSec)
+void Mario::Update(const std::vector< std::vector<Point2f>>& platforms, SoundManager* soundManager, const float elapsedSec)
 {
 	m_Hitbox = Rectf(m_Position.x, m_Position.y, float(m_TxtWidth * 2), float(m_TxtHeight * 2));
 

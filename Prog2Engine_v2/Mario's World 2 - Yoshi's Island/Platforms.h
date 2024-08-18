@@ -10,6 +10,7 @@ public:
 	Platforms(const Platforms& rhs) = delete;
 	Platforms& operator=(const Platforms& rhs) = delete;
 	Platforms(Platforms&& rhs) = delete;
+	Platforms& operator=(Platforms&& rhs) = delete;
 
 	void Draw() const;
 	void Update(float elapsedSec, Point2f yoshiPos, Point2f yoshiVelocity);

@@ -14,7 +14,7 @@ Camera::Camera(const Point2f camPos):
 
 }
 
-void Camera::Pan(Yoshi*& yoshiPlyr,float levelStart,float levelEnd)
+void Camera::Pan(Yoshi* yoshiPlyr,float levelStart,float levelEnd)
 {
 	if (m_CamPosition.y > 100)
 	{

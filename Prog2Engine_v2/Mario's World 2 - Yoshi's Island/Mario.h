@@ -10,7 +10,7 @@ public:
 	~Mario() override = default;
 
 	void Draw() const override;
-	void Update(const std::vector< std::vector<Point2f>>& platforms, SoundManager*& soundManager, float elapsedSec);
+	void Update(const std::vector< std::vector<Point2f>>& platforms, SoundManager* soundManager, float elapsedSec);
 	void Reset() override;
 
 private:

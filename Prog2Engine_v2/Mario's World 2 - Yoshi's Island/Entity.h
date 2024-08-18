@@ -11,6 +11,7 @@ public:
 	Entity(const Entity& rhs) = delete;
 	Entity& operator=(const Entity& rhs) = delete;
 	Entity(Entity&& rhs) = delete;
+	Entity& operator=(Entity&& rhs) = delete;
 
 	virtual void Draw() const;
 	virtual void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);

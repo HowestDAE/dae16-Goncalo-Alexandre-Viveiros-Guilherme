@@ -9,7 +9,7 @@ public:
 	explicit Boulder(Point2f startPos);
 	~Boulder() override = default;
 	void Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec) override;
-	void Hitcheck(const std::vector<Enemy*>& enemies) const;
+	void Hitcheck(const std::vector<Enemy*> enemies) const;
 	void Animate(float elapsedSec) override;
 	void Reset() override;
 

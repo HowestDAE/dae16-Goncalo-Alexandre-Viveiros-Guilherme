@@ -47,7 +47,7 @@ void Boulder::Update(const std::vector<std::vector<Point2f>>& platforms, float e
 
 }
 
-void Boulder::Hitcheck(const std::vector<Enemy*>& enemies) const
+void Boulder::Hitcheck(const std::vector<Enemy*> enemies) const
 {
 	for (int idx{0}; idx < enemies.size(); idx++)
 	{

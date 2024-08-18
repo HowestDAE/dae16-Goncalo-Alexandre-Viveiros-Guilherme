@@ -9,6 +9,7 @@ m_BlockType(blockType)
 }
 
 
+
 void Block::Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
 {
 	Entity::Update(platforms, elapsedSec);
@@ -39,7 +40,7 @@ void Block::Update(const std::vector<std::vector<Point2f>>& platforms, float ela
 	}
 }
 
-void Block::BlockHit(std::vector <Egg*>& eggs) 
+void Block::BlockHit(std::vector <Egg*> eggs) 
 {
 	if (m_BlockType == BlockType::EggBlock)
 	{

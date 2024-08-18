@@ -13,6 +13,7 @@ public:
 	UI(const UI& rhs) = delete;
 	UI& operator=(const UI& rhs) = delete;
 	UI(UI&& rhs) = delete;
+	UI& operator=(UI&& rhs) = delete;
 
 	void Draw(Point2f camPos) const;
 	void Update(bool isMarioOn, int marioTimer);

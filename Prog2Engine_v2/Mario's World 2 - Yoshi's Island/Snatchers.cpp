@@ -7,7 +7,7 @@ Snatchers::Snatchers(Point2f position): Enemy(false,false,"EnemiesVaried2.png",2
 {
 }
 
-void Snatchers::Snatch(Mario*& babyMarioPointer)
+void Snatchers::Snatch(Mario* babyMarioPointer)
 {
 	float distancex = m_Position.x - babyMarioPointer->GetPosition().x;
 	float distancey = m_Position.y - babyMarioPointer->GetPosition().y;

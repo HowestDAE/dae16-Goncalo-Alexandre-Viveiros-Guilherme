@@ -40,7 +40,7 @@ void Enemy::EnemySwallowed()
 	m_IsSwallowed = true;
 }
 
-void Enemy::EnemySpit(std::vector<Enemy*>& enemies, std::vector<Entity*>& lvlEntities, Yoshi*& yoshiplyr, float elapsedSec)
+void Enemy::EnemySpit(std::vector<Enemy*> enemies, std::vector<Entity*> lvlEntities, Yoshi* yoshiplyr, float elapsedSec)
 {
 	if (m_IsSpat == true)
 	{

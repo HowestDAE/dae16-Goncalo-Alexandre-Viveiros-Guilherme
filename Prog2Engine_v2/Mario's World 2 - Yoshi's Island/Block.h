@@ -15,7 +15,7 @@ public:
 	Block(Point2f position,BlockType blockType);
 	~Block() override = default;
 	void Update(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec) override;
-	void BlockHit(std::vector <Egg*>& eggs);
+	void BlockHit(std::vector <Egg*> eggs);
 	void Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec) override;
 	void Animate(float elapsedSec) override;
 	bool GetIsBlockHit();

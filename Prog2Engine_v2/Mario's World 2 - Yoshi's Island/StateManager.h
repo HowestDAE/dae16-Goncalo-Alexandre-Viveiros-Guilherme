@@ -22,6 +22,7 @@ public:
 	StateManager(const StateManager& rhs) = delete;
 	StateManager& operator=(const StateManager& rhs) = delete;
 	StateManager(StateManager&& rhs) = delete;
+	StateManager& operator=(StateManager&& rhs) = delete;
 	
 	States GetState();
 	void SetState(States state);

@@ -102,6 +102,7 @@ void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int cu
 
 		if (m_IsFallen == true)
 		{
+			Collision(platforms,elapsedSec);
 			m_FallenTimer += elapsedSec;
 
 			if (m_FallenTimer >= 8)
@@ -429,6 +430,11 @@ void Egg::ThrowEgg()
 bool Egg::GetIsThrown()
 {
 	return m_IsThrown;
+}
+
+bool Egg::GetIsHeld()
+{
+	return m_IsBeingHeld;
 }
 
 Rectf Egg::GetHitbox()

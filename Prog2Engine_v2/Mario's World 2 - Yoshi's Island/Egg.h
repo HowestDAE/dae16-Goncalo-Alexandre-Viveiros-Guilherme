@@ -16,6 +16,7 @@ public:
 	bool HoldEgg(Rectf yoshiHitBox, bool isYoshiFacingRight, bool isCalculatingAngle, float elapsedSec);
 	void ThrowEgg();
 	bool GetIsThrown();
+	bool GetIsHeld();
 	Rectf GetHitbox();
 	bool GetIsFallen();
 

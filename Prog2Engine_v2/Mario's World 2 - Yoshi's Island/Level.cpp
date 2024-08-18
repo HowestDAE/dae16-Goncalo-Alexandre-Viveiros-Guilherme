@@ -19,7 +19,7 @@
 #include "WingedClouds.h"
 
 Level::Level(const std::string& imagePathLvlTxt, const std::string& backgroundTxt1,const std::string& backgroundTxt2,
-	const std::string& backgroundTxt3,float levelStart, Point2f levelEnd,int levelNumber, StateManager*& stateManager):
+	const std::string& backgroundTxt3,float levelStart, Point2f levelEnd,int levelNumber, StateManager* stateManager):
 	m_LevelNumber(levelNumber),
 	m_LevelStart(levelStart),
 	m_LevelEnd(levelEnd),
@@ -202,7 +202,7 @@ void Level::DrawBackground() const
 }
 
 
-void Level::Update(float elapsedSec, Yoshi*& yoshiPlyr, const std::vector<Enemy*>& enemies, SoundManager*& soundManager, Camera*& plyrCamera)
+void Level::Update(float elapsedSec, Yoshi* yoshiPlyr, const std::vector<Enemy*> enemies, SoundManager* soundManager, Camera* plyrCamera)
 {
 
 	if (m_StateManager->GetState() != StateManager::States::Pause)
@@ -359,7 +359,7 @@ void Level::Update(float elapsedSec, Yoshi*& yoshiPlyr, const std::vector<Enemy*
 	
 }
 
-void Level::Sound(SoundManager*& soundManager)
+void Level::Sound(SoundManager* soundManager)
 {
 	
 	if (m_IsBGMusicOn == false)
@@ -377,7 +377,7 @@ void Level::Sound(SoundManager*& soundManager)
 	m_PreviousState = m_StateManager->GetState();
 }
 
-void Level::PauseMusic(SoundManager*& soundManager)
+void Level::PauseMusic(SoundManager* soundManager)
 {
 	soundManager->PauseBGMusic();
 }
@@ -430,7 +430,7 @@ void Level::Animate(float elapsedSec) const
 	}
 }
 
-void Level::WarpPipesCheck(bool isDownPipe, Yoshi*& yoshiPlyr, Point2f pipePosition, int pipeWidth, int pipeHeight, Point2f pipeWarpDestination)
+void Level::WarpPipesCheck(bool isDownPipe, Yoshi* yoshiPlyr, Point2f pipePosition, int pipeWidth, int pipeHeight, Point2f pipeWarpDestination)
 {
 	
 	if (utils::IsOverlapping(yoshiPlyr->GetHitBox(), Rectf(pipePosition.x, pipePosition.y, pipeWidth, pipeHeight)) == true)
@@ -470,7 +470,7 @@ void Level::WarpPipesCheck(bool isDownPipe, Yoshi*& yoshiPlyr, Point2f pipePosit
 	}
 }
 
-void Level::WarpPipesUpdate(bool isDownPipe, Yoshi*& yoshiPlyr, Point2f pipeWarpDestination, Camera*& plyrCamera, float elapsedSec)
+void Level::WarpPipesUpdate(bool isDownPipe, Yoshi* yoshiPlyr, Point2f pipeWarpDestination, Camera* plyrCamera, float elapsedSec)
 {
 
 	
@@ -561,7 +561,7 @@ std::vector<std::vector<Point2f>> Level::GetPlatformVertices() const
 	return temp;
 }
 
-std::vector<Entity*>& Level::GetLevelEntities() 
+std::vector<Entity*> Level::GetLevelEntities() 
 {
 	return m_LvlEntities;
 }

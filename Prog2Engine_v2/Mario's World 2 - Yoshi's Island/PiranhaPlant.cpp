@@ -163,7 +163,7 @@ void PiranhaPlant::Collision(const std::vector<std::vector<Point2f>>& platforms,
 {
 }
 
-void PiranhaPlant::Sound(SoundManager*& soundManager)
+void PiranhaPlant::Sound(SoundManager* soundManager)
 {
 	if (m_IsSFXReady == true)
 	{
