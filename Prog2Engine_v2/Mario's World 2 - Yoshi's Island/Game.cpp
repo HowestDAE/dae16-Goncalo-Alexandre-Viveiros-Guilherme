@@ -74,7 +74,7 @@ void Game::Update(const float elapsedSec )
 				{
 					m_YoshiPlyr->Debug();
 				}
-				m_YoshiPlyr->HitCheck(m_EnemyManager->GetEnemyVector(), m_Level01->GetLevelEntities(), m_Mario->GetHitBox());
+				m_YoshiPlyr->HitCheck(m_EnemyManager->GetEnemyVector(), m_Level01->GetLevelEntities(), m_Mario->GetHitBox(),m_SoundManager);
 				m_YoshiPlyr->KeysDown();
 
 				//Camera functions

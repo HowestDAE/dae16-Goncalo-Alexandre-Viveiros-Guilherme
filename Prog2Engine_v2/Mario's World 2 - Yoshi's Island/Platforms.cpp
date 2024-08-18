@@ -90,7 +90,6 @@ void Platforms::Update(float elapsedSec,Point2f yoshiPos,Point2f yoshiVelocity)
 				if (m_CalculateNewYoshiPos == true)
 				{
 					m_YoshiXPosDifference = yoshiPos.x - m_PlatformPos[idx].x;
-					std::cout << "NewPos";
 					m_CalculateNewYoshiPos = false;
 				}
 

@@ -47,7 +47,7 @@ void Enemy::EnemySpit(std::vector<Enemy*> enemies, std::vector<Entity*> lvlEntit
 		//shoots out enemy depending on yoshis state
 		if (yoshiplyr->GetIsFacingRight() == true)
 		{
-			m_Position.x = yoshiplyr->GetPosition().x + yoshiplyr->GetHitBox().width + 2;
+			m_Position.x = yoshiplyr->GetPosition().x + yoshiplyr->GetHitBox().width;
 			m_Position.y = yoshiplyr->GetPosition().y + 20;
 
 			m_VelocityX = 60.f;
@@ -61,6 +61,8 @@ void Enemy::EnemySpit(std::vector<Enemy*> enemies, std::vector<Entity*> lvlEntit
 			{
 				m_IsRolling = true;
 			}
+
+			m_WasSpatRight = true;
 		}
 
 		else
@@ -71,13 +73,15 @@ void Enemy::EnemySpit(std::vector<Enemy*> enemies, std::vector<Entity*> lvlEntit
 			m_VelocityX = -60.f;
 			if (yoshiplyr->GetIsLookingUp())
 			{
-				m_VelocityY = 60.f;
+				m_VelocityY = 120.f;
 				m_IsThrown = true;
 			}
 			else
 			{
 				m_IsRolling = true;
 			}
+
+			m_WasSpatRight = false;
 		}
 
 		m_IsSwallowed = false;
@@ -93,7 +97,7 @@ void Enemy::EnemySpit(std::vector<Enemy*> enemies, std::vector<Entity*> lvlEntit
 			
 			m_AngZ = 1;
 
-			if (yoshiplyr->GetIsFacingRight() == true)
+			if (m_WasSpatRight == true)
 			{
 				m_VelocityX = 320;
 				m_AngleDeg += -5;
@@ -121,7 +125,10 @@ void Enemy::EnemySpit(std::vector<Enemy*> enemies, std::vector<Entity*> lvlEntit
 
 		if (m_IsThrown == true)
 		{
+			m_AngZ = 1;
+			m_IsGrounded = false;
 			m_ImmunityTimer += elapsedSec;
+
 			if (m_IsSpat == true)
 			{
 				if (m_ImmunityTimer > 2)
@@ -131,19 +138,26 @@ void Enemy::EnemySpit(std::vector<Enemy*> enemies, std::vector<Entity*> lvlEntit
 				}
 			}
 
-			if (yoshiplyr->GetIsFacingRight() == true)
+			if (m_WasSpatRight == true)
 			{
 				m_VelocityX = 320;
-				
+				m_AngleDeg += -5;
 			}
 			else
 			{
 				m_VelocityX = -320;
+				m_AngleDeg += 5;
 			}
 
 			if (m_ImmunityTimer < 0.2)
 			{
 				m_VelocityY = 620;
+			}
+
+
+			if (m_ImmunityTimer > 3)
+			{
+				m_IsThrown = false;
 			}
 		}
 
@@ -202,8 +216,11 @@ void Enemy::EnemySpit(std::vector<Enemy*> enemies, std::vector<Entity*> lvlEntit
 					{
 						if (utils::IsOverlapping(m_Hitbox, enemies[idx]->GetHitBox()))
 						{
-							enemies[idx]->EnemyDeath();
-							EnemyDeath();
+							if (enemies[idx]->GetIsActive() == true)
+							{
+								enemies[idx]->EnemyDeath();
+								EnemyDeath();
+							}
 							break;
 						}
 					}

@@ -31,6 +31,12 @@ void SoundManager::PlaySFX(YoshiSFX yoshiSfx)
 
 void SoundManager::PlaySFX(ObjectSFX objectSfx)
 {
+	m_ObjectSFX = objectSfx;
+
+	if (objectSfx == ObjectSFX::CoinSFX)
+	{
+		m_CoinSfx.Play(0);
+	}
 }
 
 void SoundManager::PlaySFX(EnemySFX enemySfx)

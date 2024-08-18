@@ -17,7 +17,7 @@ public:
 	virtual void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
 	virtual void Collision(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec);
 	virtual void Animate(float elapsedSec);
-	void FlipIsActive();
+	virtual void FlipIsActive();
 	void SetPosition(Point2f newPosition);
 	void AddVelocity(float velocityX,float velocityY);
 	Rectf GetHitBox() const;

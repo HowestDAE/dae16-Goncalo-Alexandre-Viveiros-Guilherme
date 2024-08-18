@@ -58,7 +58,7 @@ void Yoshi::Draw() const
 	//	Point2f{ m_FeetPos.x - 13,m_FeetPos.y });			 
 	//utils::DrawLine(Point2f{ m_FeetPos.x + 13,m_FeetPos.y +32 },
 	//	Point2f{ m_FeetPos.x + 13,m_FeetPos.y });
-	utils::SetColor(Color4f{ 1,0.4,1,1 });
+	/*utils::SetColor(Color4f{ 1,0.4,1,1 });
 	utils::DrawLine(Point2f{ m_FeetPos.x - 6,m_Position.y + 32 },
 		Point2f{ m_FeetPos.x - 19,m_Position.y + 32 },3);
 	utils::SetColor(Color4f{ 1,1,0.3,1 });
@@ -89,7 +89,7 @@ void Yoshi::Draw() const
 	utils::SetColor(Color4f(1, 0, 0, 1));
 	utils::DrawRect(m_Hitbox);
 	
-	utils::DrawLine(Point2f(m_Hitbox.left + m_Hitbox.width/2,m_Hitbox.bottom),Point2f(m_Hitbox.left + m_Hitbox.width / 2,m_Hitbox.bottom +m_Hitbox.height));
+	utils::DrawLine(Point2f(m_Hitbox.left + m_Hitbox.width/2,m_Hitbox.bottom),Point2f(m_Hitbox.left + m_Hitbox.width / 2,m_Hitbox.bottom +m_Hitbox.height));*/
 #pragma endregion
 
 
@@ -436,10 +436,7 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 	Animate(elapsedSec);
 	Sound(soundManager);
 
-	if (m_IsGrounded == true)
-	{
-		std::cout << "IsGrounded";
-	}
+
 }
 
 void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const std::vector<std::vector<Point2f>>& movingPlatforms, const float elapsedSec)
@@ -555,14 +552,16 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 
 		}
 
-
-		//checks head collision for yoshi
-		if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x ,m_FeetPos.y + 32 },
-			Point2f{ m_FeetPos.x ,m_FeetPos.y + 66 }, hit_info))
+		if (platforms[idx].size() != 2)
 		{
-			m_VelocityY = 0;
-			m_Position.y = hit_info.intersectPoint.y - m_TxtHeight * 2;
-			break;
+			//checks head collision for yoshi
+			if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x ,m_FeetPos.y + 32 },
+				Point2f{ m_FeetPos.x ,m_FeetPos.y + 66 }, hit_info))
+			{
+				m_VelocityY = 0;
+				m_Position.y = hit_info.intersectPoint.y - m_TxtHeight * 2;
+				break;
+			}
 		}
 
 		//Gravity
@@ -621,7 +620,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 			{
 				//left side
 				if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 6,m_Position.y + 32 },
-					Point2f{ m_FeetPos.x - 15,m_Position.y + 32 }, hit_info))
+					Point2f{ m_FeetPos.x - 15,m_Position.y + 30 }, hit_info))
 				{
 					m_Position.x = hit_info.intersectPoint.x; //Teleports entity to the point of intersection with a small offset
 					break;
@@ -629,7 +628,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 
 				//right side
 				if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 6,m_Position.y + 32 },
-					Point2f{ m_FeetPos.x + 15,m_Position.y + 32 }, hit_info))
+					Point2f{ m_FeetPos.x + 15,m_Position.y + 30 }, hit_info))
 				{
 					m_Position.x = hit_info.intersectPoint.x - m_TxtWidth - 5; //Teleports entity to the point of intersection with a small offset
 					if (m_IsGrounded == true)
@@ -646,15 +645,15 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 			{
 				//right side
 				if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x - 9,m_Position.y + 32 },
-					Point2f{ m_FeetPos.x + 25,m_Position.y + 32 }, hit_info))
+					Point2f{ m_FeetPos.x + 16,m_Position.y + 30 }, hit_info))
 				{
-					m_Position.x = hit_info.intersectPoint.x - m_TxtWidth * 2 - 10; //Teleports entity to the point of intersection with a small offset
+					m_Position.x = hit_info.intersectPoint.x - m_TxtWidth * 2 - 1; //Teleports entity to the point of intersection with a small offset
 					break;
 				}
 
 				//left side
 				if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x - 6,m_Position.y + 32 },
-					Point2f{ m_FeetPos.x - 19,m_Position.y + 32 }, hit_info))
+					Point2f{ m_FeetPos.x - 19,m_Position.y + 30 }, hit_info))
 				{
 					m_Position.x = hit_info.intersectPoint.x - 20; //Teleports entity to the point of intersection with a small offset
 					if (m_IsGrounded == true)
@@ -1408,7 +1407,7 @@ void Yoshi::Debug()
 	m_Position.x += m_VelocityX / 100;
 }
 
-void Yoshi::HitCheck(const std::vector<Enemy*> enemies, std::vector<Entity*> lvlEntities, Rectf marioHitbox)
+void Yoshi::HitCheck(const std::vector<Enemy*> enemies, std::vector<Entity*> lvlEntities, Rectf marioHitbox,SoundManager* soundManager)
 {
 	if (!enemies.empty())
 	{
@@ -1418,7 +1417,7 @@ void Yoshi::HitCheck(const std::vector<Enemy*> enemies, std::vector<Entity*> lvl
 			{
 				if (enemies[idx]->GetIsActive() == true)
 				{
-					if (enemies[idx]->GetIsSpat() == false || enemies[idx]->GetIsRolling() == false || enemies[idx]->GetIsThrown() == false)
+					if (enemies[idx]->GetIsSpat() == false)
 					{
 						if (enemies[idx]->GetIsSwallowed() == false)
 						{
@@ -1469,55 +1468,50 @@ void Yoshi::HitCheck(const std::vector<Enemy*> enemies, std::vector<Entity*> lvl
 							}
 
 							//checks if enemy his hitting yoshi
-
-							if (utils::IsOverlapping(m_Hitbox, enemies[idx]->GetHitBox()) == true)
+							if (enemies[idx]->GetIsRolling() == false && enemies[idx]->GetIsThrown() == false)
 							{
-								m_IsHit = true;
-
-
-								//TODO remove this after fixing egg dropping fluing off
-								if (!m_Eggs.empty())
+								if (utils::IsOverlapping(m_Hitbox, enemies[idx]->GetHitBox()) == true)
 								{
-									m_Eggs.back()->DropEgg();
-								}
-								
+									m_IsHit = true;
 
-								if (m_IsFacingRight == true)
-								{
-									if (enemies[idx]->GetPosition().x > m_Position.x)
+									if (m_IsFacingRight == true)
 									{
-										m_VelocityX *= -1;
-										m_VelocityX -= 300;
-									}
-									else
-									{
-										m_VelocityX *= 0;
-										m_VelocityX += 300;
-									}
-								}
-
-								else
-								{
-									if (enemies[idx]->GetPosition().x > m_Position.x)
-									{
-										m_VelocityX *= 0;
-										m_VelocityX -= 300;
+										if (enemies[idx]->GetPosition().x > m_Position.x)
+										{
+											m_VelocityX *= -1;
+											m_VelocityX -= 300;
+										}
+										else
+										{
+											m_VelocityX *= 0;
+											m_VelocityX += 300;
+										}
 									}
 
 									else
 									{
-										m_VelocityX *= -1;
-										m_VelocityX += 300;
+										if (enemies[idx]->GetPosition().x > m_Position.x)
+										{
+											m_VelocityX *= 0;
+											m_VelocityX -= 300;
+										}
+
+										else
+										{
+											m_VelocityX *= -1;
+											m_VelocityX += 300;
+										}
+
 									}
-									
+
+									m_VelocityY += 400;
+
+									m_IsMarioOn = false;
+
+									break;
 								}
-
-								m_VelocityY += 400;
-
-								m_IsMarioOn = false;
-
-								break;
 							}
+							
 						}
 					}
 
@@ -1586,7 +1580,7 @@ void Yoshi::HitCheck(const std::vector<Enemy*> enemies, std::vector<Entity*> lvl
 							{
 								m_Coins += 1;
 							}
-							lvlEntities[idx]->FlipIsActive();
+							coins->FlipIsActive(soundManager);
 							break;
 						}
 

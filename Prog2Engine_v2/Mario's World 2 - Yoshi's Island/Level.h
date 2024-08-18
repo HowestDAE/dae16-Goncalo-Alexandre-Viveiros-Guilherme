@@ -72,6 +72,7 @@ private:
 	StateManager* m_StateManager;
 	StateManager::States m_PreviousState;
 
+
 	void Animate(float elapsedSec) const;
 };
 

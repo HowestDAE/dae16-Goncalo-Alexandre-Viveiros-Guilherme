@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Coin.h"
+#include "SoundManager.h"
 
 Coin::Coin(bool isRedCoin, Point2f position):Entity("GeneralSprites.png",16,12,position),
 m_IsRedCoin(isRedCoin)
@@ -45,9 +46,20 @@ void Coin::Animate(float elapsedSec)
 	}
 }
 
+void Coin::Sound(SoundManager* soundManager)
+{
+	soundManager->PlaySFX(SoundManager::ObjectSFX::CoinSFX);
+}
+
 bool Coin::GetIsRedCoin()
 {
 	return m_IsRedCoin;
+}
+
+void Coin::FlipIsActive(SoundManager* soundManager)
+{
+	Sound(soundManager);
+	Entity::FlipIsActive();
 }
 
 

@@ -55,6 +55,8 @@ private:
 	SoundEffect m_YoshiTongueSFX{"YISFX/Tongue.wav"};
 	SoundEffect m_MarioCrySFX{"YISFX/MarioCry.wav"};
 	SoundEffect m_PiranhaPlantSFX{"YISFX/Piranha.wav"};
+	SoundEffect m_CoinSfx{ "YISFX/Coin.wav" };
 	SoundStream m_BGMusicLvl1{"YISFX/FlowerGarden.wav"};
+
 };
 

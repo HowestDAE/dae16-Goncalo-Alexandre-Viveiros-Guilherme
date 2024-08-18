@@ -164,17 +164,6 @@ void Level::DrawOthers() const
 		m_SunflowerCloudTxt->Draw(Rectf(4900, 254 + (64*2), 56*2, 64*2), Rectf(0, 104, 56, 64));
 		m_SunflowerCloudTxt->Draw(Rectf(4900, 254 + (64*2) * 2, 56*2, 64*2), Rectf(0, 104, 56, 64));
 		m_SunflowerCloudTxt->Draw(Rectf(4900 + 56/2, 254 + (64*2) * 3 -2, 32*2, 32*2), Rectf(0, 32, 32, 32));
-
-		utils::SetColor(Color4f(1, 1, 1, 1));
-		utils::DrawLine(4900, 290, 4960, 290, 1);
-		utils::DrawLine(4900, 290 + (64 * 2), 4960, 290 + (64 * 2), 1);
-		utils::DrawLine(4900, 290 + (64 * 2)*2, 4960, 290 + (64 * 2)*2, 1);
-
-
-		utils::DrawLine(4960, 355, 5020, 355, 1);
-		utils::DrawLine(4960, 355 + (64 * 2), 5020, 355 +(64 * 2), 1);
-		utils::DrawLine(4960, 355 + (64 * 2) * 2, 5020, 355 + (64 * 2)*2, 1);
-
 	}
 
 	
@@ -245,7 +234,7 @@ void Level::Update(float elapsedSec, Yoshi* yoshiPlyr, const std::vector<Enemy*>
 									}
 									
 								}
-								std::cout << "Jumpings";
+							
 							}
 						}
 						
@@ -490,7 +479,11 @@ void Level::WarpPipesUpdate(bool isDownPipe, Yoshi* yoshiPlyr, Point2f pipeWarpD
 
 	if (m_PipeTiming > yoshiPlyr->GetHitBox().height)
 	{
-		yoshiPlyr->SetPosition(pipeWarpDestination);
+		if (m_PipeTiming - yoshiPlyr->GetHitBox().height < 0.2)
+		{
+			yoshiPlyr->SetPosition(pipeWarpDestination);
+		}
+		
 
 		if (isDownPipe == true)
 		{
@@ -500,22 +493,21 @@ void Level::WarpPipesUpdate(bool isDownPipe, Yoshi* yoshiPlyr, Point2f pipeWarpD
 
 		else
 		{
-			yoshiPlyr->SetPosition(Point2f(yoshiPlyr->GetPosition().x, yoshiPlyr->GetPosition().y + 2));
-			m_PipeTiming += 2;
+			yoshiPlyr->SetPosition(Point2f(yoshiPlyr->GetPosition().x, yoshiPlyr->GetPosition().y + 0.1));
+			m_PipeTiming += 0.01;
 		}
 
-
-		if (m_PipeTiming > yoshiPlyr->GetHitBox().height * 2)
-		{
-			yoshiPlyr->FlipIsUsingPipe();
-			m_PipeTiming = 0;
-			m_IsUsingPipe = false;
-		}
 		plyrCamera->CenterCamera(yoshiPlyr->GetPosition());
 	}
 	
 
 
+	if (m_PipeTiming > yoshiPlyr->GetHitBox().height * 2)
+	{
+		yoshiPlyr->FlipIsUsingPipe();
+		m_PipeTiming = 0;
+		m_IsUsingPipe = false;
+	}
 
 }
 
@@ -526,7 +518,7 @@ void Level::LevelEndUpdate(Point2f yoshiPos)
 		if (yoshiPos.y >= m_LevelEnd.y)
 		{
 			m_StateManager->SetState(StateManager::States::ResultsMenu);
-			std::cout << "YOU WON!!!!";
+		
 		}
 	}
 }

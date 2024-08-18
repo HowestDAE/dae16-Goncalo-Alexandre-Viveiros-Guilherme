@@ -23,7 +23,7 @@ public:
 	void KeysDown();
 	void KeysUp(const SDL_KeyboardEvent& e);
 	void Debug();
-	void HitCheck(const std::vector<Enemy*>, std::vector<Entity*> lvlEntities, Rectf marioHitbox);
+	void HitCheck(const std::vector<Enemy*>, std::vector<Entity*> lvlEntities, Rectf marioHitbox, SoundManager* soundManager);
 	void EmptyMouth();
 	void AddFlower();
 	void AddCoin();

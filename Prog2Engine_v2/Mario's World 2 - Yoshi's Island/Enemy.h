@@ -32,6 +32,7 @@ private:
 	bool m_IsSwallowed{false};
 	bool m_IsSpat{ false };
 	bool m_IsOnScreen{ false };
+	bool m_WasSpatRight{};
 	float m_ImmunityTimer{ 0 };
 
 	bool m_ResetEdible;
