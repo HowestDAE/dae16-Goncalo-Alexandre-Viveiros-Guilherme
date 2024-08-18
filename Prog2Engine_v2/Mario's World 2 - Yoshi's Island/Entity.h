@@ -19,6 +19,7 @@ public:
 	virtual void Animate(float elapsedSec);
 	virtual void FlipIsActive();
 	void SetPosition(Point2f newPosition);
+	void SetVelocity(float velocityX, float velocityY);
 	void AddVelocity(float velocityX,float velocityY);
 	Rectf GetHitBox() const;
 	Point2f GetPosition() const;

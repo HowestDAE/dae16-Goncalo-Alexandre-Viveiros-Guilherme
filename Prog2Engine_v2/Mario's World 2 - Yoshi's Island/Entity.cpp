@@ -225,6 +225,12 @@ void Entity::SetPosition(Point2f newPosition)
 	m_Position = newPosition;
 }
 
+void Entity::SetVelocity(float velocityX, float velocityY)
+{
+	m_VelocityX = velocityX;
+	m_VelocityY = velocityY;
+}
+
 void Entity::AddVelocity(float velocityX, float velocityY)
 {
 	m_VelocityX += velocityX;

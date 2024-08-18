@@ -332,7 +332,7 @@ void Level::Update(float elapsedSec, Yoshi* yoshiPlyr, const std::vector<Enemy*>
 			{
 				WarpPipesCheck(true, yoshiPlyr, Point2f(2708, 348), 16, 16, Point2f(740, -520 + yoshiPlyr->GetHitBox().height));
 
-				WarpPipesCheck(false, yoshiPlyr, Point2f(2521, -542), 16, 16, Point2f(3121, 260));
+				WarpPipesCheck(false, yoshiPlyr, Point2f(2521, -542), 16, 16, Point2f(3121, 260 - yoshiPlyr->GetHitBox().height));
 			}
 
 			else
@@ -461,7 +461,10 @@ void Level::WarpPipesCheck(bool isDownPipe, Yoshi* yoshiPlyr, Point2f pipePositi
 
 void Level::WarpPipesUpdate(bool isDownPipe, Yoshi* yoshiPlyr, Point2f pipeWarpDestination, Camera* plyrCamera, float elapsedSec)
 {
-
+	if (m_PipeTiming < 0.1)
+	{
+		yoshiPlyr->SetVelocity(0, 0);
+	}
 	
 
 	if (isDownPipe == true)
@@ -472,7 +475,7 @@ void Level::WarpPipesUpdate(bool isDownPipe, Yoshi* yoshiPlyr, Point2f pipeWarpD
 
 	else
 	{
-		yoshiPlyr->SetPosition(Point2f(yoshiPlyr->GetPosition().x, yoshiPlyr->GetPosition().y + 0.1));
+		yoshiPlyr->SetPosition(Point2f(yoshiPlyr->GetPosition().x, yoshiPlyr->GetPosition().y + 0.2));
 		m_PipeTiming += 0.1;
 	}
 	
@@ -482,6 +485,7 @@ void Level::WarpPipesUpdate(bool isDownPipe, Yoshi* yoshiPlyr, Point2f pipeWarpD
 		if (m_PipeTiming - yoshiPlyr->GetHitBox().height < 0.2)
 		{
 			yoshiPlyr->SetPosition(pipeWarpDestination);
+			yoshiPlyr->SetVelocity(0, 0);
 		}
 		
 
@@ -493,8 +497,8 @@ void Level::WarpPipesUpdate(bool isDownPipe, Yoshi* yoshiPlyr, Point2f pipeWarpD
 
 		else
 		{
-			yoshiPlyr->SetPosition(Point2f(yoshiPlyr->GetPosition().x, yoshiPlyr->GetPosition().y + 0.1));
-			m_PipeTiming += 0.1;
+			yoshiPlyr->SetPosition(Point2f(yoshiPlyr->GetPosition().x, yoshiPlyr->GetPosition().y + 2));
+			m_PipeTiming += 2;
 		}
 
 		plyrCamera->CenterCamera(yoshiPlyr->GetPosition());
