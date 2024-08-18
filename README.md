@@ -115,10 +115,9 @@ Additional screenshots and demos work well in this space.
 * Right Arrow to go right
 * Down Arrow when mouth is full to make an egg
 * Z jump
-* X Tongue to eat
+* X Tongue to eat (pressing egg twice throws an enemy out of yoshis mouth)
 * C Throws Egg
 * V to stop aiming the Egg
-* R Creates a shy guy from 100, 100
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -131,8 +130,8 @@ Additional screenshots and demos work well in this space.
 Applied object composition to Egg and Yoshi Class. Yoshi has Eggs.
 
 ### Inheritance 
-Applied Inheritance to the Entity class which has 4 different children. 
-Enemy,Yoshi,Mario,Eggs. Enemy also has a child which is the Shy Guy.
+Applied Inheritance to the Entity class which has multiple different children. 
+for example.:Enemy,Yoshi,Mario,Eggs. Enemy also has multiple children.
 
 ### ..
 
@@ -175,7 +174,8 @@ Project Link: [https://github.com/your_username/repo_name](https://github.com/Ho
 Use this space to list resources you find helpful and would like to give credit to. 
 
 * [Example 1: cpp reference on std::vector](https://en.cppreference.com/w/cpp/container/vector)
-* ..
+* https://www.spriters-resource.com
+* https://themushroomkingdom.net/media/smw2/wav
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
