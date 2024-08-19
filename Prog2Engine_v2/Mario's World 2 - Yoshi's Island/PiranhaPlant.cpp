@@ -77,6 +77,7 @@ void PiranhaPlant::Draw() const
 	}
 	glPopMatrix();
 
+
 }
 
 void PiranhaPlant::Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec)
@@ -205,6 +206,11 @@ void PiranhaPlant::Animate(float elapsedSec)
 float PiranhaPlant::GetAngle() const
 {
 	return m_AngleDeg;
+}
+
+bool PiranhaPlant::GetIsFlipped() const
+{
+	return m_IsFlipped;
 }
 
 void PiranhaPlant::Reset()

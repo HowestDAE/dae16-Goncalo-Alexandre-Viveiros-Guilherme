@@ -63,7 +63,7 @@ void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int cu
 
 						if (m_Position.x < yoshiPos.x + 20 - (m_TxtWidth * 3) * currentEgg)
 						{
-							m_VelocityX = 10 * m_DistanceX;
+							m_VelocityX = 10 + m_DistanceX * 1.5;
 						}
 					}
 
@@ -73,7 +73,7 @@ void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int cu
 
 						if (m_Position.x > yoshiPos.x + 20 + (m_TxtWidth * 3) * currentEgg)
 						{
-							m_VelocityX = -10 * -m_DistanceX;
+							m_VelocityX = -10 + m_DistanceX * 1.5;
 						}
 					}
 
@@ -85,6 +85,11 @@ void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int cu
 				}
 			}
 
+
+			if (m_DistanceX > 300 || m_DistanceX < -300 || m_DistanceY > 300 || m_DistanceY < -300)
+			{
+				m_Position = yoshiPos;
+			}
 			
 		}
 
@@ -104,11 +109,6 @@ void Egg::Update(const Point2f yoshiPos, const bool yoshiDirection, const int cu
 		{
 			Collision(platforms,elapsedSec);
 			m_FallenTimer += elapsedSec;
-
-			if (m_FallenTimer >= 8)
-			{
-				FlipIsActive();
-			}
 		}
 
 		else
@@ -443,6 +443,11 @@ Rectf Egg::GetHitbox()
 }
 
 bool Egg::GetIsFallen()
+{
+	return m_IsFallen;
+}
+
+float Egg::GetFallenTimer()
 {
 	return m_IsFallen;
 }

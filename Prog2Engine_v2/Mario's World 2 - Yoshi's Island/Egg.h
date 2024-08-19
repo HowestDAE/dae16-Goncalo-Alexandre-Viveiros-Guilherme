@@ -19,6 +19,7 @@ public:
 	bool GetIsHeld();
 	Rectf GetHitbox();
 	bool GetIsFallen();
+	float GetFallenTimer();
 
 
 private:

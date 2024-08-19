@@ -17,6 +17,7 @@ public:
 	void Sound(SoundManager* soundManager);
 	void Animate(float elapsedSec) override;
 	float GetAngle() const;
+	bool GetIsFlipped()const;
 	void Reset() override;
 private:
 	bool m_IsFlipped;

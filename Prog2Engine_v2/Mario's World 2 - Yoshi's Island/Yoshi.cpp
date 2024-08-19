@@ -297,7 +297,6 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 		else
 		{
 			m_Eggs[idx]->Update(m_Position, m_IsFacingRight, idx, platforms, elapsedSec);
-
 		}
 		
 		if (m_Eggs[idx]->GetIsThrown() == true)
@@ -306,14 +305,25 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 			{
 				delete m_Eggs[idx];
 				m_Eggs.erase(m_Eggs.begin()+idx);
+				break;
 			}
 
 			else if (m_Eggs[idx]->GetPosition().y > m_Position.y + 700 || m_Eggs[idx]->GetPosition().y < m_Position.y - 700)
 			{
 				delete m_Eggs[idx];
 				m_Eggs.erase(m_Eggs.begin() + idx);
+				break;
 			}
 
+		}
+
+		if (m_Eggs[idx]->GetIsFallen() == true)
+		{
+			if (m_Eggs[idx]->GetFallenTimer() >= 8)
+			{
+				delete m_Eggs[idx];
+				m_Eggs.erase(m_Eggs.begin() + idx);
+			}
 		}
 
 	}
@@ -336,7 +346,12 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 		}
 
 		if (m_IsCrouching == true) { m_IsHoldingEgg = false; }
+
 	}
+
+
+
+
 
 #pragma endregion
 
@@ -1493,19 +1508,42 @@ void Yoshi::HitCheck(const std::vector<Enemy*> enemies, std::vector<Entity*> lvl
 											if (m_IsSpatOut == false)
 											{
 												m_IsEaten = true;
+												m_IsMarioOn = false;
+												if (PiranhaPlant->GetIsFlipped() == true)
+												{
+													m_Position = Point2f(PiranhaPlant->GetPosition().x + PiranhaPlant->GetHitBox().width / 2, PiranhaPlant->GetPosition().y - m_Hitbox.height / 2);
+												}
+												else
+												{
+													m_Position = Point2f(PiranhaPlant->GetPosition().x + PiranhaPlant->GetHitBox().width / 2, PiranhaPlant->GetPosition().y + m_Hitbox.height / 2);
+												}
 
-												m_Position = PiranhaPlant->GetPosition();
-
+												for (int idx2 = 0; idx2 != m_Eggs.size(); idx2++)
+												{
+													m_Eggs[idx2]->DropEgg();
+													m_Eggs[idx2]->AddVelocity(rand() % 5, rand() % 10);
+												}
 											}
 
 											if (m_IsSpatOut == true)
 											{
-												m_VelocityX = (cos((PiranhaPlant->GetAngle() + M_PI / 2) * M_PI/ 180)) * 3000;
-												m_VelocityY = (sin((PiranhaPlant->GetAngle() + M_PI/2) * M_PI/ 180)) * 3000;
+												m_VelocityY = (sin(PiranhaPlant->GetAngle() * M_PI / 180 + M_PI / 2)) * 2500;
+
+												if (PiranhaPlant->GetIsFlipped() == true)
+												{
+													m_VelocityX = - (cos(PiranhaPlant->GetAngle() * M_PI / 180 + M_PI / 2)) * 1700;
+												}
+
+												else
+												{
+													m_VelocityX = (cos(PiranhaPlant->GetAngle() * M_PI / 180 + M_PI / 2)) * 1700;
+												}
+
 												m_IsHit = true;
 												m_IsSpatOut = false;
 												m_IsEaten = false;
 												m_EatenCounter = 0;
+												break;
 											}
 										}
 										else
@@ -1565,13 +1603,17 @@ void Yoshi::HitCheck(const std::vector<Enemy*> enemies, std::vector<Entity*> lvl
 
 		if (m_IsHit == false)
 		{
-			if (m_IsMarioOn == false)
+			if (m_IsEaten == false)
 			{
-				if (utils::IsOverlapping(m_Hitbox, marioHitbox) == true)
+				if (m_IsMarioOn == false)
 				{
-					m_IsMarioOn = true;
+					if (utils::IsOverlapping(m_Hitbox, marioHitbox) == true)
+					{
+						m_IsMarioOn = true;
+					}
 				}
 			}
+			
 		}
 		
 	}
@@ -1582,25 +1624,53 @@ void Yoshi::HitCheck(const std::vector<Enemy*> enemies, std::vector<Entity*> lvl
 		{
 			if (lvlEntities[idx]->GetIsActive() == true)
 				{
-					if (const auto wingedClouds = dynamic_cast<::WingedClouds*>(lvlEntities[idx]))
-					{
+					
 						if (!m_Eggs.empty())
 						{
 							for (int idx2 = 0; idx2 != m_Eggs.size(); idx2++)
 							{
 								if (m_Eggs[idx2]->GetIsThrown() == true)
 								{
-									if (utils::IsOverlapping(m_Eggs[idx2]->GetHitBox(), wingedClouds->GetHitBox()) == true)
+									if (utils::IsOverlapping(m_Eggs[idx2]->GetHitBox(), lvlEntities[idx]->GetHitBox()))
 									{
+										if (const auto wingedClouds = dynamic_cast<::WingedClouds*>(lvlEntities[idx]))
+										{
 										wingedClouds->SetIsHit();
 										delete m_Eggs[idx2];
 										m_Eggs.erase(m_Eggs.begin() + idx2);
 										break;
+										}
+
+										if (const auto coins = dynamic_cast<::Coin*>(lvlEntities[idx]))
+										{
+											if (coins->GetIsRedCoin() == true)
+											{
+												m_RedCoins += 1;
+											}
+											else
+											{
+												m_Coins += 1;
+											}
+											coins->FlipIsActive(soundManager);
+											break;
+										}
+
+										if (const auto flowers = dynamic_cast<::Flower*>(lvlEntities[idx]))
+										{
+											lvlEntities[idx]->FlipIsActive();
+
+											m_Flowers += 1;
+											delete m_Eggs[idx2];
+											m_Eggs.erase(m_Eggs.begin() + idx2);
+											break;
+										}
 									}
 								}
+
+								
 							}
 						}
-					}
+					
 
 					if (utils::IsOverlapping(m_Hitbox, lvlEntities[idx]->GetHitBox()))
 					{
