@@ -61,7 +61,7 @@ void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, f
 				{
 					if (const auto piranhaPlant = dynamic_cast<::PiranhaPlant*>(m_Enemies[idx]))
 					{
-						piranhaPlant->CalculateAngle(yoshiplyr->GetPosition());
+						piranhaPlant->CalculateAngle(yoshiplyr->GetPosition(),yoshiplyr->GetIsEaten());
 						piranhaPlant->Sound(soundManager);
 					}
 

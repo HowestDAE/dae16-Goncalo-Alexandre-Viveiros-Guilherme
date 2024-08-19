@@ -101,35 +101,16 @@ void PiranhaPlant::Update(const std::vector< std::vector<Point2f>>& platforms, f
 	//}
 }
 
-void PiranhaPlant::CalculateAngle(Point2f yoshiPos)
+void PiranhaPlant::CalculateAngle(Point2f yoshiPos,bool isYoshiEaten)
 {
-	if (yoshiPos.y >= m_Position.y)
+	if (isYoshiEaten == false)
 	{
-		Vector2f toPlayer = yoshiPos - m_Position;
-		float angleToPlayer = atan2f(toPlayer.y, toPlayer.x);
-		m_AngleDeg = angleToPlayer * 180 / M_PI;
-		m_AngleDeg += 270;
-		m_AngZ = 1;
-
-		if (yoshiPos.x > m_Position.x)
-		{
-			m_ScaleX = -1;
-		}
-		else
-		{
-			m_ScaleX = 1;
-		}
-	}
-
-	if (m_IsFlipped == true)
-	{
-		if (yoshiPos.y <= m_Position.y)
+		if (yoshiPos.y >= m_Position.y)
 		{
 			Vector2f toPlayer = yoshiPos - m_Position;
 			float angleToPlayer = atan2f(toPlayer.y, toPlayer.x);
 			m_AngleDeg = angleToPlayer * 180 / M_PI;
 			m_AngleDeg += 270;
-			m_AngleDeg += 180;
 			m_AngZ = 1;
 
 			if (yoshiPos.x > m_Position.x)
@@ -142,21 +123,44 @@ void PiranhaPlant::CalculateAngle(Point2f yoshiPos)
 			}
 		}
 
-		else
+		if (m_IsFlipped == true)
 		{
-			
-			m_AngZ = 1;
-
-			if (yoshiPos.x > m_Position.x)
+			if (yoshiPos.y <= m_Position.y)
 			{
-				m_AngleDeg = 60;
+				Vector2f toPlayer = yoshiPos - m_Position;
+				float angleToPlayer = atan2f(toPlayer.y, toPlayer.x);
+				m_AngleDeg = angleToPlayer * 180 / M_PI;
+				m_AngleDeg += 270;
+				m_AngleDeg += 180;
+				m_AngZ = 1;
+
+				if (yoshiPos.x > m_Position.x)
+				{
+					m_ScaleX = -1;
+				}
+				else
+				{
+					m_ScaleX = 1;
+				}
 			}
+
 			else
 			{
-				m_AngleDeg = -60;
+
+				m_AngZ = 1;
+
+				if (yoshiPos.x > m_Position.x)
+				{
+					m_AngleDeg = 60;
+				}
+				else
+				{
+					m_AngleDeg = -60;
+				}
 			}
 		}
 	}
+	
 }
 
 void PiranhaPlant::Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec)
@@ -197,6 +201,10 @@ void PiranhaPlant::Animate(float elapsedSec)
 
 		m_FrameTime = 0;
 	}
+}
+float PiranhaPlant::GetAngle() const
+{
+	return m_AngleDeg;
 }
 
 void PiranhaPlant::Reset()

@@ -12,10 +12,11 @@ public:
 
 	void Draw()const override;
 	void Update(const std::vector< std::vector<Point2f>>& platforms, float elapsedSec) override;
-	void CalculateAngle(Point2f yoshiPos);
+	void CalculateAngle(Point2f yoshiPos, bool isYoshiEaten);
 	void Collision(const std::vector<std::vector<Point2f>>& platforms, float elapsedSec) override;
 	void Sound(SoundManager* soundManager);
 	void Animate(float elapsedSec) override;
+	float GetAngle() const;
 	void Reset() override;
 private:
 	bool m_IsFlipped;

@@ -43,6 +43,7 @@ public:
 	bool GetIsOnMovingPlatform() const;
 	bool GetIsHit() const;
 	bool GetIsUsingPipe() const;
+	bool GetIsEaten() const;
 	void FlipIsUsingPipe();
 	void Reset() override;
 
@@ -67,6 +68,7 @@ private:
 	float m_JumpTimer{0};
 	float m_PushTimer{ 0 };
 	float m_ControlsTimer{ 0 };
+	float m_EatenCounter{ 0 };
 	Circlef m_Tongue;
 	bool m_IsMouthFull{false};
 	std::vector <Egg*> m_Eggs;
@@ -81,6 +83,8 @@ private:
 	bool m_IsPushing{ false };
 	bool m_IsTongueReady{ true };
 	bool m_IsStandingOnEntity{ false };
+	bool m_IsEaten{ false };
+	bool m_IsSpatOut{ false };
 	
 
 

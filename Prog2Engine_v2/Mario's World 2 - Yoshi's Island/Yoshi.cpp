@@ -10,6 +10,7 @@
 #include "Flowers.h"
 #include "Boulder.h"
 #include "Coin.h"
+#include "PiranhaPlant.h"
 #include "SoundManager.h"
 #include "Star.h"
 
@@ -47,7 +48,11 @@ void Yoshi::Draw() const
 
 	else
 	{
-		Entity::Draw();
+		if (m_IsEaten == false)
+		{
+			Entity::Draw();
+		}
+		
 	}
 	
 	
@@ -421,6 +426,15 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 	}
 
 
+	if (m_IsEaten == true)
+	{
+		m_EatenCounter += elapsedSec;
+
+		if (m_EatenCounter > 2)
+		{
+			m_IsSpatOut = true;
+		}
+	}
 
 	//collision and gravity
 	m_Position.y += m_VelocityY * elapsedSec;
@@ -620,7 +634,7 @@ void Yoshi::Collision(const std::vector<std::vector<Point2f>>& platforms,const s
 			{
 				//left side
 				if (utils::Raycast(platforms[idx], Point2f{ m_FeetPos.x + 6,m_Position.y + 32 },
-					Point2f{ m_FeetPos.x - 15,m_Position.y + 30 }, hit_info))
+					Point2f{ m_FeetPos.x - 18,m_Position.y + 30 }, hit_info))
 				{
 					m_Position.x = hit_info.intersectPoint.x; //Teleports entity to the point of intersection with a small offset
 					break;
@@ -1467,50 +1481,78 @@ void Yoshi::HitCheck(const std::vector<Enemy*> enemies, std::vector<Entity*> lvl
 								}
 							}
 
-							//checks if enemy his hitting yoshi
-							if (enemies[idx]->GetIsRolling() == false && enemies[idx]->GetIsThrown() == false)
+							if (m_IsHit == false)
 							{
-								if (utils::IsOverlapping(m_Hitbox, enemies[idx]->GetHitBox()) == true)
+								//checks if enemy his hitting yoshi
+								if (enemies[idx]->GetIsRolling() == false && enemies[idx]->GetIsThrown() == false)
 								{
-									m_IsHit = true;
-
-									if (m_IsFacingRight == true)
+									if (utils::IsOverlapping(m_Hitbox, enemies[idx]->GetHitBox()) == true)
 									{
-										if (enemies[idx]->GetPosition().x > m_Position.x)
+										if (const auto PiranhaPlant = dynamic_cast<::PiranhaPlant*>(enemies[idx]))
 										{
-											m_VelocityX *= -1;
-											m_VelocityX -= 300;
+											if (m_IsSpatOut == false)
+											{
+												m_IsEaten = true;
+
+												m_Position = PiranhaPlant->GetPosition();
+
+											}
+
+											if (m_IsSpatOut == true)
+											{
+												m_VelocityX = (cos((PiranhaPlant->GetAngle() + M_PI / 2) * M_PI/ 180)) * 3000;
+												m_VelocityY = (sin((PiranhaPlant->GetAngle() + M_PI/2) * M_PI/ 180)) * 3000;
+												m_IsHit = true;
+												m_IsSpatOut = false;
+												m_IsEaten = false;
+												m_EatenCounter = 0;
+											}
 										}
 										else
 										{
-											m_VelocityX *= 0;
-											m_VelocityX += 300;
+											m_IsHit = true;
+
+											if (m_IsFacingRight == true)
+											{
+												if (enemies[idx]->GetPosition().x > m_Position.x)
+												{
+													m_VelocityX *= -1;
+													m_VelocityX -= 300;
+												}
+												else
+												{
+													m_VelocityX *= 0;
+													m_VelocityX += 300;
+												}
+											}
+
+											else
+											{
+												if (enemies[idx]->GetPosition().x > m_Position.x)
+												{
+													m_VelocityX *= 0;
+													m_VelocityX -= 300;
+												}
+
+												else
+												{
+													m_VelocityX *= -1;
+													m_VelocityX += 300;
+												}
+
+											}
+
+											m_VelocityY += 400;
+
+											m_IsMarioOn = false;
+
+											break;
 										}
+
 									}
-
-									else
-									{
-										if (enemies[idx]->GetPosition().x > m_Position.x)
-										{
-											m_VelocityX *= 0;
-											m_VelocityX -= 300;
-										}
-
-										else
-										{
-											m_VelocityX *= -1;
-											m_VelocityX += 300;
-										}
-
-									}
-
-									m_VelocityY += 400;
-
-									m_IsMarioOn = false;
-
-									break;
 								}
 							}
+							
 							
 						}
 					}
@@ -1813,6 +1855,11 @@ bool Yoshi::GetIsUsingPipe() const
 	return m_IsUsingPipe;
 }
 
+bool Yoshi::GetIsEaten() const
+{
+	return m_IsEaten;
+}
+
 void Yoshi::FlipIsUsingPipe()
 {
 	m_IsUsingPipe = !m_IsUsingPipe;
@@ -1824,9 +1871,11 @@ void Yoshi::Reset()
 
 	m_IsTonguing          = false;
 	m_IsYoshiJumping      = false;
-	m_IsMarioOn           = true;
+	m_IsMarioOn           = true ;
 	m_IsLookingUp         = false;
 	m_IsHit               = false;
+	m_IsEaten             = false;
+	m_IsSpatOut           = false;
 	m_IsEnemySpitOut      = false;
 	m_Flowers             = 0 ;
 	m_Coins               = 0 ;
@@ -1840,6 +1889,7 @@ void Yoshi::Reset()
 	m_JumpTimer           = 0 ;
 	m_PushTimer           = 0 ;
 	m_ControlsTimer       = 0 ;
+	m_EatenCounter        = 0 ;
 	m_IsMouthFull         = false;
 	for (int idx = 0; idx < m_Eggs.size(); idx++)
 	{
@@ -1858,5 +1908,6 @@ void Yoshi::Reset()
 	m_IsStandingOnEntity  = false ;
 	m_PlayJumpSFX         = false ;
 	m_PlayTongueSFX       = false ;
+	
 
 }
