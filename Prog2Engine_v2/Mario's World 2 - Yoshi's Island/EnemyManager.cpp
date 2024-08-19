@@ -86,6 +86,7 @@ void EnemyManager::Update(const std::vector< std::vector<Point2f>>& platforms, f
 			}
 		}
 
+
 		if (const auto snatchers = dynamic_cast<::Snatchers*>(m_Enemies[idx]))
 		{
 			if (yoshiplyr->GetMarioTimer() == 0)

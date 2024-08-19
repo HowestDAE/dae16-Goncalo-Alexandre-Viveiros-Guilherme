@@ -326,6 +326,12 @@ void Yoshi::Update(const std::vector<std::vector<Point2f>>& platforms, const std
 			}
 		}
 
+		if (m_Eggs[idx]->GetIsActive() == false)
+		{
+			delete m_Eggs[idx];
+			m_Eggs.erase(m_Eggs.begin() + idx);
+		}
+
 	}
 
 	if (m_IsHoldingEgg == true)
